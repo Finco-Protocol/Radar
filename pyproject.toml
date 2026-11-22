@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "finco-radar"
+version = "0.1.0"
+description = "FINCO Radar / Crypto / Yield standalone product (Option B — Finco-Protocol/Radar)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi==0.136.1",
+    "httpx==0.28.1",
+    "pydantic==2.13.2",
+    "finco-evidence-envelope==0.1.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest==9.0.3",
+]
+server = [
+    "uvicorn>=0.30.0",
+]
+onchain = [
+    "eth-utils>=5.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["finco_radar*", "radar_service*", "finco_yield*"]
+exclude = ["tests*", "packages*"]
+
+[tool.setuptools.package-data]
+finco_radar = [
+    "terminal/templates/*.html",
+    "terminal/static/*.css",
+    "terminal/static/*.js",
+    "venues/data/*.json",
+]
+finco_yield = [
+    "data/*.json",
+    "web/templates/*.html",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_"]
+addopts = "-q --tb=short"

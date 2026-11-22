@@ -1,0 +1,41 @@
+# Third-Party Sources & Notices — Tokenized Markets registry seed
+
+Provenance record for externally harvested data that seeds the FINCO
+Tokenized Markets venue registry (PR 3a).  The normalized, committed
+artifact is `finco_radar/venues/data/venue_registry_seed.json`, produced by
+`tools/import_venue_registry_seed.py`.  Each imported row carries its
+`source` and `source_ref` so external facts are never silently mixed with
+FINCO-authored facts.
+
+Imported at build time only — never fetched at application runtime.
+
+| Source | Revision at import | What FINCO imports | License |
+|---|---|---|---|
+| `dicethedev/rwaimport-registry` (GitHub) | `a52ab346263f067b591ac9e936e687ee0291f12d` (main, 2026-10-02) | RWA dossiers `assets/<slug>/{asset,deployments}.json`: Robinhood Jersey representations (~195), Ondo Global Markets representations (~400), others (34, issuer classified from dossier `organizationRoles`) with chain / chainId / contract / decimals / deployment status | MIT |
+| `xplowdie/rwa-registry` ("pegproof", GitHub) | `dabb99c82d16994bc546bd4c21159637f0b86776` (main, 2026-09-02) | Flat Robinhood Chain token mappings (`registry/data/robinhood-chain.json`, 192 rows: ticker / underlying / address / decimals / status) and the known-impostor list (`registry/data/known_impostors.json`, 6 entries: exact chain + contract deny/quarantine identity) | MIT (code), LICENSE-DATA.md for data |
+| Official xStocks public API — `https://api.xstocks.fi/api/v2/public/assets` | live API, 13 pages / 1,271 assets at import (2026-10-02) | xStocks universe: symbol → `underlyingSymbol` / `underlyingIsin`, ISIN, per-network deployments (address, decimals), trading-halt state | public API; no SDK vendored |
+
+What FINCO did NOT import: CoinGecko data as an xStocks identity authority
+(explicitly avoided — official xStocks metadata wins), valuation/claims/
+compliance dossier sections beyond identity+deployment facts, oracle feeds,
+treasury addresses.
+
+Runtime authority remains FINCO's: imported registry facts are seed
+identity data, never live market evidence, and every representation row is
+re-derived (quarantine / conflict / inactive) by
+`finco_radar.venues.registry` at load time.
+
+
+## FINCO Model UI layer (RC-UX Phase 2)
+
+| Component | Version | License | Use |
+|---|---|---|---|
+| Flowbite (`flowbite`) | 2.5.2 | MIT | `static/vendor/flowbite.min.js` (Accordion / Collapse / Dismiss behaviour) and the Flowbite component markup used in the Model workspace templates. Self-hosted; no CDN. |
+| Tailwind CSS (`tailwindcss`) | 3.4.17 | MIT | Build-time only (`tools/ui`): generates the scoped `static/css/flowbite_finco.min.css`. Not shipped or run at runtime. |
+
+
+## FINCO Concept B NON-MODEL experience (GitHub integration V1)
+
+| Component | Version | License | Use |
+|---|---|---|---|
+| Lucide icons (path data inlined in `frontend/src/nonmodel/icons.tsx`) | 0.544.0 (`lucide-react`) | ISC | The Concept B handoff renders `lucide-react` icons. The host pins the production React dependency surface to react + react-dom only, so the exact 24×24 SVG path data for the 22 icons used is inlined locally with the same rendering contract instead of adding a runtime dependency. Upstream: https://github.com/lucide-icons/lucide |

@@ -1,0 +1,2255 @@
+{
+  "file_count": 223,
+  "files": [
+    {
+      "byte_identical": true,
+      "bytes": 57,
+      "category": "RADAR_CORE",
+      "sha256": "7d014489b0d68a3cdcc348a96e553692b84da2dc7ac5a4b664ad8b5e85b7969a",
+      "source_git_blob": "8042fb24b8ac9e1bec5e8ffcfb482a0148943307",
+      "source_mode": "100644",
+      "source_path": "finco_radar/__init__.py",
+      "target_path": "finco_radar/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 346,
+      "category": "RADAR_CORE",
+      "sha256": "0438149c6fcefabd9e3db775a260e96798f54585b5e7fe44e8b8982003b9d388",
+      "source_git_blob": "b28395c1892a856e5979a663f72ba6f8392516c8",
+      "source_mode": "100644",
+      "source_path": "finco_radar/asset_graph/__init__.py",
+      "target_path": "finco_radar/asset_graph/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 19229,
+      "category": "RADAR_CORE",
+      "sha256": "297c517dd60c24e42634e137611894500214808b9d5d3eaccc989a1fcf9d66ae",
+      "source_git_blob": "b961172f06d2db9187c242dc7914afd2aeadc076",
+      "source_mode": "100644",
+      "source_path": "finco_radar/asset_graph/builder.py",
+      "target_path": "finco_radar/asset_graph/builder.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 10578,
+      "category": "RADAR_CORE",
+      "sha256": "293f72bc4e0790d96c5f3a272b1b16f773a6496fa591bd7c44ca6b675944038f",
+      "source_git_blob": "7dce8e62b8dd7247b88aecfc1f9dd3673dcb3d45",
+      "source_mode": "100644",
+      "source_path": "finco_radar/asset_graph/contracts.py",
+      "target_path": "finco_radar/asset_graph/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 3369,
+      "category": "RADAR_CORE",
+      "sha256": "ed2b9b9a1218eb7c6d6bfb7a4acd51c980bc66a9394e4f5760d729dc97332749",
+      "source_git_blob": "353d999b4ccb8584d8e3712271bd6d38b57870f8",
+      "source_mode": "100644",
+      "source_path": "finco_radar/asset_graph/queries.py",
+      "target_path": "finco_radar/asset_graph/queries.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 69,
+      "category": "RADAR_CORE",
+      "sha256": "6864d6836a8da7a9e43bed523e3231dfa536f3e2b31947c917d52df806317636",
+      "source_git_blob": "94890368a64ad9793812c76ee04216009c7fa1bd",
+      "source_mode": "100644",
+      "source_path": "finco_radar/assets/__init__.py",
+      "target_path": "finco_radar/assets/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 48,
+      "category": "RADAR_CORE",
+      "sha256": "04ec9f329a35e2dc0546b9966b025281f6f22620d6f22165b06a7f01e389f9eb",
+      "source_git_blob": "5369be417e789ac41e4fdc74627d322757a3bb55",
+      "source_mode": "100644",
+      "source_path": "finco_radar/assets/adapters/__init__.py",
+      "target_path": "finco_radar/assets/adapters/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7193,
+      "category": "RADAR_CORE",
+      "sha256": "73dbcd82411779255de600c9295f2457d52e4010b80e89ba9bc733f3cb0e5be3",
+      "source_git_blob": "59ec44e79756ff28d158687455c4a33d7c4cec52",
+      "source_mode": "100644",
+      "source_path": "finco_radar/assets/adapters/robinhood.py",
+      "target_path": "finco_radar/assets/adapters/robinhood.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 5528,
+      "category": "RADAR_CORE",
+      "sha256": "b1bacadce00c090c19eac84cdc2ab3f3388bf1dbd8321fb07d3bec768139948e",
+      "source_git_blob": "57267f12ea10600b21dd61ad923dd18cd41d7c47",
+      "source_mode": "100644",
+      "source_path": "finco_radar/assets/contracts.py",
+      "target_path": "finco_radar/assets/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 6890,
+      "category": "RADAR_CORE",
+      "sha256": "74bb8c96c39759c36eb17054543baf075097a2d78fa3f6561a18a4fed27ed2b5",
+      "source_git_blob": "eda41e85b9085869345b9eb38f7d102d12b9efc1",
+      "source_mode": "100644",
+      "source_path": "finco_radar/assets/registry.py",
+      "target_path": "finco_radar/assets/registry.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 79,
+      "category": "RADAR_CORE",
+      "sha256": "82475ed1a865a5da3563417600d400aa5047678a80aa041062f736bdff9d93bd",
+      "source_git_blob": "aa474c59ee639ed13a13b650a46fa6649256b02c",
+      "source_mode": "100644",
+      "source_path": "finco_radar/authority/__init__.py",
+      "target_path": "finco_radar/authority/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 3749,
+      "category": "RADAR_CORE",
+      "sha256": "6382bb2fa9f306a3961168210831dd5393516f6d218e23b73a0ef7f272caeff6",
+      "source_git_blob": "c30aac88b15abf67a08bec4cc5d418f64fa3e6ac",
+      "source_mode": "100644",
+      "source_path": "finco_radar/authority/contracts.py",
+      "target_path": "finco_radar/authority/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 9473,
+      "category": "RADAR_CORE",
+      "sha256": "35a799842125612b44b3f93728f52f41d376e93cfc47fc9a48add06b77ec9257",
+      "source_git_blob": "bfa7a81a4ae57bceb14285f8553e53a86d012933",
+      "source_mode": "100644",
+      "source_path": "finco_radar/authority/cross_chain.py",
+      "target_path": "finco_radar/authority/cross_chain.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 12836,
+      "category": "RADAR_CORE",
+      "sha256": "27956cd7131f25fbcfbd7e8f8c240bb9df499f2e92d942072f592664883cc7bf",
+      "source_git_blob": "c38d6064935d6341e02168e414decdad345b6c28",
+      "source_mode": "100644",
+      "source_path": "finco_radar/authority/engine.py",
+      "target_path": "finco_radar/authority/engine.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 18777,
+      "category": "RADAR_CORE",
+      "sha256": "2acca6292e0eff67bc9e6178144844b5fabea530d7d93dad2e038f855b5eb5fa",
+      "source_git_blob": "68d77c9e0ec7f7c09dfeb6e2c69f72b9aba4bfd2",
+      "source_mode": "100644",
+      "source_path": "finco_radar/authority/r_live_onchain.py",
+      "target_path": "finco_radar/authority/r_live_onchain.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7132,
+      "category": "RADAR_CORE",
+      "sha256": "6b5b4e4fe9417bc7d0383e3614ddf646ff879c2bc973b6feb0943dfc9dda9234",
+      "source_git_blob": "a3626abf27cb5f55b2d95ad2eb547d61bc75ca61",
+      "source_mode": "100644",
+      "source_path": "finco_radar/authority/r_live_policy.py",
+      "target_path": "finco_radar/authority/r_live_policy.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 501,
+      "category": "RADAR_CORE",
+      "sha256": "86e464a6fb6947aeb0bb7399629e0a3e10f8d4deb69c4100b6cf4e4e6bb3ea79",
+      "source_git_blob": "5fcf67e3c89aa582ba631b62167e171a93d2d2e9",
+      "source_mode": "100644",
+      "source_path": "finco_radar/cross_market/__init__.py",
+      "target_path": "finco_radar/cross_market/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 30217,
+      "category": "RADAR_CORE",
+      "sha256": "e376fcec6e39f3946db3dc2af33ab5d04aef7015ed6fd222b2c734d4f0afafe7",
+      "source_git_blob": "391e695a8bb3f23645f3aa5f656177f74604e40b",
+      "source_mode": "100644",
+      "source_path": "finco_radar/cross_market/contracts.py",
+      "target_path": "finco_radar/cross_market/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 36096,
+      "category": "RADAR_CORE",
+      "sha256": "8db5bc77cd05e97e0c729688fd426ac7ece2fa9909b0a8da6342f581266601c8",
+      "source_git_blob": "a2f0d3c3b1b0396ef6c407c3d1b20f68b134e3f7",
+      "source_mode": "100644",
+      "source_path": "finco_radar/cross_market/engine.py",
+      "target_path": "finco_radar/cross_market/engine.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 252,
+      "category": "RADAR_CORE",
+      "sha256": "1c820eb9f3901452135cb969a3203b460c042593bed5c79099539970f9341caf",
+      "source_git_blob": "c4b10cecdc6eecea731aff785f00fb049aa34bda",
+      "source_mode": "100644",
+      "source_path": "finco_radar/digital_twin/__init__.py",
+      "target_path": "finco_radar/digital_twin/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 20121,
+      "category": "RADAR_CORE",
+      "sha256": "730053eb7a62b8b088fb3fb161217daa33a21240049a025715018c60e15e6d58",
+      "source_git_blob": "eed60674958e80e25d0016135c0c99ca74f42c42",
+      "source_mode": "100644",
+      "source_path": "finco_radar/digital_twin/contracts.py",
+      "target_path": "finco_radar/digital_twin/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 19856,
+      "category": "RADAR_CORE",
+      "sha256": "ba6538d33d685734ce1312dbb2d8a377b7218cb7ae74277ebeaf90f1d0248296",
+      "source_git_blob": "b89c68d09f96793d88433fea1c617c3ddf578ac1",
+      "source_mode": "100644",
+      "source_path": "finco_radar/digital_twin/twin.py",
+      "target_path": "finco_radar/digital_twin/twin.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 1338,
+      "category": "RADAR_CORE",
+      "sha256": "9aa36016d3db48ce004a49c40127f34a220bbe6f9a21fb72b2bd76fd468f5523",
+      "source_git_blob": "ccaf5d5cad40e4392f8141ec561bc99b5f4f8bf9",
+      "source_mode": "100644",
+      "source_path": "finco_radar/equity/__init__.py",
+      "target_path": "finco_radar/equity/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 3410,
+      "category": "RADAR_CORE",
+      "sha256": "9c22c1f03358f95513f0709f9aaf8d3096b383b3e73488af99980c1826c8546a",
+      "source_git_blob": "ec36cc5e54cf01239d8d41df5f2d020d69dc7b83",
+      "source_mode": "100644",
+      "source_path": "finco_radar/equity/config.py",
+      "target_path": "finco_radar/equity/config.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 5593,
+      "category": "RADAR_CORE",
+      "sha256": "f923172fb7ed664223e2d655b580e715a48c1b8d1d0210c0e59235875a9d10af",
+      "source_git_blob": "5ef5dc2717acf1c40098d7ea2c97877d68c24ed2",
+      "source_mode": "100644",
+      "source_path": "finco_radar/equity/derived.py",
+      "target_path": "finco_radar/equity/derived.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 9462,
+      "category": "RADAR_CORE",
+      "sha256": "45f6f740521861e414207db61f836ab23365da028668e34a295a336af21f7a97",
+      "source_git_blob": "bc542a2cf5559fc8064852a3e590c458d613b572",
+      "source_mode": "100644",
+      "source_path": "finco_radar/equity/models.py",
+      "target_path": "finco_radar/equity/models.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 20823,
+      "category": "RADAR_CORE",
+      "sha256": "bacbab6f96cd0b6913834b6e7d0da58a8538b069e35b90d61e8dd8224979503b",
+      "source_git_blob": "4640aeac95621d95d0099d2f1fdfe5fd7c5d1887",
+      "source_mode": "100644",
+      "source_path": "finco_radar/equity/repository.py",
+      "target_path": "finco_radar/equity/repository.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 13799,
+      "category": "RADAR_CORE",
+      "sha256": "707a42c703813e0414e0f23e13b87c3bb221e1b22f768187efc2a2756c8d1a7e",
+      "source_git_blob": "55cee97c1efe04c68b2293555418d859baf75288",
+      "source_mode": "100644",
+      "source_path": "finco_radar/equity/service.py",
+      "target_path": "finco_radar/equity/service.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 69,
+      "category": "RADAR_CORE",
+      "sha256": "cf15dbc4264a5d6f3d872093fcd9905198900653f7e81d0c908297901d08794d",
+      "source_git_blob": "6542f7f73b305415797dc5dade33d630263baee2",
+      "source_mode": "100644",
+      "source_path": "finco_radar/execution_simulator/__init__.py",
+      "target_path": "finco_radar/execution_simulator/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 22317,
+      "category": "RADAR_CORE",
+      "sha256": "93a0c5bdfebffc5fa4bc8a27fef70cb0e4d52f69c14db341ec4ff65e8e7845f0",
+      "source_git_blob": "e5e68434db5d0f898be9aa3d38a3fffa246152f9",
+      "source_mode": "100644",
+      "source_path": "finco_radar/execution_simulator/contracts.py",
+      "target_path": "finco_radar/execution_simulator/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 36096,
+      "category": "RADAR_CORE",
+      "sha256": "3bf8f65727d7cddd1c44b6f8c52851f2aa664500e31f2f4539f3194acdf93977",
+      "source_git_blob": "f5f341a357a17ff95f598125b30b0aaf840a2e34",
+      "source_mode": "100644",
+      "source_path": "finco_radar/execution_simulator/engine.py",
+      "target_path": "finco_radar/execution_simulator/engine.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 69,
+      "category": "RADAR_CORE",
+      "sha256": "6857cf4993343ba891d2047f5f28321c8cff78e9808dd6d55912149cc1fb0721",
+      "source_git_blob": "0f16c9859b91f8d57e3164f018b44d3e12edf10c",
+      "source_mode": "100644",
+      "source_path": "finco_radar/gap/__init__.py",
+      "target_path": "finco_radar/gap/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 10844,
+      "category": "RADAR_CORE",
+      "sha256": "7aff4a31cb9057c748a9ccdff6d4205e10308066e73a9e099995f9336ff8b395",
+      "source_git_blob": "ce0e8f3245a8edcdfdd7be9a7367adae463d8b4e",
+      "source_mode": "100644",
+      "source_path": "finco_radar/gap/contracts.py",
+      "target_path": "finco_radar/gap/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 14943,
+      "category": "RADAR_CORE",
+      "sha256": "94f10afdf023fcb878e40d2f67c0cf028f424d56a86881013f750fe8e65a3f2e",
+      "source_git_blob": "5038090abc9e67f079ad7f3098165406ba45c06f",
+      "source_mode": "100644",
+      "source_path": "finco_radar/gap/engine.py",
+      "target_path": "finco_radar/gap/engine.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 128,
+      "category": "RADAR_CORE",
+      "sha256": "33853e6a26ec93d92ca90b231dd0a63c9917c71643725303ce52be99eaa63b6e",
+      "source_git_blob": "2b551fc8a126dbe4c8116ded69b8e11a49852a84",
+      "source_mode": "100644",
+      "source_path": "finco_radar/history/__init__.py",
+      "target_path": "finco_radar/history/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 2085,
+      "category": "RADAR_CORE",
+      "sha256": "8b253902769691eb61ae2477a502aee1f7cc0ad127aa12a67ecdfdc2cb71530a",
+      "source_git_blob": "9130bce0f3970b9ff1824814878d4f0de9e0d494",
+      "source_mode": "100644",
+      "source_path": "finco_radar/history/contracts.py",
+      "target_path": "finco_radar/history/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7718,
+      "category": "RADAR_CORE",
+      "sha256": "f3b6a52274ddff06b474ccf3d2e5857feaf7285b8004ecc0fd948af2615174d4",
+      "source_git_blob": "c7e8f1ff6d6362e0dcc0888b10eb9fee679b777b",
+      "source_mode": "100644",
+      "source_path": "finco_radar/history/engine.py",
+      "target_path": "finco_radar/history/engine.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 251,
+      "category": "RADAR_CORE",
+      "sha256": "8196c2528814fe4758a292c2fd7bbc20cde7828a986dfd12ad39bd38ae84f49c",
+      "source_git_blob": "2dd49bbcc99f9b871665abbaa310643aaef5fa2b",
+      "source_mode": "100644",
+      "source_path": "finco_radar/liquidity/__init__.py",
+      "target_path": "finco_radar/liquidity/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 23685,
+      "category": "RADAR_CORE",
+      "sha256": "1c7daa145f3f55522c0013798616922ec0ff9ccbbcea059888307e27d92b361b",
+      "source_git_blob": "530e273a3764a0efb83187a5548e98a23c2533b8",
+      "source_mode": "100644",
+      "source_path": "finco_radar/liquidity/contracts.py",
+      "target_path": "finco_radar/liquidity/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 26860,
+      "category": "RADAR_CORE",
+      "sha256": "6724cf823f9c8bec1319e4ec42f7ebdacf58edac83ee6bdd8d5569f3eeb6372c",
+      "source_git_blob": "efd92f767207c1fc359e73740c5c197ad47e617a",
+      "source_mode": "100644",
+      "source_path": "finco_radar/liquidity/engine.py",
+      "target_path": "finco_radar/liquidity/engine.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 375,
+      "category": "RADAR_CORE",
+      "sha256": "004bc858987d0aefc2a6962263febd32af6e85156b91448cb8bbdb8a9ef6afc1",
+      "source_git_blob": "936b6a1b2a551eac50226477d4f6a03497532e51",
+      "source_mode": "100644",
+      "source_path": "finco_radar/model_radar/__init__.py",
+      "target_path": "finco_radar/model_radar/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 30822,
+      "category": "RADAR_CORE",
+      "sha256": "79c68d378f50a635788d79f22efb6cc9126ffdba9efd7d86491f11a7d8356487",
+      "source_git_blob": "cd377b77524ec9819189918dce40e3394f76fe3f",
+      "source_mode": "100644",
+      "source_path": "finco_radar/model_radar/bridge.py",
+      "target_path": "finco_radar/model_radar/bridge.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 22012,
+      "category": "RADAR_CORE",
+      "sha256": "2293db41c93d4e4780f13fd8bf5ee7ae92b340545588a39df1a1225260742f76",
+      "source_git_blob": "4eddc5958d0d7e283e9059297c150363360a9135",
+      "source_mode": "100644",
+      "source_path": "finco_radar/model_radar/comparisons.py",
+      "target_path": "finco_radar/model_radar/comparisons.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 51156,
+      "category": "RADAR_CORE",
+      "sha256": "bf9ee189e45e66c01140a45bbc087196b4ed34b4db72b91e9807e2808871d2dc",
+      "source_git_blob": "974325475c0bfb5d10665c0c1795891dc41faa45",
+      "source_mode": "100644",
+      "source_path": "finco_radar/model_radar/contracts.py",
+      "target_path": "finco_radar/model_radar/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 56,
+      "category": "RADAR_CORE",
+      "sha256": "56f5f5cee70aca33dc740b5aa412dca50abb599ae2e933fc2075f5b1794d9460",
+      "source_git_blob": "3b2e7889e0a3b8ab79afc61516f44977864e105f",
+      "source_mode": "100644",
+      "source_path": "finco_radar/quotes/__init__.py",
+      "target_path": "finco_radar/quotes/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 39,
+      "category": "RADAR_CORE",
+      "sha256": "27173c69388fb97c8172e7cabbba022c35863e4b8a1f83ae90ee4c9faa058fdc",
+      "source_git_blob": "b8114858811f6f732e2ce3e1e1649676728f920d",
+      "source_mode": "100644",
+      "source_path": "finco_radar/quotes/adapters/__init__.py",
+      "target_path": "finco_radar/quotes/adapters/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 21759,
+      "category": "RADAR_CORE",
+      "sha256": "5f0dadf6368a7c57bab32f59481eeb4c8e38149f88366b3380ba967e87c0faa4",
+      "source_git_blob": "b82670c45ab72a3337af29111d68650cc11958d0",
+      "source_mode": "100644",
+      "source_path": "finco_radar/quotes/adapters/lifi.py",
+      "target_path": "finco_radar/quotes/adapters/lifi.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 5637,
+      "category": "RADAR_CORE",
+      "sha256": "0a0b79f5c774900ff5e9ec9bbf4c0ebd04cbeb2a87a04899d2bfc7140ae323c3",
+      "source_git_blob": "b72b2e87906abcc2982a724cb2a097cf02fa0328",
+      "source_mode": "100644",
+      "source_path": "finco_radar/quotes/contracts.py",
+      "target_path": "finco_radar/quotes/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 2624,
+      "category": "RADAR_CORE",
+      "sha256": "e4c5098c6f955814d779cb8b66e9a8eacaea1a846d2e44c27321e55c2673d98f",
+      "source_git_blob": "cca8304feea032fe0303b21961c25cd73bc324cd",
+      "source_mode": "100644",
+      "source_path": "finco_radar/quotes/normalization.py",
+      "target_path": "finco_radar/quotes/normalization.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 54,
+      "category": "RADAR_CORE",
+      "sha256": "0886e312cf26dc3a5d9b147ae4b808eac34e9066bf667200b673096f81703902",
+      "source_git_blob": "a2163152bf3865bff84af225b2481bc9b221f71d",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r0/__init__.py",
+      "target_path": "finco_radar/r0/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 11957,
+      "category": "RADAR_CORE",
+      "sha256": "165a43d367a18c34b01b65670a6134b1464ff6a6a575dabd9dcb2c931a325a54",
+      "source_git_blob": "5b90082533d6b3cef1e4df074b44184ead1a652b",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r0/live_proof.py",
+      "target_path": "finco_radar/r0/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 47,
+      "category": "RADAR_CORE",
+      "sha256": "1097e0db4b5bf158eb6b5d6b8cb85df34433a17876910c9f8efb5eae406dae29",
+      "source_git_blob": "b4a7c1e202e2cb5b4dc0801fae2b0013f82bf667",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r1/__init__.py",
+      "target_path": "finco_radar/r1/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 5980,
+      "category": "RADAR_CORE",
+      "sha256": "be05d216c63d1b036409ad1b19f7ad6174b0db001a86b0debde52500d466da8a",
+      "source_git_blob": "608cd3306801c9707b026d9dbd3a8e1b382ffbf2",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r1/live_proof.py",
+      "target_path": "finco_radar/r1/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 42,
+      "category": "RADAR_CORE",
+      "sha256": "6de7db48245f101a5d2c0553bb4d3d7e228d7058b89600b5c85bbe8d99622b17",
+      "source_git_blob": "745889da9d87330b615bd0fd810ad106ca5d4d31",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r10/__init__.py",
+      "target_path": "finco_radar/r10/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 4210,
+      "category": "RADAR_CORE",
+      "sha256": "34f9e1b821bb1dc9271c0567b81d57f0e1b41cc25f64731360cef5810d7c7c9e",
+      "source_git_blob": "c3796f43b5172143843c9013d9ecf68d84c82458",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r10/live_proof.py",
+      "target_path": "finco_radar/r10/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 42,
+      "category": "RADAR_CORE",
+      "sha256": "704b1263f2b13c32f792f925454d269cc00760fc8e57f79e3b72b6f7f3f4d860",
+      "source_git_blob": "4f5d0d05ae5ccba95024005053eb1b4c0b5b38e3",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r11/__init__.py",
+      "target_path": "finco_radar/r11/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 6821,
+      "category": "RADAR_CORE",
+      "sha256": "6e54e3021b882f836d0aaada6a79974dc7339a3408920b5ed553c623d0abf182",
+      "source_git_blob": "3412ca046bf110da25438fee848a1fd53314605a",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r11/live_proof.py",
+      "target_path": "finco_radar/r11/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 42,
+      "category": "RADAR_CORE",
+      "sha256": "c9c2aae49027b4bdf556fc19435777faedce8e357a2de8d44b2fac83d7c9346f",
+      "source_git_blob": "f763a82ca720bb9535cb04a9ab6ead2254ee3312",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r12/__init__.py",
+      "target_path": "finco_radar/r12/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 5849,
+      "category": "RADAR_CORE",
+      "sha256": "94f2b24b69e120f94bd868b07984a29828e38c8fb67da5a0b7763ae006360f6d",
+      "source_git_blob": "d8e1516bda2c437b6d2c5d435a0c8b2e12ec9d71",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r12/live_proof.py",
+      "target_path": "finco_radar/r12/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 49,
+      "category": "RADAR_CORE",
+      "sha256": "1dff8a61cc3a6ea4aaa301acc7d5aba5a2e184a37df84a14bb29dd855ec0f8f9",
+      "source_git_blob": "08e1f498e0b92d2571c0375fc6e1fcf9541198e6",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r2/__init__.py",
+      "target_path": "finco_radar/r2/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 27464,
+      "category": "RADAR_CORE",
+      "sha256": "5399f08eb095d30297371f769cd84b2ef5adcb354efe03b5a75de92459402707",
+      "source_git_blob": "1acd31977847b243e71fa50892ac879c488bf259",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r2/live_proof.py",
+      "target_path": "finco_radar/r2/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 59,
+      "category": "RADAR_CORE",
+      "sha256": "8812ae149aade2a67a2e7541570fdc8f6b4da033612d0f8bbf73e06c89506f2c",
+      "source_git_blob": "5e2f8c65306c71cd522d136180efafa3f6c9d534",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r3/__init__.py",
+      "target_path": "finco_radar/r3/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 15495,
+      "category": "RADAR_CORE",
+      "sha256": "854ee8a9c79761f7aa282cabae2696ba1a302a617ef1e1bdb0b389dd6a85643d",
+      "source_git_blob": "787a79c9c6687a95d999071baeac33945be71b46",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r3/live_proof.py",
+      "target_path": "finco_radar/r3/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 54,
+      "category": "RADAR_CORE",
+      "sha256": "bc69bdef519b654fb1f1fd622848fa5c128e30b5c2c9e7a4b90bf645083aa721",
+      "source_git_blob": "fd9b6afda2250d9efdbf6988997cf1ebf2822e02",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r4/__init__.py",
+      "target_path": "finco_radar/r4/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 10185,
+      "category": "RADAR_CORE",
+      "sha256": "a5380eb76a761bdcff964c54a6a191e28e0c1f72b709a5c90e2bd8df8256f85d",
+      "source_git_blob": "edc93973483a5370c81b2a2ff6601b2602ba1964",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r4/live_proof.py",
+      "target_path": "finco_radar/r4/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 45,
+      "category": "RADAR_CORE",
+      "sha256": "60b516d524b5f8ee57ab64f936075d61be32eed878fa13bf129afac36a12c43e",
+      "source_git_blob": "8918de7196342a5c67f305e251649540060a8839",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r5/__init__.py",
+      "target_path": "finco_radar/r5/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 9038,
+      "category": "RADAR_CORE",
+      "sha256": "5fa908f50babedfa710abbe3a65c389162a21060c1d05f4b7b45f3a793f64414",
+      "source_git_blob": "74bbc58d528dab9ebf8026a32ff426221ecd285b",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r5/live_proof.py",
+      "target_path": "finco_radar/r5/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 36,
+      "category": "RADAR_CORE",
+      "sha256": "dea72f4fd1d79b863d7a44471505958765b99f0d4873d9fe67788ec3b46887a4",
+      "source_git_blob": "ddab89794d20a3a4e07a455ac269f53655bbfbd3",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r6/__init__.py",
+      "target_path": "finco_radar/r6/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 1925,
+      "category": "RADAR_CORE",
+      "sha256": "8a940095566d844e5c1afb3e3174e270baec6cb0a102d4fc70bc0cb90dc60256",
+      "source_git_blob": "405d60fa4ae86f12815166ad986be0bff3e979a5",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r6/live_proof.py",
+      "target_path": "finco_radar/r6/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 64,
+      "category": "RADAR_CORE",
+      "sha256": "af4fb4d1428d87f89228678c20ea634d431da6220bea81db5ccc33d497d9a6b8",
+      "source_git_blob": "c43d7d7319d34fbbf8f4fedae8ae8d9b93db04b5",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r7/__init__.py",
+      "target_path": "finco_radar/r7/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 18548,
+      "category": "RADAR_CORE",
+      "sha256": "5bcdf4e3819a49e96d58d3df87197555bdd8e6b07da3d81cb3736f47e2e7d6dd",
+      "source_git_blob": "faf17ef093f11f941d064e6e51bbd6ff5a9228ee",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r7/live_proof.py",
+      "target_path": "finco_radar/r7/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 58,
+      "category": "RADAR_CORE",
+      "sha256": "8ab5bbfe9d180d9edbadde27de03bcb18e1af350aba74689840ea82e08df831f",
+      "source_git_blob": "83b1a72ecda92bed968c2c9a8bde8ce64c99a067",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r8/__init__.py",
+      "target_path": "finco_radar/r8/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 22975,
+      "category": "RADAR_CORE",
+      "sha256": "6167973d6307b49a6c864a3d0cf3712177d82f379f8bd8aea85f31ad27e11022",
+      "source_git_blob": "be9dd729468d322a749cf421b2ba51c63751a927",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r8/live_proof.py",
+      "target_path": "finco_radar/r8/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 50,
+      "category": "RADAR_CORE",
+      "sha256": "eaa556aa3d7582f5e9366c754173ebcec1d74830ed2ea8daebe1dddb082f466b",
+      "source_git_blob": "d3404453f732a0a3efc05093e83f7a578034f36a",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r9/__init__.py",
+      "target_path": "finco_radar/r9/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 14996,
+      "category": "RADAR_CORE",
+      "sha256": "2cd07de51c9c352bb385fdc98ce90c0f2c2dec02ed3881c7ebbf93e6954a2526",
+      "source_git_blob": "941e83acc52c8f01eef3bbde8e80be7e0ab0c275",
+      "source_mode": "100644",
+      "source_path": "finco_radar/r9/live_proof.py",
+      "target_path": "finco_radar/r9/live_proof.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 278,
+      "category": "RADAR_CORE",
+      "sha256": "1eef19f56581258563b097522e1254e7c7a69a2c349b3f5cf03d3313db212d05",
+      "source_git_blob": "d2df33a7b18c5b1f1775fb500eae8d58d2332ba2",
+      "source_mode": "100644",
+      "source_path": "finco_radar/reference_state/__init__.py",
+      "target_path": "finco_radar/reference_state/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 68,
+      "category": "RADAR_CORE",
+      "sha256": "6d530c248bf87143724b604ba7efaf44d17cc22aeb52afaf063f76f996eeba4a",
+      "source_git_blob": "d433c38a8230a270683ef90422cc3fa2e7c4cd67",
+      "source_mode": "100644",
+      "source_path": "finco_radar/reference_state/adapters/__init__.py",
+      "target_path": "finco_radar/reference_state/adapters/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 10084,
+      "category": "RADAR_CORE",
+      "sha256": "bee33f315122b955c862551dd0df16af9849611a4ba8973e25679461b9423734",
+      "source_git_blob": "feded84a752714d06924ed30a415c425221001a5",
+      "source_mode": "100644",
+      "source_path": "finco_radar/reference_state/adapters/robinhood.py",
+      "target_path": "finco_radar/reference_state/adapters/robinhood.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 19997,
+      "category": "RADAR_CORE",
+      "sha256": "ab03c0429abaf7a1eddc6012835fd990d216ad6cdbfd5e2f57357f15a3786861",
+      "source_git_blob": "1bd90efc1af504c4f621b681b0ee2475d57cb59f",
+      "source_mode": "100644",
+      "source_path": "finco_radar/reference_state/contracts.py",
+      "target_path": "finco_radar/reference_state/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 14226,
+      "category": "RADAR_CORE",
+      "sha256": "163117edfbbb71bbda1597c293a1f2e55851cb69337655dc7ccc19866339cd1f",
+      "source_git_blob": "259687ac16ac7f19f591602ddc6407ecdd480cdf",
+      "source_mode": "100644",
+      "source_path": "finco_radar/reference_state/engine.py",
+      "target_path": "finco_radar/reference_state/engine.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 140,
+      "category": "RADAR_CORE",
+      "sha256": "8bc70ab57ae08a9218f33108df0f16e244a4f7be744c04feb91900b78d9c862a",
+      "source_git_blob": "ae81ebd8d5f1031e711f5bbe1efa13e43d2433ac",
+      "source_mode": "100644",
+      "source_path": "finco_radar/signals/__init__.py",
+      "target_path": "finco_radar/signals/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7797,
+      "category": "RADAR_CORE",
+      "sha256": "1d4568764f4818d7de43a6e5f5b76c659045090dfc5807295aae072c4c08955e",
+      "source_git_blob": "f2c11b01253601d54f77a36718cb03133ec7e45a",
+      "source_mode": "100644",
+      "source_path": "finco_radar/signals/contracts.py",
+      "target_path": "finco_radar/signals/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 6014,
+      "category": "RADAR_CORE",
+      "sha256": "1bbfbde6d1d41696348b9e3673af22f6a6055882fc2de38e590d493e10a39ca8",
+      "source_git_blob": "e888a5a0f2ee924fbbd773d726b06caeb4362ad1",
+      "source_mode": "100644",
+      "source_path": "finco_radar/signals/engine.py",
+      "target_path": "finco_radar/signals/engine.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 158,
+      "category": "RADAR_CORE",
+      "sha256": "ec8238e4507f14406f46f8ad56a49b11b341202e3386bea6bca50733aa7be01b",
+      "source_git_blob": "18e7c180923f20513edbdca000489b5449fb30e3",
+      "source_mode": "100644",
+      "source_path": "finco_radar/terminal/__init__.py",
+      "target_path": "finco_radar/terminal/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 9996,
+      "category": "RADAR_CORE",
+      "sha256": "03bea25c58746d7a8993fc2a47e86bc553418eb8aeb673662cd1f1ccaddced0d",
+      "source_git_blob": "b45efdd8227c9503626c188117cd1b6d12fc3e8e",
+      "source_mode": "100644",
+      "source_path": "finco_radar/terminal/contracts.py",
+      "target_path": "finco_radar/terminal/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 10315,
+      "category": "RADAR_CORE",
+      "sha256": "bb047fcdd8a1d7df21e0b7d85d53136923ba817d65841cb475b419d3fa4a268b",
+      "source_git_blob": "b5d2c7c436e18e5dd9783602f31b9c02fed973c1",
+      "source_mode": "100644",
+      "source_path": "finco_radar/terminal/presenter.py",
+      "target_path": "finco_radar/terminal/presenter.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7359,
+      "category": "RADAR_CORE",
+      "sha256": "2091a18c7e0106bcbec717d598c55b38ad2ec3b65ec18574ef3906bac2481ea1",
+      "source_git_blob": "cb7dee37c086759cebaa19153d80e7eb0b7b32a6",
+      "source_mode": "100644",
+      "source_path": "finco_radar/terminal/runtime.py",
+      "target_path": "finco_radar/terminal/runtime.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 2487,
+      "category": "RADAR_CORE",
+      "sha256": "d582660507fe4c15ea6229bec58775ea1d30407b39bb645e4c9123e689cc821b",
+      "source_git_blob": "8bc9e3abc9007eb5e36d7f9f32d5e009a72aca5b",
+      "source_mode": "100644",
+      "source_path": "finco_radar/terminal/static/radar_terminal.css",
+      "target_path": "finco_radar/terminal/static/radar_terminal.css"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 670,
+      "category": "RADAR_CORE",
+      "sha256": "f08a82d15958a0081434f55f4576493f4cb757e6682b2c92e20d3f3dea2cd561",
+      "source_git_blob": "a56cef3ecf38c6f03a189621af936c00532bd6da",
+      "source_mode": "100644",
+      "source_path": "finco_radar/terminal/static/radar_terminal.js",
+      "target_path": "finco_radar/terminal/static/radar_terminal.js"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 2952,
+      "category": "RADAR_CORE",
+      "sha256": "87062f3ba2a0bc4282654a9dc85c8b9de401124f06342e3586999a8d4aea8858",
+      "source_git_blob": "abf08eacaaa6d68c471d92d5a45295f6438fca97",
+      "source_mode": "100644",
+      "source_path": "finco_radar/terminal/templates/radar_terminal.html",
+      "target_path": "finco_radar/terminal/templates/radar_terminal.html"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 6236,
+      "category": "RADAR_CORE",
+      "sha256": "339c2f7471b11e2916908555d0897f119278cea4eafc10d2d5787f6980194408",
+      "source_git_blob": "f2cd612d69d2bd8c6466cf3776bc138e14aad61a",
+      "source_mode": "100644",
+      "source_path": "finco_radar/terminal/web.py",
+      "target_path": "finco_radar/terminal/web.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 0,
+      "category": "RADAR_CORE",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "source_mode": "100644",
+      "source_path": "finco_radar/tokenization_premium/__init__.py",
+      "target_path": "finco_radar/tokenization_premium/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 9623,
+      "category": "RADAR_CORE",
+      "sha256": "e2806a0216741395bb556f07cd210380c139b4138c5e3e58144a824ab591ac70",
+      "source_git_blob": "1a56c8bc9a84fec26ae0aacd778d0eaadd485897",
+      "source_mode": "100644",
+      "source_path": "finco_radar/tokenization_premium/contracts.py",
+      "target_path": "finco_radar/tokenization_premium/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 16967,
+      "category": "RADAR_CORE",
+      "sha256": "67a54b3f156924cfb03ba6809d15efd935970726378711e112f360b38f0f9f49",
+      "source_git_blob": "360efa50f2225b7634535ea620ca43157bb648da",
+      "source_mode": "100644",
+      "source_path": "finco_radar/tokenization_premium/engine.py",
+      "target_path": "finco_radar/tokenization_premium/engine.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 905,
+      "category": "RADAR_CORE",
+      "sha256": "5c2c3ce7427a0807874769063487d2d820c717002e6671358dd9be546151c1b3",
+      "source_git_blob": "49271b3674d8d396f7cda12f1f83ea5b3fd79d99",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/__init__.py",
+      "target_path": "finco_radar/venues/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 2527,
+      "category": "RADAR_CORE",
+      "sha256": "f54b56fd015392f2b69893d178cc58eaf785400816cad049bd347dd7ec2e51b4",
+      "source_git_blob": "3cd7ec1d5839c0b572ed16556b9ae2cae0db09c2",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/basis.py",
+      "target_path": "finco_radar/venues/basis.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 10478,
+      "category": "RADAR_CORE",
+      "sha256": "d54a0c9e1e985b93f1e8c88154ea71b76fc4975dcd2dd7bfa0cc0ceb0e5d48ba",
+      "source_git_blob": "c0961b4ce1cdbe9ff7c93f1cc4fb31a9ea6146cf",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/collector.py",
+      "target_path": "finco_radar/venues/collector.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 3758546,
+      "category": "RADAR_CORE",
+      "sha256": "45dca0667c967e5e011faa546ffe0419bdc9be173e129e787f399c1fb7bf1d36",
+      "source_git_blob": "89824181013c19d2180df967d381b27a0c0f19e2",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/data/venue_registry_seed.json",
+      "target_path": "finco_radar/venues/data/venue_registry_seed.json"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 20101,
+      "category": "RADAR_CORE",
+      "sha256": "860d9b3d00003bae9caf5887c6751f882b15e1334f9a8dbc8f24d7fcb60a0d9a",
+      "source_git_blob": "6123517664bb3e2630e2aedbf43d219f6c672e6b",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/deepstate_live.py",
+      "target_path": "finco_radar/venues/deepstate_live.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 9249,
+      "category": "RADAR_CORE",
+      "sha256": "08582f37dd6e3540ddbb87a8105c3460d19d00fbf49369ade78efaa43ac4992d",
+      "source_git_blob": "3491b9b50c8f9b440a54ec73c7c675c6affce8db",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/health.py",
+      "target_path": "finco_radar/venues/health.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 15993,
+      "category": "RADAR_CORE",
+      "sha256": "7f4ad7d08562b0e33905d40b8d9d0ed6a7ae2af9ba82a7f94b43332233e85b36",
+      "source_git_blob": "d5673713d6fff4e14e039ffaea75482e67bc0008",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/intelligence.py",
+      "target_path": "finco_radar/venues/intelligence.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 6137,
+      "category": "RADAR_CORE",
+      "sha256": "f91fa9f1fcb01377543374ac94387a7d13b9596b00a770096d03d585503ef182",
+      "source_git_blob": "f112642c5c01845f9db2b8ea411a2f8891eb535f",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/models.py",
+      "target_path": "finco_radar/venues/models.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 5808,
+      "category": "RADAR_CORE",
+      "sha256": "c0096ea0565d0e0f92429cfb9ed568368119f428f658dcaef94f32171b5023c2",
+      "source_git_blob": "fb0299757d28d7cc8c4bc332301a28318a3c2d79",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/observations.py",
+      "target_path": "finco_radar/venues/observations.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 18059,
+      "category": "RADAR_CORE",
+      "sha256": "f40b82e5c91f90f834efa1c4c2b9b49d2af8012d6d40a674250b07c493bfafb7",
+      "source_git_blob": "8383d167f5f5e60781fedac83e0844ac193fe100",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/registry.py",
+      "target_path": "finco_radar/venues/registry.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 22387,
+      "category": "RADAR_CORE",
+      "sha256": "5c1c700784e0699e24226244d13a91989a6de3672dc307133831973e1b76be65",
+      "source_git_blob": "c77f43ba81dce7344704e2a828f72209dbb7e467",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/relative_value.py",
+      "target_path": "finco_radar/venues/relative_value.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 8696,
+      "category": "RADAR_CORE",
+      "sha256": "c58216e75bf8696d780deabcc1a0efcfaab47fdddfcb652a31a6a631a72dc462",
+      "source_git_blob": "85b6f951516f11e08c768a05e8c6e95e5c406a15",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/robinhood_live.py",
+      "target_path": "finco_radar/venues/robinhood_live.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 4925,
+      "category": "RADAR_CORE",
+      "sha256": "3979c847c54dd9706b36f4cc072a978a3c0081442733d5099df94300ef936b3d",
+      "source_git_blob": "448833ca404e60f777cc1e034aaeb774070d4a37",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/seed_loader.py",
+      "target_path": "finco_radar/venues/seed_loader.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 20753,
+      "category": "RADAR_CORE",
+      "sha256": "1017da9460b9628d475146f9eadeb7819de5daf587be90d4019507fe05b23679",
+      "source_git_blob": "57ed22892894f7c0e4eca4f62a782680bea4bf2c",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/store.py",
+      "target_path": "finco_radar/venues/store.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 5257,
+      "category": "RADAR_CORE",
+      "sha256": "b1fa3a401fe4f31d3fdeda0e1f4d0461754ce0e8a8ed601c6693ca5d99b80d9f",
+      "source_git_blob": "a094b1851fa7cd60967d0dec220ce3fc4d1b4635",
+      "source_mode": "100644",
+      "source_path": "finco_radar/venues/xstocks.py",
+      "target_path": "finco_radar/venues/xstocks.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 333,
+      "category": "RADAR_CORE",
+      "sha256": "912484064bd4be9e6ced74b017b237d978a42ed83d3a239f31bb7f365d748952",
+      "source_git_blob": "72313656131a3fb34e6f4b2b7e0e830a5ba549f9",
+      "source_mode": "100644",
+      "source_path": "finco_radar/verification/__init__.py",
+      "target_path": "finco_radar/verification/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 20928,
+      "category": "RADAR_CORE",
+      "sha256": "10b4fabc17e37e2aefaad6be94a23a39884560c3a8d637560c664b58ca6002dd",
+      "source_git_blob": "2c857a1d060563e6f46404476a01d05d47c0be1a",
+      "source_mode": "100644",
+      "source_path": "finco_radar/verification/contracts.py",
+      "target_path": "finco_radar/verification/contracts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 81430,
+      "category": "RADAR_CORE",
+      "sha256": "ccf7d8f82cb0df231189211fe3486e3b7bd7f52dabb4a28d064998dd97fb1b67",
+      "source_git_blob": "c42b5213d73847d9abec99f12a0d4959e0ebb349",
+      "source_mode": "100644",
+      "source_path": "finco_radar/verification/verifier.py",
+      "target_path": "finco_radar/verification/verifier.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 467,
+      "category": "YIELD_CORE",
+      "sha256": "e2c6cd584214f350824c98a60556f1b55dfcbc3c66f7573005b5a1fa4d568e39",
+      "source_git_blob": "acde97cc7c07cdd7310262cbaa40fc6554431b4f",
+      "source_mode": "100644",
+      "source_path": "finco_yield/__init__.py",
+      "target_path": "finco_yield/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 6864,
+      "category": "YIELD_CORE",
+      "sha256": "a55985158d272b869341b3e6ce7416433038900a4fc5aad321fc7664c76b5247",
+      "source_git_blob": "548bb891c42f9319fe59349fc0afd859c5bab45c",
+      "source_mode": "100644",
+      "source_path": "finco_yield/access.py",
+      "target_path": "finco_yield/access.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 2449,
+      "category": "YIELD_CORE",
+      "sha256": "c144ebe495ac0f71ddcfe99be4db4ec0775d4a2f94d5628a250c66783c1fbc80",
+      "source_git_blob": "6fc437b3ddb857cd9452cb4b39486a786b858045",
+      "source_mode": "100644",
+      "source_path": "finco_yield/alerts_core.py",
+      "target_path": "finco_yield/alerts_core.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 21460,
+      "category": "YIELD_CORE",
+      "sha256": "a481ffdb29792e4e01265e8c407b3c5c34700dfa8ce7f32836f6c8c6ba3b2693",
+      "source_git_blob": "30a6ae9d767d1646bf259bf461d89eccf384dd57",
+      "source_mode": "100644",
+      "source_path": "finco_yield/alerts_eval.py",
+      "target_path": "finco_yield/alerts_eval.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 11960,
+      "category": "YIELD_CORE",
+      "sha256": "a0fe3161d5d04ab37f4be5cfdfe053b2123ef53a349d87f3b88e3e220a7594c7",
+      "source_git_blob": "aceaa267523d9a1e24eaba84f63d70982aef43f4",
+      "source_mode": "100644",
+      "source_path": "finco_yield/alerts_store.py",
+      "target_path": "finco_yield/alerts_store.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 3902,
+      "category": "YIELD_CORE",
+      "sha256": "55cbc69a373fb2af1257378e1cea64933c4a29693f7e06b81ad3902783cc648e",
+      "source_git_blob": "0299cc65f869a563c5f84757816360f1904d414c",
+      "source_mode": "100644",
+      "source_path": "finco_yield/alerts_types.py",
+      "target_path": "finco_yield/alerts_types.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 13627,
+      "category": "YIELD_CORE",
+      "sha256": "4a97a3d73bcdc401a67b179d82197b12263a8d9e9cf253e9125bc058c152d4a2",
+      "source_git_blob": "a8f8ca583cce94706f8d1143406a6069309b0074",
+      "source_mode": "100644",
+      "source_path": "finco_yield/collect_live.py",
+      "target_path": "finco_yield/collect_live.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 11479,
+      "category": "YIELD_CORE",
+      "sha256": "6e938c2f83cbfec41bec0e9b3f4d0842d7b97a76deb2f1dcae7f0b3791ef6a13",
+      "source_git_blob": "f79bf83e14e3f9cce58640af8264de087b3af160",
+      "source_mode": "100644",
+      "source_path": "finco_yield/data/live_opportunities.json",
+      "target_path": "finco_yield/data/live_opportunities.json"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 1370,
+      "category": "YIELD_CORE",
+      "sha256": "642875704fd084f31b0576320e126ea5d8cc6572998851244973726b5e311d83",
+      "source_git_blob": "8c8b8b356f9b18c1b312b0bedb7c3be8931adfdd",
+      "source_mode": "100644",
+      "source_path": "finco_yield/durable_io.py",
+      "target_path": "finco_yield/durable_io.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 8123,
+      "category": "YIELD_CORE",
+      "sha256": "23024770df7ad8851f7bda1192f038f8c1cd84f3df2e00690a7f8074f6bddc85",
+      "source_git_blob": "0d0a7b54b5766b7cf4f8971069034b938bb50f8d",
+      "source_mode": "100644",
+      "source_path": "finco_yield/evaluate_alerts.py",
+      "target_path": "finco_yield/evaluate_alerts.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 6535,
+      "category": "YIELD_CORE",
+      "sha256": "8294e4aa83a10afe437d20e6ebd1c385d13bbb3c3b1a5bf1dc3503c2dadfcc92",
+      "source_git_blob": "c3612dff5b7483cd361aaf2c99ce8347e0e4dcf0",
+      "source_mode": "100644",
+      "source_path": "finco_yield/evidence_v1.py",
+      "target_path": "finco_yield/evidence_v1.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 17243,
+      "category": "YIELD_CORE",
+      "sha256": "cdc7868c15b17bb651ceff289f38aaa98067064b94aa0e77194164a9e6e52a8e",
+      "source_git_blob": "c33e6331e4a134066cbd59f49a698a74d7436498",
+      "source_mode": "100644",
+      "source_path": "finco_yield/execution.py",
+      "target_path": "finco_yield/execution.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 5302,
+      "category": "YIELD_CORE",
+      "sha256": "911c9a55d3a3548c1bfec7bb9b934b47ab3cb90e2d5d9c603de82418ec910e1e",
+      "source_git_blob": "2f795ce192341684c8ad0a4d08ffabc0840f82fc",
+      "source_mode": "100644",
+      "source_path": "finco_yield/explore.py",
+      "target_path": "finco_yield/explore.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 563,
+      "category": "YIELD_CORE",
+      "sha256": "1f9556558d01378a1bf071617c797281ef5c05cd8338214b69398d729ade79be",
+      "source_git_blob": "000cbf0a64c9bfc27838cc87424870856ed7b37f",
+      "source_mode": "100644",
+      "source_path": "finco_yield/flags.py",
+      "target_path": "finco_yield/flags.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 1903,
+      "category": "YIELD_CORE",
+      "sha256": "b703baec3f1f97fcc5b95e6b0568a17c01ff3ff5a2ddc884fd9e96b3fd32fab6",
+      "source_git_blob": "7bd47d632ce8d72358220ebaf90f0c9f32d828a5",
+      "source_mode": "100644",
+      "source_path": "finco_yield/freshness.py",
+      "target_path": "finco_yield/freshness.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7845,
+      "category": "YIELD_CORE",
+      "sha256": "4cfd8aa3bae64670ad2f68425b40794546374265975bad64c7689b2ea85e08f4",
+      "source_git_blob": "889fcf3bca566005600f0b3cf48ba82e2fb0cfeb",
+      "source_mode": "100644",
+      "source_path": "finco_yield/history.py",
+      "target_path": "finco_yield/history.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 1811,
+      "category": "YIELD_CORE",
+      "sha256": "146ca22809beda9712252ccc2d86d1595167528541728228717cb1b751087b58",
+      "source_git_blob": "24d693ccc691ecd88d85fe538ed030da6c895c98",
+      "source_mode": "100644",
+      "source_path": "finco_yield/identity.py",
+      "target_path": "finco_yield/identity.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 1919,
+      "category": "YIELD_CORE",
+      "sha256": "78174dfe84a740f7b45df7549c6c37d0cae6115510726e7dfaefd6d96dcd251a",
+      "source_git_blob": "cf0eaa4a11231329057d1fccea306fe9c7c2a97d",
+      "source_mode": "100644",
+      "source_path": "finco_yield/ingestion.py",
+      "target_path": "finco_yield/ingestion.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 13875,
+      "category": "YIELD_CORE",
+      "sha256": "3d6652ce628f321361a70ee2440cb96c4a222924ba22963047ce998aad57d45c",
+      "source_git_blob": "317aef75caf99693cbd71f03b21e79e4ff3e1d16",
+      "source_mode": "100644",
+      "source_path": "finco_yield/intelligence.py",
+      "target_path": "finco_yield/intelligence.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 14566,
+      "category": "YIELD_CORE",
+      "sha256": "6bf58880b5e297e41a89191e9eafbd46d09b383e0743837c4f8f3a7b8b168aa2",
+      "source_git_blob": "2837b955e269f8f3a9c1909886f7260477853ea2",
+      "source_mode": "100644",
+      "source_path": "finco_yield/live_sources.py",
+      "target_path": "finco_yield/live_sources.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 15765,
+      "category": "YIELD_CORE",
+      "sha256": "a88642b5ec469cf7718769818a4bb4d16f95ccccba1d3d182c28ea7ff675defe",
+      "source_git_blob": "86feff3a5fc44d6b8ac5626b625fece897591e29",
+      "source_mode": "100644",
+      "source_path": "finco_yield/market.py",
+      "target_path": "finco_yield/market.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 4206,
+      "category": "YIELD_CORE",
+      "sha256": "286f44378fb83270f3d7eda54231096da06191abc02541f209c5fc6fd0bb9665",
+      "source_git_blob": "5ad55bc11716ef85951bf4ab99a41d8f56ee862f",
+      "source_mode": "100644",
+      "source_path": "finco_yield/monitor.py",
+      "target_path": "finco_yield/monitor.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7708,
+      "category": "YIELD_CORE",
+      "sha256": "aeff8533602f32ced8d7406008160da9ca75f6eccfc6f320649a9b501f2cd898",
+      "source_git_blob": "ba0ace7c45459dfab1209aab3acb48f1cc8154dd",
+      "source_mode": "100644",
+      "source_path": "finco_yield/observation.py",
+      "target_path": "finco_yield/observation.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 8512,
+      "category": "YIELD_CORE",
+      "sha256": "aad4a8a0f8192e8470bcff9fab1602b6b1abeca9e902924cd2a8672737f59e5b",
+      "source_git_blob": "06354a6977d48af721e6a11f4f30084672678aff",
+      "source_mode": "100644",
+      "source_path": "finco_yield/onchain.py",
+      "target_path": "finco_yield/onchain.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 10767,
+      "category": "YIELD_CORE",
+      "sha256": "b456502e78ae406cf3b89acfc8afaeed9917b143feb6648c48e8d84be5bb5eab",
+      "source_git_blob": "8589d038b2d4d34040c125b713bb359d52bd776b",
+      "source_mode": "100644",
+      "source_path": "finco_yield/providers.py",
+      "target_path": "finco_yield/providers.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 928,
+      "category": "YIELD_CORE",
+      "sha256": "588bcfe394803921c2102ab276ba6b01a83fa7c0ac69fc6892da38ac02d58c1f",
+      "source_git_blob": "f52ec4d4eb11ae602544a2fc0325f33fa131f965",
+      "source_mode": "100644",
+      "source_path": "finco_yield/readiness.py",
+      "target_path": "finco_yield/readiness.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 8245,
+      "category": "YIELD_CORE",
+      "sha256": "e69315062fe8d6083dd4147950b48357ea796a5d20bc6fdf67038ca8730e24b4",
+      "source_git_blob": "c5c37d4e8553a3b9fd7d4e5fd8386e61a05cb964",
+      "source_mode": "100644",
+      "source_path": "finco_yield/registry.py",
+      "target_path": "finco_yield/registry.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 2510,
+      "category": "YIELD_CORE",
+      "sha256": "5bdbaa666132c9c9f4e9a85c9a56119cad3646f65c3e2b1c0a11f0c769cd30ce",
+      "source_git_blob": "3eeb69f60601be4dbfa7a2234a825f7780565e4f",
+      "source_mode": "100644",
+      "source_path": "finco_yield/schema.py",
+      "target_path": "finco_yield/schema.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 13448,
+      "category": "YIELD_CORE",
+      "sha256": "77c4c3ebad605e2dc033e0112da71ecb93c4fe3f8362f00500024c9beb878c0a",
+      "source_git_blob": "bf36cc044de7c7dbd2ca8ed4c21ba427ccfeb1a3",
+      "source_mode": "100644",
+      "source_path": "finco_yield/snapshot.py",
+      "target_path": "finco_yield/snapshot.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7561,
+      "category": "YIELD_CORE",
+      "sha256": "1d27c3d0dff33d1049d3f78dc55796a8f32b611bff967e369f5b4cdbfcfb72ff",
+      "source_git_blob": "f3f57360f13958c427dc179db42940e728379501",
+      "source_mode": "100644",
+      "source_path": "finco_yield/treasury.py",
+      "target_path": "finco_yield/treasury.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 4172,
+      "category": "YIELD_CORE",
+      "sha256": "87b277460d07ef0016df6a9118999e932da44c32dcd9db6cea6d8fd4d188da3b",
+      "source_git_blob": "1e03bf9fadbb19f9ff63aa4f46017a3bcb8e7128",
+      "source_mode": "100644",
+      "source_path": "finco_yield/underwriting.py",
+      "target_path": "finco_yield/underwriting.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 1523,
+      "category": "YIELD_CORE",
+      "sha256": "65feabdc16f7f9af840c2afe12a26e44df09ae8f2c6ed551fc07e1afb8d81de1",
+      "source_git_blob": "34f22e998e02f08beaab3a164b3ceea5566ee4b6",
+      "source_mode": "100644",
+      "source_path": "finco_yield/verify.py",
+      "target_path": "finco_yield/verify.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 8015,
+      "category": "YIELD_CORE",
+      "sha256": "c2dff7fc24bbc72c3b83464d8b1a9ec1e46e744c69421b0219a6b4b883f4d316",
+      "source_git_blob": "ed5453bc500014922a8d5d2795badb389195fbb8",
+      "source_mode": "100644",
+      "source_path": "finco_yield/watchlist.py",
+      "target_path": "finco_yield/watchlist.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 47531,
+      "category": "YIELD_CORE",
+      "sha256": "a57150d5f1d303bac258e237246310dc28367fb6de30b80d89b5758984b60b6e",
+      "source_git_blob": "40b7600ccb4864389943f8ebbca3e220959382c7",
+      "source_mode": "100644",
+      "source_path": "finco_yield/web.py",
+      "target_path": "finco_yield/web.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 8014,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "e18c832165c5010613aeccce913147b99cd70670d3f35d68f4fa43731b2c4212",
+      "source_git_blob": "a6ab069e3ad075cd75c569d9be0284ec833f9a2d",
+      "source_mode": "100644",
+      "source_path": "deploy/r_live_collector_v1/README.md",
+      "target_path": "deploy/r_live_collector_v1/README.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 899,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "a433e8c7f10b50c6958f70c6c6f5ad5dd0e05526f486ff5e3c8e46ab4ab43a48",
+      "source_git_blob": "6f076eb3b902b7ad6fc3d9fe3c21f6d54ce09889",
+      "source_mode": "100644",
+      "source_path": "deploy/r_live_collector_v1/finco-r-live-collector.service",
+      "target_path": "deploy/r_live_collector_v1/finco-r-live-collector.service"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 350,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "44bff0a9179cb1e11bb6b282df0b9a5a5bdb334efc60b72b2585577f7049b1a6",
+      "source_git_blob": "29adbef4268fc7ac13e4b65f721b26e0b56629d2",
+      "source_mode": "100644",
+      "source_path": "deploy/r_live_collector_v1/finco-r-live-collector.timer",
+      "target_path": "deploy/r_live_collector_v1/finco-r-live-collector.timer"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 620,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "089dab25d6a68a1e6e9ba136c5a52d0460c32b57ef4a66556b3db43421c700a3",
+      "source_git_blob": "50d25b8d5c8bd231a53f9637c763503e875dcc4e",
+      "source_mode": "100644",
+      "source_path": "deploy/r_live_collector_v1/r-live-collector.env.example",
+      "target_path": "deploy/r_live_collector_v1/r-live-collector.env.example"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 3256,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "6f783d0c0a682010827d0ce535fa4bc195ff340bbce543af3a06212b2c4cd5d3",
+      "source_git_blob": "f5073fe7eadfb7cac4e8d79f30309eb975be1613",
+      "source_mode": "100644",
+      "source_path": "deploy/r_live_collector_v1/staging/README.md",
+      "target_path": "deploy/r_live_collector_v1/staging/README.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 913,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "4b29deda3218f6d789e57399a6a911b01ddd35c37a1cb1a38e8fee1bc7f465e5",
+      "source_git_blob": "d4b1b4f643125568a60a29ce39755bc3603d3abb",
+      "source_mode": "100644",
+      "source_path": "deploy/r_live_collector_v1/staging/finco-staging-r-live-collector.service",
+      "target_path": "deploy/r_live_collector_v1/staging/finco-staging-r-live-collector.service"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 374,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "aace119643598e14bc10b0e3727dd93e030ad2f09f86e544c7ddbd71d8a651c6",
+      "source_git_blob": "65f8a9ecbd90caa1736ccf8f0752185c22b8f994",
+      "source_mode": "100644",
+      "source_path": "deploy/r_live_collector_v1/staging/finco-staging-r-live-collector.timer",
+      "target_path": "deploy/r_live_collector_v1/staging/finco-staging-r-live-collector.timer"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 512,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "123290995040531921e2e336257c01ac0d7fbc3e54f10430f477cf7e8091d067",
+      "source_git_blob": "83b19b1945c3e04a81d6fa7d1223f2dddae7bbcb",
+      "source_mode": "100644",
+      "source_path": "deploy/r_live_collector_v1/staging/r-live-collector.staging.env.example",
+      "target_path": "deploy/r_live_collector_v1/staging/r-live-collector.staging.env.example"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 2440,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "aa0b8e59df6b8741be0dfe4ed49108badc87fbfe1ee4e498c6ac69834881f289",
+      "source_git_blob": "79d68ad95063c7f72faae7a694645baa2ba48873",
+      "source_mode": "100644",
+      "source_path": "deploy/tokenized_market_collector_v1/README.md",
+      "target_path": "deploy/tokenized_market_collector_v1/README.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 1008,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "e64897fe53957353ac07703460a9346414ffb768122e57371d56d78d6191ad4a",
+      "source_git_blob": "b2c9807ee4318052eeab37d6e8362af143ac59f7",
+      "source_mode": "100644",
+      "source_path": "deploy/tokenized_market_collector_v1/finco-tokenized-market-collector.service",
+      "target_path": "deploy/tokenized_market_collector_v1/finco-tokenized-market-collector.service"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 371,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "7dcbf7f542585211bfec161ca71aa0e8c74dbca6b1cfc94c6a1063ea2c8aa422",
+      "source_git_blob": "b9840043cc784e51a25294e6706bdf64523349b1",
+      "source_mode": "100644",
+      "source_path": "deploy/tokenized_market_collector_v1/finco-tokenized-market-collector.timer",
+      "target_path": "deploy/tokenized_market_collector_v1/finco-tokenized-market-collector.timer"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 466,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "f1624a2eb0e4a35cc6f13a822c732e09611732e4b76ea17527c4711a31051495",
+      "source_git_blob": "cd64872e027c49c476fd772cb236da8bd0f58206",
+      "source_mode": "100644",
+      "source_path": "deploy/tokenized_market_collector_v1/staging/README.md",
+      "target_path": "deploy/tokenized_market_collector_v1/staging/README.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 982,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "3fef7832b9e870c528a7fe7b984cf4f5e3ac783d93b2ce598247f4b5e6daa8ea",
+      "source_git_blob": "f1a832403003ee2e07c15f4e4afe892626b09a59",
+      "source_mode": "100644",
+      "source_path": "deploy/tokenized_market_collector_v1/staging/finco-staging-tokenized-market-collector.service",
+      "target_path": "deploy/tokenized_market_collector_v1/staging/finco-staging-tokenized-market-collector.service"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 395,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "89f6571e43414148c598984e1e1c53b0cfdaff6275a643d04d4a3a09b19638e1",
+      "source_git_blob": "29241e4c235458adc812b764922cccf92be9af72",
+      "source_mode": "100644",
+      "source_path": "deploy/tokenized_market_collector_v1/staging/finco-staging-tokenized-market-collector.timer",
+      "target_path": "deploy/tokenized_market_collector_v1/staging/finco-staging-tokenized-market-collector.timer"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 485,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "4dca7afdef6682b4a0e2c6d0b11eee348e7ba86841004ca16a7b65c580e1ba13",
+      "source_git_blob": "e53ef7a965c7ee62ea10d0daba68780dcab90db6",
+      "source_mode": "100644",
+      "source_path": "deploy/tokenized_market_collector_v1/staging/tokenized-market-collector.staging.env.example",
+      "target_path": "deploy/tokenized_market_collector_v1/staging/tokenized-market-collector.staging.env.example"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 803,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "fa584168aedfeceeefceffb679c787ac529aeef6b1ea79cf8c9238dd66f61478",
+      "source_git_blob": "b2b6bfc412d9c1cf665957bc2e39c57eab3a4ccd",
+      "source_mode": "100644",
+      "source_path": "deploy/tokenized_market_collector_v1/tokenized-market-collector.env.example",
+      "target_path": "deploy/tokenized_market_collector_v1/tokenized-market-collector.env.example"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 2863,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "233ebad578d1727b37517dc6d8d421d4861ecf736f470037435718a4fffa2b14",
+      "source_git_blob": "c0b6f39f7a6b4bcc1f4c1ab9ac47b582f6720c90",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_collector_v1/README.md",
+      "target_path": "deploy/yield_collector_v1/README.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 1102,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "32e01d92a419a4777d1fbe68cc230f4520e235134b519191a97194fef5da3fb4",
+      "source_git_blob": "9912c20b536b7e260532c7d63560501b66b06ee3",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_collector_v1/finco-yield-collector.service",
+      "target_path": "deploy/yield_collector_v1/finco-yield-collector.service"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 341,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "f0d304306e37fe81473cc61e949ab401120ade49208508601ca139cf25380292",
+      "source_git_blob": "c128afb20aaebdf9360c3a8c26469a4a677aa366",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_collector_v1/finco-yield-collector.timer",
+      "target_path": "deploy/yield_collector_v1/finco-yield-collector.timer"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 948,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "f412aeab0eceb8f6866837902fbc26ebdce6e603126b0e0b39a2b80fa8467da3",
+      "source_git_blob": "0cd80bd5d08e555b75ea74104cbb36ef0b153b9b",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_collector_v1/staging/finco-staging-yield-collector.service",
+      "target_path": "deploy/yield_collector_v1/staging/finco-staging-yield-collector.service"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 357,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "f1600596ae819bcecafcee9fb4d32de9746726f5d52b45fed38031e62604b57e",
+      "source_git_blob": "f648121927e5628f11d7ce438ed61662ca38115f",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_collector_v1/staging/finco-staging-yield-collector.timer",
+      "target_path": "deploy/yield_collector_v1/staging/finco-staging-yield-collector.timer"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 352,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "f09a494094001d7fd07f527b2b699cd64f2d9be36802d5cf594f6c1f1e54dc12",
+      "source_git_blob": "d4042ce766607015633feccf599c1170dd5e3365",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_collector_v1/staging/yield-collector.staging.env.example",
+      "target_path": "deploy/yield_collector_v1/staging/yield-collector.staging.env.example"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 916,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "8a85c869aee803957d4a2686f52baa002111b34f60512a50ff3d14718cc3e3f3",
+      "source_git_blob": "787cf32c4052932ad3460838913a93acc6177a65",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_collector_v1/yield-collector.env.example",
+      "target_path": "deploy/yield_collector_v1/yield-collector.env.example"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 2977,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "9eea9952f11f26e2d6d26108e47e3a6d01fe8a0f1ba73e9a0f2e7c91445dbdf9",
+      "source_git_blob": "7fc9e978aaac44b9101023fa679032d368625770",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_alert_automation_v1/README.md",
+      "target_path": "deploy/yield_alert_automation_v1/README.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 1134,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "b3d27504e009c829f2ad72bb45294cc493677a7576b34710cdae98dc0d65310d",
+      "source_git_blob": "73f61bac3c1b0d3860fb8632320206f2631c3842",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_alert_automation_v1/finco-yield-alert-evaluator.service",
+      "target_path": "deploy/yield_alert_automation_v1/finco-yield-alert-evaluator.service"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 469,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "ddc62117d32029a7fceb6fa955186706213d3c2179dac5bdd5361076acd8864a",
+      "source_git_blob": "5e5401f26030fb033d95d22a9c84e4f1fe49cb37",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_alert_automation_v1/finco-yield-alert-evaluator.timer",
+      "target_path": "deploy/yield_alert_automation_v1/finco-yield-alert-evaluator.timer"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 985,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "0403eb3b04e71f2d0dceed599522f81b528180db6a197620c2a6c4f1f7f16630",
+      "source_git_blob": "3489771206c34851421e2118efc9ded22764fa50",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_alert_automation_v1/staging/finco-staging-yield-alert-evaluator.service",
+      "target_path": "deploy/yield_alert_automation_v1/staging/finco-staging-yield-alert-evaluator.service"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 399,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "49ab0b6517cf8879fdab3c0888889f615183663afb106623baf59c116b387c3a",
+      "source_git_blob": "8d3168611f3423bb5f187857251daf94e783041e",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_alert_automation_v1/staging/finco-staging-yield-alert-evaluator.timer",
+      "target_path": "deploy/yield_alert_automation_v1/staging/finco-staging-yield-alert-evaluator.timer"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 341,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "1138d1dfe6bbf2feb3951170ab6db723716ec6a5b4bfb832a5cf43a58e58f6cf",
+      "source_git_blob": "ddc837a670e7e2ea0e22c543e668892e2e5fdeac",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_alert_automation_v1/staging/yield-alert-evaluator.staging.env.example",
+      "target_path": "deploy/yield_alert_automation_v1/staging/yield-alert-evaluator.staging.env.example"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 787,
+      "category": "DEPLOY_COLLECTOR",
+      "sha256": "ef257faac55b749f0cb7816317f6ed412000a30e1c20eae1f64f06c9b884ad31",
+      "source_git_blob": "90ad3981dbb5db7b6612d11d65b6787b404a6cc6",
+      "source_mode": "100644",
+      "source_path": "deploy/yield_alert_automation_v1/yield-alert-evaluator.env.example",
+      "target_path": "deploy/yield_alert_automation_v1/yield-alert-evaluator.env.example"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 5378,
+      "category": "RADAR_DOCS",
+      "sha256": "8ac47f107c6c480efccf267a0b3a27c3296ff158bb96f1edbaa3fba85f9bea08",
+      "source_git_blob": "e5dd2874ed1e264ba3909917256db15e2e1b51ae",
+      "source_mode": "100644",
+      "source_path": "docs/radar/R3_DEEPSTATE_HISTORICAL_COMPOSITION_V1.md",
+      "target_path": "docs/radar/R3_DEEPSTATE_HISTORICAL_COMPOSITION_V1.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 4938,
+      "category": "RADAR_DOCS",
+      "sha256": "be91d5b4f1aa3183b166a0af1d785872e41bf787703f578ec6d9005b4a3acd2e",
+      "source_git_blob": "d5f21f23b75e66433ca649548dbb9fabd4581cc0",
+      "source_mode": "100644",
+      "source_path": "docs/radar/R4_TOKENIZED_MONITOR_V2.md",
+      "target_path": "docs/radar/R4_TOKENIZED_MONITOR_V2.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 9668,
+      "category": "RADAR_DOCS",
+      "sha256": "228e1207a97ee3725b055bbad245c2249aade8983bf078358f8ea84c0b63ebe8",
+      "source_git_blob": "7585c1a7d4f2b22472ee3e1094974bb1b7d60dc9",
+      "source_mode": "100644",
+      "source_path": "docs/radar/R5_TOKENIZED_SIGNAL_LIFECYCLE_V1.md",
+      "target_path": "docs/radar/R5_TOKENIZED_SIGNAL_LIFECYCLE_V1.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 6552,
+      "category": "RADAR_DOCS",
+      "sha256": "af2f02bdeaef3073a5e708fb8214e6d8aab6bee689bc704e43de2e02b22e1645",
+      "source_git_blob": "5d67cd4249a585197969420a6d91b3edbc661be0",
+      "source_mode": "100644",
+      "source_path": "docs/radar/R6_TOKENIZED_SIGNAL_FEED_V1.md",
+      "target_path": "docs/radar/R6_TOKENIZED_SIGNAL_FEED_V1.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7583,
+      "category": "RADAR_DOCS",
+      "sha256": "99f9140000739cccbf4ade6314c196e5532bb9a7ef63733e652b633b4aacd5f9",
+      "source_git_blob": "18663d629a18f7a707081f054e2bd3b26120365d",
+      "source_mode": "100644",
+      "source_path": "docs/radar/RADAR_V1_EVIDENCE_AND_PERFORMANCE_BASELINE.md",
+      "target_path": "docs/radar/RADAR_V1_EVIDENCE_AND_PERFORMANCE_BASELINE.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7920,
+      "category": "RADAR_DOCS",
+      "sha256": "cc18b9a2cc8ffc985ce9e8e38b647060c57f8c5b8a32ad06c139b5af31a7ad44",
+      "source_git_blob": "24c9ab3710ef7c20db14e011cde2deab0d624a81",
+      "source_mode": "100644",
+      "source_path": "docs/radar/RADAR_V1_FINAL_ACCEPTANCE_MATRIX.md",
+      "target_path": "docs/radar/RADAR_V1_FINAL_ACCEPTANCE_MATRIX.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 4601,
+      "category": "RADAR_DOCS",
+      "sha256": "bb710bcaa6304a1dba4c83c4fbd606475f5f3c7d0f19e541bd7d20d034409b4b",
+      "source_git_blob": "a9769e1be37614616aac69a24137cd8ec6b625cc",
+      "source_mode": "100644",
+      "source_path": "docs/radar/RADAR_V1_RELEASE_LIMITATIONS.md",
+      "target_path": "docs/radar/RADAR_V1_RELEASE_LIMITATIONS.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 179,
+      "category": "RADAR_DOCS",
+      "sha256": "80575b7b2082109d7308a593c903d88559182dd928cda734800a240395215168",
+      "source_git_blob": "e8ce66027ff7ed9876b63e10c3fa8972a027e9e3",
+      "source_mode": "100644",
+      "source_path": "docs/radar/README.md",
+      "target_path": "docs/radar/README.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7014,
+      "category": "RADAR_DOCS",
+      "sha256": "0769495afbffd415430e001b672662ae100585610912f2942450a87d698c6287",
+      "source_git_blob": "7d6460332ad941c10b4bbc5c613c9e8258ea21a2",
+      "source_mode": "100644",
+      "source_path": "docs/radar/post_r12_acquisition_runtime.md",
+      "target_path": "docs/radar/post_r12_acquisition_runtime.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 4373,
+      "category": "RADAR_DOCS",
+      "sha256": "44f060b6435e92763a7908298262279c04b13a18585d28aee0c05080ac075d16",
+      "source_git_blob": "b7ef1b85993a8c2d88f145be83444e8daebcd3ad",
+      "source_mode": "100644",
+      "source_path": "docs/radar/post_r12_p2_v1_ui.md",
+      "target_path": "docs/radar/post_r12_p2_v1_ui.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 4280,
+      "category": "RADAR_DOCS",
+      "sha256": "0134a4773f424d96438e872137f9c75e42d72aa2fc5d3cce19786f7bf3534b1c",
+      "source_git_blob": "484c0022acb2ac74458b0a59c557c16ba0469134",
+      "source_mode": "100644",
+      "source_path": "docs/radar/post_r12_p3_settlement_quote_context.md",
+      "target_path": "docs/radar/post_r12_p3_settlement_quote_context.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7534,
+      "category": "RADAR_DOCS",
+      "sha256": "4044c025a0f5525df2f060c42a6e900cbff37ee0ed94ff0a92464fb65ae93cf7",
+      "source_git_blob": "3294864cb6f7baa610ee7cbcc001cfe36adc4d08",
+      "source_mode": "100644",
+      "source_path": "docs/radar/post_r12_runtime_reliability.md",
+      "target_path": "docs/radar/post_r12_runtime_reliability.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 5668,
+      "category": "RADAR_DOCS",
+      "sha256": "4b32336aa117d9fdacdac1ea0af8229ca338b4b1d77cda2945f9164bc0b2c976",
+      "source_git_blob": "7d7417b6565b613ee6104e6f7f9b50f42ebe65b4",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r0_execution_quote_authority.md",
+      "target_path": "docs/radar/r0_execution_quote_authority.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 14644,
+      "category": "RADAR_DOCS",
+      "sha256": "cdf52d3b46480c8b3c38eba60a5c01f35711286f14b793a407ec70b5c9b0b9b2",
+      "source_git_blob": "6e2e99e369f419f30be49436b2bc3c8e66579063",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r10_model_radar.md",
+      "target_path": "docs/radar/r10_model_radar.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 10678,
+      "category": "RADAR_DOCS",
+      "sha256": "e124a0020ee80dfb114a137bf5026327180d52e762c2f6c2eab07239b09516ba",
+      "source_git_blob": "aa24acb81a1c9989d00d9d549f59b9940f4a8d7d",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r11_verification.md",
+      "target_path": "docs/radar/r11_verification.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7237,
+      "category": "RADAR_DOCS",
+      "sha256": "933a31805b24fbac429674a819c3f02ec7b13b1bcebd34583ee500af7d8a777e",
+      "source_git_blob": "f120a69ba823d4697214f217d211371fa4040822",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r12_digital_twin.md",
+      "target_path": "docs/radar/r12_digital_twin.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 4224,
+      "category": "RADAR_DOCS",
+      "sha256": "aaaa1a9c897a56b3fbebd83cd8eb9a86e01e2aa2a7a468fc91f94e7d62fcd961",
+      "source_git_blob": "294aae61679a54c635fed4378b778987cb3136a6",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r1_canonical_asset_registry.md",
+      "target_path": "docs/radar/r1_canonical_asset_registry.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 10803,
+      "category": "RADAR_DOCS",
+      "sha256": "8ec5e7ad2a6d376f146a9074b5ba0a77d5e2ba4ffae5bc51b357242a068eedf2",
+      "source_git_blob": "0ba3711ac8459376ce8ac76c492d9e8d09cb1a91",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r2_finco_gap.md",
+      "target_path": "docs/radar/r2_finco_gap.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 10421,
+      "category": "RADAR_DOCS",
+      "sha256": "acdc37afd2039a53e58807c20f807722090d543356e21fd75ac85f69df228718",
+      "source_git_blob": "4a3a6430cba32677f3afbff44cb6050f4cc35c4a",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r3_finco_liquidity.md",
+      "target_path": "docs/radar/r3_finco_liquidity.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 10528,
+      "category": "RADAR_DOCS",
+      "sha256": "fa4cdbf18f2abd35392d78e89343dc622d6dca00cfd1fd441cd22041eb5205c2",
+      "source_git_blob": "9d3a2cc20adedb8b9bcf5e128e197f55ff78e86f",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r4_reference_state.md",
+      "target_path": "docs/radar/r4_reference_state.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 4375,
+      "category": "RADAR_DOCS",
+      "sha256": "f8cf8294ffb35d306eec3cb007266a12482a8ac18f87f96369d22539efdb7d9a",
+      "source_git_blob": "2515a9bc5006d9aee663823bff539ffb0c5d72e6",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r5_signals_history.md",
+      "target_path": "docs/radar/r5_signals_history.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 4097,
+      "category": "RADAR_DOCS",
+      "sha256": "9c968295f2ba42e0d041e3b236e85ed8e84c8b3cd703fbeffafce528d54b06ed",
+      "source_git_blob": "5930d61459fbb5ffc6c977d5bb936c23a36ff097",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r6_terminal.md",
+      "target_path": "docs/radar/r6_terminal.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 14415,
+      "category": "RADAR_DOCS",
+      "sha256": "ae6fecf5a1f78955971aa78ec688b83c476e052f3d7cbd0056e40cfcb033bd7a",
+      "source_git_blob": "c2fbfb21d767c9c249efc60cbc625540c58fe998",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r7_cross_market.md",
+      "target_path": "docs/radar/r7_cross_market.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 9680,
+      "category": "RADAR_DOCS",
+      "sha256": "7afa6ba76c8b91b03f9af883876b7ea35c1fafa2fb98567a9ae17d90e7357a71",
+      "source_git_blob": "b7bae326b31facc53dbf71a5ac1bbe939d32ed15",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r8_execution_simulator.md",
+      "target_path": "docs/radar/r8_execution_simulator.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7161,
+      "category": "RADAR_DOCS",
+      "sha256": "85952c0a973b0bb7dbcab560ec5e2a94d12532a04fa153f0993fa2201e33d7d9",
+      "source_git_blob": "36226f94d04c97097304621023f2f319de3878cf",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r9_asset_graph.md",
+      "target_path": "docs/radar/r9_asset_graph.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 8893,
+      "category": "RADAR_DOCS",
+      "sha256": "3f924ad356fbfc9775aa8fedd072f264bfd90305cad10fe2fd52903fcae328c4",
+      "source_git_blob": "36173c79ad1f340ec8dfd9d0257d57368712ba20",
+      "source_mode": "100644",
+      "source_path": "docs/radar/r_live_v2_admission.md",
+      "target_path": "docs/radar/r_live_v2_admission.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 3441,
+      "category": "RADAR_DOCS",
+      "sha256": "0f09c1904f700c3aca54532f0a7dead138685bfedc6fd74b90b06c8a458548df",
+      "source_git_blob": "91e081f8497b484c0b6a10e4ff98bb0e7fa7b0e5",
+      "source_mode": "100644",
+      "source_path": "docs/radar/rwa_basis_v1.md",
+      "target_path": "docs/radar/rwa_basis_v1.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 4735,
+      "category": "RADAR_DOCS",
+      "sha256": "b83e2631d08dcd929be0c868366fd54327d3bcd4d043f664fe3862dddcddbfec",
+      "source_git_blob": "88d382cd1c4c25619ff10389fc34a09b956d507d",
+      "source_mode": "100644",
+      "source_path": "docs/radar/stock_token_oracle_candidate_verification_2026-10-04.json",
+      "target_path": "docs/radar/stock_token_oracle_candidate_verification_2026-10-04.json"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 3243,
+      "category": "LICENSE_ATTRIBUTION",
+      "sha256": "72b2dbda8452df41da513175babbfb7c04e7712795987c60bbf6e74b86ff2140",
+      "source_git_blob": "03be3b85672e048a4093a2933d03db4923d1fa78",
+      "source_mode": "100644",
+      "source_path": "THIRD_PARTY_NOTICES.md",
+      "target_path": "THIRD_PARTY_NOTICES.md"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 407,
+      "category": "SHARED_CONTRACT_ENVELOPE",
+      "sha256": "0069f6ecafab173a2f61c93e098bb63b45646e75675a06115fd415ee557f2883",
+      "source_git_blob": "c568ad5189efe390092dab521eed96fc8c8e2ccb",
+      "source_mode": "100644",
+      "source_path": "finco_protocol/__init__.py",
+      "target_path": "packages/finco-evidence-envelope/finco_protocol/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 494,
+      "category": "SHARED_CONTRACT_ENVELOPE",
+      "sha256": "e86b25b3eef3120428fabcdbf1e87a45f2a9da941a1cba89d2957345b85bb496",
+      "source_git_blob": "4acd127006894876a7c179685bb197c434a545bd",
+      "source_mode": "100644",
+      "source_path": "finco_protocol/verification/__init__.py",
+      "target_path": "packages/finco-evidence-envelope/finco_protocol/verification/__init__.py"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 7049,
+      "category": "SHARED_CONTRACT_ENVELOPE",
+      "sha256": "726527df15c74d6b24cf6a1321e28e44b9fbfd6368b27925ec4e567530efbc24",
+      "source_git_blob": "4d9560f9d874271860757dde7a9f04aa4837d475",
+      "source_mode": "100644",
+      "source_path": "finco_protocol/verification/envelope.py",
+      "target_path": "packages/finco-evidence-envelope/finco_protocol/verification/envelope.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 14081,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "de643aeb6ddc367d3bd183440f4239bf03ffc6315eaba739cae435cd6034255e",
+      "source_git_blob": "817888557baf8e34a420b26e2a334d759378beff",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r0_correction_b.py",
+      "target_path": "tests/test_radar_r0_correction_b.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 8684,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "a78674639ffb9a7fef241589da8e26de31dd89232d90ee23c9c1cd6211808fa2",
+      "source_git_blob": "124da4ccbbfa37694da9a32f1bb8509815b28972",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r0_exact_input_binding.py",
+      "target_path": "tests/test_radar_r0_exact_input_binding.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 8914,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "9a8f8f1200831e748cbf17db8058101d64276a1bb7b3ea04bb9ead262b55586d",
+      "source_git_blob": "2532d4afd03dcebf6ee19594b646a7de5f2d904e",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r0_quotes.py",
+      "target_path": "tests/test_radar_r0_quotes.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 124464,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "4f88533161757c03d71317caa3efc7c0acb56d6805242aabc31fc72045cb3e3a",
+      "source_git_blob": "2e3c2ff53fb72560b3f39cfca7073b74b15f3b81",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r10_model_radar.py",
+      "target_path": "tests/test_radar_r10_model_radar.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 97600,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "2272b2332ed10c64f71cda613acaa4fe298747adffb36b5a2b94ac77bf424578",
+      "source_git_blob": "ee02ca393d17561377a6c3d3cb109b89f7f817f4",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r11_verification.py",
+      "target_path": "tests/test_radar_r11_verification.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 21102,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "24a077ed83c83918caed826fc094c0d8839911369cdff71a8484ac737021c250",
+      "source_git_blob": "199aae66631fcc8ed8caef9826aa818825325657",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r12_digital_twin.py",
+      "target_path": "tests/test_radar_r12_digital_twin.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 11528,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "77ffb4d8654bda28074d9cbf58da60a55cbb0d03f861b7a6b1e15442c07aac6b",
+      "source_git_blob": "105f730e5c95e22cafdfc4de228babdd4bab51fe",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r1_registry.py",
+      "target_path": "tests/test_radar_r1_registry.py"
+    },
+    {
+      "adaptation_note": "M2-A candidate-local _repo_doc locator (preserves all assertions & node IDs)",
+      "byte_identical": false,
+      "bytes": 54646,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "8ce86549baa833e1b1fde2d621fa739737f9ad404c22270d3d9f2b743da0b03f",
+      "source_git_blob": "92685a26d172e7bf9e2958f8ce8e9e04a4c23664",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r2_gap.py",
+      "target_path": "tests/test_radar_r2_gap.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 46725,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "15112dd5e46cb060227e9917f70193f1b49a52d633f71ecf38f7d76afeb50c6e",
+      "source_git_blob": "2a5fc5cd32fcd551d0d68ff190129b9e75fe8ab3",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r3_liquidity.py",
+      "target_path": "tests/test_radar_r3_liquidity.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 35801,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "7e312cd60df793e3bbdbfac306fc715c85efa1fa65b0ffe127034fd33cc9b9e7",
+      "source_git_blob": "8f4673b7435f6d93096ffff48f783ce50976e966",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r4_reference_state.py",
+      "target_path": "tests/test_radar_r4_reference_state.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 12889,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "e8046fa9a1ed050fced300e12a7a869994205f5e971c07ddc3bf8550d058cdc3",
+      "source_git_blob": "bd19cc0c3a1b75d18464506b3bb1c4b3f775d663",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r5_signals_history.py",
+      "target_path": "tests/test_radar_r5_signals_history.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 16208,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "d6c292bd80bb570293b4cc84ae76095e62ada78d49834157431c53441291de96",
+      "source_git_blob": "f8fc6e3a97e987c45c3873c4181ab444ac98ec4d",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r6_terminal.py",
+      "target_path": "tests/test_radar_r6_terminal.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 63956,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "62d6606cb547ba50d627252012f5f9ac11012fac40e7e2b82e729cc75391d1a9",
+      "source_git_blob": "1cda4fb01b2609337cb4a63c559ca10b67b6394e",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r7_cross_market.py",
+      "target_path": "tests/test_radar_r7_cross_market.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 63837,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "122c6a4b7c662161ae4d9ce0de2cb18285c595784e8bd4b4e5a7d1b47cf36421",
+      "source_git_blob": "8b3cec792f0a18277c8783ebd4205cbdab816df4",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r8_execution_simulator.py",
+      "target_path": "tests/test_radar_r8_execution_simulator.py"
+    },
+    {
+      "adaptation_note": "",
+      "byte_identical": true,
+      "bytes": 52286,
+      "category": "FOCUSED_CORE_TEST",
+      "sha256": "1744ed8d3278062a4c9c7029be7e7b9f73e0679e8152c6c7356714892269c212",
+      "source_git_blob": "ffeb7ab3e6e12c7257d1f8e07589b22f53f596b1",
+      "source_mode": "100644",
+      "source_path": "tests/test_radar_r9_asset_graph.py",
+      "target_path": "tests/test_radar_r9_asset_graph.py"
+    }
+  ],
+  "pr474_head": "7bcd3dd1dfaa180e7a57af5349de928b2d588258",
+  "schema": "FINCO_RADAR_PROVENANCE_V1",
+  "source_commit": "707e68b290694c57b470f4a112c190abb3d02ac9",
+  "source_repository": "https://github.com/Finco-Protocol/FincoProtocol",
+  "source_tree": "0d4e8961c33e7bab7aa94077ee4fe9b561061ba2"
+}
