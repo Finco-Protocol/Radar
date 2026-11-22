@@ -44,6 +44,7 @@ finco_yield = [
     "data/*.json",
 ]
 radar_service = [
+    "rwa/data/*.json",
     "templates/*.html",
     "templates/*/*.html",
     "templates/*/*/*.html",

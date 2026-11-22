@@ -8,11 +8,11 @@ After=network-online.target
 Type=oneshot
 User=finco-staging
 Group=finco-staging
-WorkingDirectory=/opt/finco_staging
-EnvironmentFile=/opt/finco_staging/.env.yield-collector
+WorkingDirectory=/opt/finco_radar_staging
+EnvironmentFile=/opt/finco_radar_staging/.env.yield-collector
 Environment=PYTHONDONTWRITEBYTECODE=1
 UMask=0027
-ExecStart=/usr/bin/flock -n -E 75 /opt/finco_staging/storage/yield/yield-collector.lock /opt/finco_staging/.venv/bin/python -m finco_yield.collect_live
+ExecStart=/usr/bin/flock -n -E 75 /opt/finco_radar_staging/storage/yield/yield-collector.lock /opt/finco_radar_staging/.venv/bin/python -m finco_yield.collect_live
 TimeoutStartSec=240
 SuccessExitStatus=3
 Restart=no
@@ -21,7 +21,7 @@ StandardError=journal
 SyslogIdentifier=finco-staging-yield-collector
 NoNewPrivileges=true
 ProtectSystem=strict
-ReadWritePaths=/opt/finco_staging/storage
+ReadWritePaths=/opt/finco_radar_staging/storage
 ProtectHome=true
 PrivateTmp=true
 

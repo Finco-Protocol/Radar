@@ -1,12 +1,13 @@
 """Canonical standalone entitlement, wallet-context, and CSRF adapter for FINCO Radar/Yield.
 
-Matches the exact FincoProtocol `app.protocol.entitlement_evaluator` contract:
-- Decision enum: ALLOW, INACTIVE, DENY (public resources return ALLOW with reason_code="PUBLIC_RESOURCE").
-- ResourceAccessDecision(resource, decision, reason_code, wallet_address, ...).
-- async evaluate_resource_access(resource, wallet_ctx) and async evaluate_all_resources(wallet_ctx).
-- Fail-closed on unavailable/malformed auth authority: returns Decision.DENY with
-  reason_code="ENTITLEMENT_AUTHORITY_UNAVAILABLE" — NEVER maps failure into INACTIVE or ALLOW.
-- Uses Radar's own FINCO_RADAR_CSRF_SECRET (never Model's FINCO_SECRET_KEY).
+Correction A security hardening:
+- Removes any invented 'holder:all' wildcard.
+- Never derives INACTIVE or ALLOW from a missing/incomplete/unavailable Model authority response:
+  when FINCO_MODEL_INTERNAL_AUTH_URL is configured and a protected resource lacks an authoritative
+  server-side decision, fails closed with Decision.DENY / ENTITLEMENT_AUTHORITY_UNAVAILABLE.
+- Preserves exact Decision enum (ALLOW, INACTIVE, DENY) and ResourceAccessDecision contract.
+- Fails closed in production (FINCO_ENV=production) if FINCO_RADAR_CSRF_SECRET (<16 chars) is unset,
+  preventing multi-worker ephemeral CSRF secret drift.
 """
 from __future__ import annotations
 
@@ -34,6 +35,7 @@ HOLDER_RESOURCES = frozenset({
     "yield.advanced_compare",
     "yield.alerts",
     "yield.execution_preflight",
+    "crypto.api",
     "crypto.tokenized.detail",
     "crypto.tokenized.history",
     "crypto.tokenized.signals",
@@ -71,6 +73,10 @@ class ResourceAccessDecision:
         return self.reason_code
 
 
+def _authority_configured() -> bool:
+    return bool(os.getenv("FINCO_MODEL_INTERNAL_AUTH_URL", "").strip())
+
+
 def _token_gating_active() -> bool:
     return os.getenv("FINCO_TOKEN_GATING_ACTIVE", "0").strip().lower() in ("1", "true", "yes", "on")
 
@@ -84,7 +90,13 @@ _EPHEMERAL_CSRF_SECRET = secrets.token_bytes(32)
 
 def _csrf_secret() -> bytes:
     raw = os.getenv("FINCO_RADAR_CSRF_SECRET", "").strip()
-    return raw.encode("utf-8") if raw else _EPHEMERAL_CSRF_SECRET
+    if raw:
+        if len(raw) < 16:
+            raise RuntimeError("FINCO_RADAR_CSRF_SECRET must be at least 16 characters")
+        return raw.encode("utf-8")
+    if os.getenv("FINCO_ENV", "").strip().lower() in ("prod", "production", "staging"):
+        raise RuntimeError("FINCO_RADAR_CSRF_SECRET must be explicitly configured in staging/production")
+    return _EPHEMERAL_CSRF_SECRET
 
 
 def generate_csrf_token(session_id: str = "") -> str:
@@ -203,6 +215,15 @@ def _evaluate_sync(resource: str, wallet: Optional[WalletContext] = None) -> Res
             authority_available=True,
         )
 
+    if resource not in HOLDER_RESOURCES:
+        return ResourceAccessDecision(
+            resource=resource,
+            decision=Decision.DENY,
+            reason_code="UNKNOWN_RESOURCE",
+            wallet_address=None,
+            authority_available=True,
+        )
+
     if wallet and wallet.authority_error:
         return ResourceAccessDecision(
             resource=resource,
@@ -212,9 +233,9 @@ def _evaluate_sync(resource: str, wallet: Optional[WalletContext] = None) -> Res
             authority_available=False,
         )
 
-    # Honor explicit server-side authority decision when present
-    if wallet and isinstance(wallet.entitlement_decisions, Mapping):
-        server_dec = wallet.entitlement_decisions.get(resource)
+    # Honor explicit authoritative server-side decision from Model host
+    if wallet and isinstance(wallet.entitlement_decisions, Mapping) and resource in wallet.entitlement_decisions:
+        server_dec = wallet.entitlement_decisions[resource]
         if isinstance(server_dec, Mapping):
             dec_raw = server_dec.get("decision")
             if dec_raw == "PUBLIC":
@@ -235,7 +256,26 @@ def _evaluate_sync(resource: str, wallet: Optional[WalletContext] = None) -> Res
                     feature_active=_token_gating_active(),
                     token_configured=_token_deployment_configured(),
                 )
+        # Malformed server decision entry -> fail closed
+        return ResourceAccessDecision(
+            resource=resource,
+            decision=Decision.DENY,
+            reason_code="ENTITLEMENT_AUTHORITY_UNAVAILABLE",
+            wallet_address=None,
+            authority_available=False,
+        )
 
+    # If Model authority is configured, missing per-resource decision MUST fail closed (never derive INACTIVE)
+    if _authority_configured():
+        return ResourceAccessDecision(
+            resource=resource,
+            decision=Decision.DENY,
+            reason_code="ENTITLEMENT_AUTHORITY_UNAVAILABLE",
+            wallet_address=wallet.wallet_address if wallet else None,
+            authority_available=False,
+        )
+
+    # Local offline/test fallback when Model authority is not configured
     feature_active = _token_gating_active()
     token_configured = _token_deployment_configured()
     addr = wallet.wallet_address if wallet else None
@@ -284,7 +324,7 @@ def _evaluate_sync(resource: str, wallet: Optional[WalletContext] = None) -> Res
             token_configured=True,
         )
 
-    if resource in wallet.entitlements or "holder:all" in wallet.entitlements:
+    if resource in wallet.entitlements:
         return ResourceAccessDecision(
             resource=resource,
             decision=Decision.ALLOW,

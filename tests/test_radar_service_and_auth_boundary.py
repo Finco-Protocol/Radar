@@ -249,5 +249,87 @@ def test_nginx_gateway_parity_and_systemd_collector_units() -> None:
 
     for svc in sorted((root / "deploy").rglob("*.service")):
         txt = svc.read_text(encoding="utf-8")
-        assert "/opt/finco_protocol" not in txt, f"Legacy venv path in {svc}"
+        assert "/opt/finco_protocol" not in txt, f"Legacy /opt/finco_protocol path in {svc}"
+        assert "/opt/finco_staging" not in txt, f"Legacy /opt/finco_staging path in {svc}"
         assert "app.radar_rwa" not in txt, f"Legacy module path in {svc}"
+
+
+def test_correction_a_security_oracle_and_collector_execution(monkeypatch, tmp_path) -> None:
+    import shutil
+    import subprocess
+    import radar_service
+
+    # 1. Both restored stock_token_oracle JSON files are packaged inside site-packages
+    data_dir = Path(radar_service.__file__).resolve().parent / "rwa" / "data"
+    assert (data_dir / "stock_token_oracle_feeds.json").is_file()
+    assert (data_dir / "stock_token_oracle_candidates.json").is_file()
+
+    # 2. Fail-closed when Model authority is configured but omits per-resource decision (NO local INACTIVE bypass)
+    monkeypatch.setenv("FINCO_MODEL_INTERNAL_AUTH_URL", "http://127.0.0.1:19999")
+    monkeypatch.setenv("FINCO_TOKEN_GATING_ACTIVE", "0")
+    dec_missing = asyncio.run(evaluate_resource_access("crypto.api", WalletContext(subject_id="u1")))
+    assert dec_missing.decision is Decision.DENY
+    assert dec_missing.reason_code == "ENTITLEMENT_AUTHORITY_UNAVAILABLE"
+    assert dec_missing.authority_available is False
+
+    # Unknown resource always DENY
+    dec_unk = asyncio.run(evaluate_resource_access("invented.resource", WalletContext(subject_id="u1")))
+    assert dec_unk.decision is Decision.DENY and dec_unk.reason_code == "UNKNOWN_RESOURCE"
+
+    # 3. Production CSRF secret must be explicitly configured (no silent ephemeral drift)
+    monkeypatch.setenv("FINCO_ENV", "production")
+    monkeypatch.delenv("FINCO_RADAR_CSRF_SECRET", raising=False)
+    with pytest.raises(RuntimeError):
+        generate_csrf_token("u-prod")
+    monkeypatch.setenv("FINCO_RADAR_CSRF_SECRET", "prod-csrf-secret-at-least-32-chars")
+    prod_tok = generate_csrf_token("u-prod")
+    assert validate_csrf_token("u-prod", prod_tok) is True
+    monkeypatch.delenv("FINCO_ENV", raising=False)
+
+    # 4. /crypto/alerts/refresh requires auth + valid CSRF; /api/v1/crypto/tokenized/{id}/signals & integrity enforce access
+    def _stub(session_cookie, demo_cookie):
+        if session_cookie == "ok-user":
+            return IntrospectedSession(
+                authenticated=True,
+                session_kind="user",
+                user_id="u-crypto",
+                tenant_id="u-crypto",
+                entitlements=("crypto.api",),
+                entitlement_decisions={
+                    "crypto.api": {"decision": "ALLOW", "reason": "HOLDER_ENTITLED"},
+                    "crypto.tokenized.detail": {"decision": "ALLOW", "reason": "HOLDER_ENTITLED"},
+                    "crypto.tokenized.signals": {"decision": "ALLOW", "reason": "HOLDER_ENTITLED"},
+                    "crypto.tokenized.history": {"decision": "ALLOW", "reason": "HOLDER_ENTITLED"},
+                },
+            )
+        return IntrospectedSession(authenticated=False)
+
+    app = create_radar_service_app(introspector=_stub)
+    client = TestClient(app)
+    assert client.post("/crypto/alerts/refresh").status_code == 401
+    client.cookies.set(COOKIE_NAME, "ok-user")
+    assert client.post("/crypto/alerts/refresh").status_code == 403  # missing CSRF
+    valid_csrf = generate_csrf_token("u-crypto")
+    assert client.post("/crypto/alerts/refresh", headers={"X-CSRF-Token": valid_csrf}).status_code == 200
+    assert client.get("/crypto/alerts.json").status_code == 200
+    r_tok = client.get("/api/v1/crypto/tokenized")
+    assert r_tok.status_code == 200
+    first_sym = r_tok.json()["items"][0]["underlying_symbol"]
+    assert client.get(f"/api/v1/crypto/tokenized/{first_sym}/signals").status_code == 200
+    assert client.get(f"/api/v1/crypto/tokenized/{first_sym}/integrity").status_code == 200
+    assert client.get(f"/api/v1/crypto/tokenized/{first_sym}/history").status_code == 200
+    assert client.get(f"/api/v1/crypto/tokenized/{first_sym}/dislocations").status_code == 200
+
+    # 5. Real flock -n -E 75 lock contention verification (prevents dual collector writers)
+    flock_bin = shutil.which("flock")
+    if flock_bin:
+        lock_file = tmp_path / "collector.lock"
+        holder = subprocess.Popen([flock_bin, str(lock_file), "sleep", "5"])
+        try:
+            import time
+            time.sleep(0.15)
+            contender = subprocess.run([flock_bin, "-n", "-E", "75", str(lock_file), "true"])
+            assert contender.returncode == 75
+        finally:
+            holder.terminate()
+            holder.wait(timeout=5)
