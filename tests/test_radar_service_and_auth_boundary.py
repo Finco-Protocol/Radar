@@ -342,14 +342,95 @@ def test_correction_a_security_oracle_and_collector_execution(monkeypatch, tmp_p
     r_assets = client.get("/api/v1/radar/assets")
     assert r_assets.status_code == 200 and r_assets.json()["count"] >= 1
 
-    # Persisted snapshot readiness: AVAILABLE vs CORRUPT (503)
-    snap_ok = tmp_path / "r_live_snap.json"
-    snap_ok.write_text('{"schema":"r_live.v1","assets":{}}', encoding="utf-8")
+    # Real populated VenueMarketStore -> nonempty tokenized detail, basis_bps dislocations, history, signals, and corrupt 503
+    from datetime import datetime, timezone
+    from decimal import Decimal
+    from finco_radar.venues.observations import FreshnessState, MarketObservation, ObservationStatus
+    from finco_radar.venues.store import VenueMarketStore
+
+    venue_db = tmp_path / "venues.db"
+    vstore = VenueMarketStore(venue_db)
+    now_iso = datetime.now(timezone.utc).isoformat()
+    vstore.append_observation(MarketObservation(
+        ts=now_iso,
+        collected_at=now_iso,
+        canonical_asset_id=first_sym,
+        venue_id="robinhood_reference",
+        instrument_id=f"{first_sym}-REF",
+        instrument_type="equity_reference",
+        price="200.00",
+        reference_price="200.00",
+        source="fixture_reference",
+        freshness_state=FreshnessState.AVAILABLE,
+        observation_status=ObservationStatus.OK,
+        payload={"symbol": first_sym},
+    ))
+    vstore.append_observation(MarketObservation(
+        ts=now_iso,
+        collected_at=now_iso,
+        canonical_asset_id=first_sym,
+        venue_id="xstocks_solana",
+        instrument_id=f"{first_sym}x",
+        instrument_type="tokenized_stock",
+        price="201.00",
+        reference_price="200.00",
+        basis_bps="50.00",
+        source="fixture_venue",
+        freshness_state=FreshnessState.AVAILABLE,
+        observation_status=ObservationStatus.OK,
+        payload={"symbol": first_sym},
+    ))
+    monkeypatch.setenv("FINCO_VENUE_DB_PATH", str(venue_db))
+
+    r_tok_pop = client.get("/api/v1/crypto/tokenized")
+    assert r_tok_pop.status_code == 200
+    assert r_tok_pop.json()["history_available"] is True
+    assert r_tok_pop.json()["observation_count"] == 2
+    assert r_tok_pop.json()["data_origin"] == "VENUE_STORE"
+
+    r_disloc = client.get(f"/api/v1/crypto/tokenized/{first_sym}/dislocations")
+    assert r_disloc.status_code == 200
+    assert r_disloc.json()["state"] == "AVAILABLE"
+    assert r_disloc.json()["dislocations"][0]["basis_bps"] == "50.00"
+
+    r_hist = client.get(f"/api/v1/crypto/tokenized/{first_sym}/history")
+    assert r_hist.status_code == 200 and r_hist.json()["history_available"] is True
+    assert len(r_hist.json()["points"]) >= 1
+
+    r_sig = client.get(f"/api/v1/crypto/tokenized/{first_sym}/signals")
+    assert r_sig.status_code == 200 and r_sig.json()["signals_active"] is True
+
+    # Corrupt venue DB -> 503 fail-closed (never silent empty list)
+    corrupt_vdb = tmp_path / "corrupt_venues.db"
+    corrupt_vdb.write_bytes(b"not a valid sqlite database file")
+    monkeypatch.setenv("FINCO_VENUE_DB_PATH", str(corrupt_vdb))
+    assert client.get("/api/v1/crypto/tokenized").status_code == 503
+    monkeypatch.delenv("FINCO_VENUE_DB_PATH", raising=False)
+
+    # Real canonical SQLite RLiveSnapshotStore -> LIVE_STORE_AVAILABLE vs corrupt -> 503
+    from radar_service.rwa.r_live_snapshot_store import RLiveSnapshotStore
+    rlive_db = tmp_path / "r_live_snapshots.db"
+    with RLiveSnapshotStore(path=str(rlive_db)) as rstore:
+        written = rstore.write_batch([
+            ("eip155:4663:0x0000000000000000000000000000000000000001", "AVAILABLE", {"symbol": "AAPL", "price_usd": "200.00"}),
+        ])
+        assert written == 1
     monkeypatch.delenv("FINCO_RADAR_OFFLINE_FIXTURE", raising=False)
-    monkeypatch.setenv("FINCO_RLIVE_SNAPSHOT_PATH", str(snap_ok))
-    assert client.get("/ready").json()["snapshot_mode"] == "LIVE_STORE_AVAILABLE"
-    snap_ok.write_text("{corrupt-json", encoding="utf-8")
+    monkeypatch.setenv("R_LIVE_SNAPSHOT_DB_PATH", str(rlive_db))
+    r_ready_live = client.get("/ready")
+    assert r_ready_live.status_code == 200
+    assert r_ready_live.json()["snapshot_mode"] == "LIVE_STORE_AVAILABLE"
+    assert r_ready_live.json()["persisted_snapshot_count"] == 1
+
+    corrupt_rlive = tmp_path / "corrupt_rlive.db"
+    corrupt_rlive.write_bytes(b"corrupt sqlite header")
+    monkeypatch.setenv("R_LIVE_SNAPSHOT_DB_PATH", str(corrupt_rlive))
     assert client.get("/ready").status_code == 503
+    monkeypatch.delenv("R_LIVE_SNAPSHOT_DB_PATH", raising=False)
+
+    # Verify unified /opt/finco_radar layout in finco-radar.service (no /opt/finco-radar mismatch)
+    main_svc = (Path(__file__).resolve().parents[1] / "deploy" / "systemd" / "finco-radar.service").read_text(encoding="utf-8")
+    assert "/opt/finco_radar" in main_svc and "/opt/finco-radar" not in main_svc
 
     # 5. Real flock -n -E 75 lock contention verification (prevents dual collector writers)
     flock_bin = shutil.which("flock")

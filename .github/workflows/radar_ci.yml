@@ -56,7 +56,7 @@ jobs:
       - name: Stage isolated test directory (zero executable source packages in CWD)
         run: |
           mkdir -p /tmp/radar-isolated-tests/finco_radar/terminal/static
-          cp -R tests docs deploy PROVENANCE_FROM_FINCOPROTOCOL.json PROVENANCE_ADAPTATIONS_V2.json PROVENANCE_CORRECTION_A_V3.json PROVENANCE_CORRECTION_B_V4.json pyproject.toml /tmp/radar-isolated-tests/
+          cp -R tests docs deploy PROVENANCE_FROM_FINCOPROTOCOL.json PROVENANCE_ADAPTATIONS_V2.json PROVENANCE_CORRECTION_A_V3.json PROVENANCE_CORRECTION_B_V4.json PROVENANCE_CORRECTION_C_V5.json pyproject.toml /tmp/radar-isolated-tests/
           cp finco_radar/terminal/static/radar_terminal.js /tmp/radar-isolated-tests/finco_radar/terminal/static/radar_terminal.js
       - name: Run full isolated Radar/Yield/Crypto/Service/Collector/Governance suite
         run: |

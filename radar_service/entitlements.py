@@ -265,8 +265,8 @@ def _evaluate_sync(resource: str, wallet: Optional[WalletContext] = None) -> Res
             authority_available=False,
         )
 
-    # If Model authority is configured, missing per-resource decision MUST fail closed (never derive INACTIVE)
-    if _authority_configured():
+    # If Model authority is configured OR running in staging/production, missing per-resource decision MUST fail closed
+    if _authority_configured() or os.getenv("FINCO_ENV", "").strip().lower() in ("prod", "production", "staging"):
         return ResourceAccessDecision(
             resource=resource,
             decision=Decision.DENY,

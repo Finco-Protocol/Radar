@@ -153,7 +153,12 @@ def create_radar_service_app(
 
     @app.get("/ready")
     def ready():
-        import json as _json
+        import sqlite3
+        from radar_service.rwa.r_live_snapshot_store import (
+            read_snapshots_readonly,
+            snapshot_exists_readonly,
+        )
+
         required_files = [
             TERMINAL_ROOT / "templates" / "radar_terminal.html",
             TERMINAL_ROOT / "static" / "radar_terminal.js",
@@ -171,24 +176,36 @@ def create_radar_service_app(
             os.getenv("FINCO_MODEL_INTERNAL_AUTH_URL", "").strip()
             and os.getenv("FINCO_INTERNAL_AUTH_INTROSPECT_TOKEN", "").strip()
         )
-        snap_path_raw = os.getenv("FINCO_RLIVE_SNAPSHOT_PATH", "").strip()
-        if _is_offline_fixture_mode():
+        is_prod = os.getenv("FINCO_ENV", "").strip().lower() in ("prod", "production", "staging")
+        r_live_db = os.getenv("R_LIVE_SNAPSHOT_DB_PATH", "").strip()
+        persisted_snapshot_count = 0
+
+        if _is_offline_fixture_mode() and not is_prod:
             snapshot_mode = "OFFLINE_FIXTURE"
-        elif snap_path_raw and Path(snap_path_raw).is_file():
+        elif r_live_db and Path(r_live_db).is_file():
             try:
-                parsed = _json.loads(Path(snap_path_raw).read_text(encoding="utf-8"))
-                if not isinstance(parsed, dict):
-                    raise ValueError("snapshot root must be JSON object")
-                snapshot_mode = "LIVE_STORE_AVAILABLE"
-            except Exception as exc:
+                conn = sqlite3.connect(f"file:{r_live_db}?mode=ro", uri=True)
+                try:
+                    conn.execute("SELECT name FROM sqlite_master LIMIT 1").fetchall()
+                finally:
+                    conn.close()
+                if not snapshot_exists_readonly(path=r_live_db):
+                    snapshot_mode = "LIVE_STORE_UNPOPULATED"
+                else:
+                    rows = read_snapshots_readonly(path=r_live_db)
+                    persisted_snapshot_count = len(rows)
+                    snapshot_mode = "LIVE_STORE_AVAILABLE" if persisted_snapshot_count > 0 else "LIVE_STORE_UNPOPULATED"
+            except (sqlite3.DatabaseError, ValueError) as exc:
                 raise HTTPException(status_code=503, detail=f"LIVE_STORE_CORRUPT: {exc}") from exc
         else:
             snapshot_mode = "LIVE_STORE_UNPOPULATED"
+
         return {
             "status": "ready",
             "service": "finco-radar",
             "envelope_schema": env_probe.schema,
             "yield_registry_count": yield_count,
+            "persisted_snapshot_count": persisted_snapshot_count,
             "auth_authority_configured": auth_configured,
             "snapshot_mode": snapshot_mode,
         }

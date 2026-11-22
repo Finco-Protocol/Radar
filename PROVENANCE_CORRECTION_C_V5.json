@@ -1,0 +1,65 @@
+{
+  "schema": "FINCO_RADAR_PROVENANCE_CORRECTION_C_V5",
+  "immutable_source_repo": "Finco-Protocol/FincoProtocol",
+  "immutable_source_commit": "707e68b290694c57b470f4a112c190abb3d02ac9",
+  "immutable_source_tree": "0d4e8961c33e7bab7aa94077ee4fe9b561061ba2",
+  "predecessor_pr1_commit": "ec07b6d3fb873a32552f921b8693feab21e28540",
+  "predecessor_pr1_tree": "8984ac42a8ae6cbdf6352f813354f81c637d0628",
+  "entry_count": 9,
+  "entries": [
+    {
+      "origin": "CORRECTION_C_RUNTIME_PARITY_AND_DEPLOY_UNIFICATION",
+      "target_path": ".github/workflows/radar_ci.yml",
+      "target_sha256": "859455d763df43bb3a6d74ec6277afe246ef39073f077ff5f713865d049dd2f2",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_C_RUNTIME_PARITY_AND_DEPLOY_UNIFICATION",
+      "target_path": "deploy/nginx/radar_gateway_candidate.conf",
+      "target_sha256": "c565132a2de360864ef3a163be29b26cd31db10d8944401d54127d8b267f8300",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_C_RUNTIME_PARITY_AND_DEPLOY_UNIFICATION",
+      "target_path": "deploy/radar.env.example",
+      "target_sha256": "762f7e91dee535c6cc0aeed92696963c1d4867843df5da2de3725f31aa5ffc33",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_C_RUNTIME_PARITY_AND_DEPLOY_UNIFICATION",
+      "target_path": "deploy/systemd/finco-radar.service",
+      "target_sha256": "95c901f6b0721f167452293eb4d2a34c5c23f98b94bd814b0005dc30711a55b7",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_C_RUNTIME_PARITY_AND_DEPLOY_UNIFICATION",
+      "target_path": "radar_service/app.py",
+      "target_sha256": "17ccebb6c47d40e36afa17d8004e4ac537a84549c2c9da20836a1a9684184cd1",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_C_RUNTIME_PARITY_AND_DEPLOY_UNIFICATION",
+      "target_path": "radar_service/entitlements.py",
+      "target_sha256": "3195e5bb5ab20b96b06957141525ba6f543b21e3f0690f5d23cb01bfb623142b",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_C_RUNTIME_PARITY_AND_DEPLOY_UNIFICATION",
+      "target_path": "radar_service/routers/crypto_public_router.py",
+      "target_sha256": "c0e65efae80c87a2fb99707f587d47e7df904dc17c7100dcd3e2f2ef1e0c11b1",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_C_RUNTIME_PARITY_AND_DEPLOY_UNIFICATION",
+      "target_path": "tests/test_exact_source_release_gate.py",
+      "target_sha256": "34f8beaef5cae668f67a06cadcfda2728c140a34a5a7cfbf85ef995990d78f68",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_C_RUNTIME_PARITY_AND_DEPLOY_UNIFICATION",
+      "target_path": "tests/test_radar_service_and_auth_boundary.py",
+      "target_sha256": "8e143747c5c2264f81df5885fff17706c6b6e5953bab311ec83160bd09904481",
+      "mode": "0o644"
+    }
+  ]
+}
