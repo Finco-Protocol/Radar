@@ -79,6 +79,33 @@ def test_provenance_and_adaptations_match_installed_wheels_with_zero_model_impor
             checked_adapted += 1
     assert checked_adapted >= 70
 
+    # 3b. Verify immutable V3 and successor V4 provenance ledgers
+    v3 = json.loads((root / "PROVENANCE_CORRECTION_A_V3.json").read_text(encoding="utf-8"))
+    assert v3["schema"] == "FINCO_RADAR_PROVENANCE_CORRECTION_A_V3"
+    assert v3["predecessor_pr1_commit"] == "07d6ec88bdd9737e3c4c79aad27bd12ed28875f8"
+    assert v3["entry_count"] == len(v3["entries"])
+
+    v4 = json.loads((root / "PROVENANCE_CORRECTION_B_V4.json").read_text(encoding="utf-8"))
+    assert v4["schema"] == "FINCO_RADAR_PROVENANCE_CORRECTION_B_V4"
+    assert v4["predecessor_pr1_commit"] == "83e8ea22bec5071456eeb0436d3ee67f9cd6aacb"
+    assert v4["entry_count"] == len(v4["entries"]) and v4["entry_count"] >= 10
+    for entry in v4["entries"]:
+        tp = entry["target_path"]
+        top = tp.split("/", 1)[0]
+        if top in pkg_roots:
+            target_file = pkg_roots[top] / Path(tp).relative_to(top)
+            assert target_file.is_file(), f"Missing installed V4 wheel file: {tp}"
+        elif top in ("deploy", "tests"):
+            target_file = root / tp
+            assert target_file.is_file(), f"Missing staged V4 file: {tp}"
+        else:
+            target_file = root / tp
+            if not target_file.is_file():
+                continue
+        assert not target_file.is_symlink(), f"Forbidden symlink: {tp}"
+        actual = hashlib.sha256(target_file.read_bytes()).hexdigest()
+        assert actual == entry["target_sha256"], f"Tampered/mismatched V4 file: {tp}"
+
     # 4. Full-tree AST import isolation check across ALL installed packages (zero app.* or Model imports)
     forbidden = ("app", "main_web", "main_api", "financial_engine", "finco_core", "domain", "tax_reference_registry")
     for mod in (finco_radar, finco_yield, radar_service):

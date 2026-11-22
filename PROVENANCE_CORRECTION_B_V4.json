@@ -1,0 +1,131 @@
+{
+  "schema": "FINCO_RADAR_PROVENANCE_CORRECTION_B_V4",
+  "immutable_source_repo": "Finco-Protocol/FincoProtocol",
+  "immutable_source_commit": "707e68b290694c57b470f4a112c190abb3d02ac9",
+  "immutable_source_tree": "0d4e8961c33e7bab7aa94077ee4fe9b561061ba2",
+  "predecessor_pr1_commit": "83e8ea22bec5071456eeb0436d3ee67f9cd6aacb",
+  "predecessor_pr1_tree": "d032c9b1e003e4a5e97148db544352068ee7b34e",
+  "entry_count": 20,
+  "entries": [
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": ".github/workflows/radar_ci.yml",
+      "target_sha256": "d3ba99bc53f58dbfefeb3586e337f48d8a7136f434013b19847d428e39dc06c6",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/r_live_collector_v1/finco-r-live-collector.service",
+      "target_sha256": "1527372b4e48cea61e0db42577e55c0ea919dacaed21ad917406b8651ff77fa2",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/r_live_collector_v1/staging/finco-staging-r-live-collector.service",
+      "target_sha256": "c805c2fd6a6f1a4c6175f17926c97e176e4d425f6631a54f578be11e1daa4777",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/r_live_collector_v1/staging/r-live-collector.staging.env.example",
+      "target_sha256": "b18457db693d0d8608ab802b70b314730523b5b19ee3b192e8096e44b445d5f6",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/radar.env.example",
+      "target_sha256": "431990b19251eaa9e69007e701430a66fdb1941db5f0752f00c833c7cdfa3b48",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/systemd/finco-radar.service",
+      "target_sha256": "af509c6cdb0be63e1afc75867330849b0dd8a3837fbbaede05a12a61b462525e",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/tokenized_market_collector_v1/finco-tokenized-market-collector.service",
+      "target_sha256": "b087fe0a20a36e6da2b5d5fba2a3ad83dd7246457c46baac155b5bae45538641",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/tokenized_market_collector_v1/staging/finco-staging-tokenized-market-collector.service",
+      "target_sha256": "065d78209c57428d951b70f39f9987e94de9393a16e7d32fbcbf67143cf6eaa5",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/tokenized_market_collector_v1/staging/tokenized-market-collector.staging.env.example",
+      "target_sha256": "00a4de5ca9cd3aa1eb0952de9f103182b061d92458444f55caba6b125a245366",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/yield_alert_automation_v1/finco-yield-alert-evaluator.service",
+      "target_sha256": "69e14f39684377b803bd3e6a18ec3e9882e4c1ce9aef884352b1518bb4be168b",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/yield_alert_automation_v1/staging/finco-staging-yield-alert-evaluator.service",
+      "target_sha256": "b23cabc9246feffea2760774d9b7bf8d56d0bca12956db4a4c2dc53e17ac4716",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/yield_alert_automation_v1/staging/yield-alert-evaluator.staging.env.example",
+      "target_sha256": "ef5ad87e7ede81817442e6b6318797ac5080e1c3cdf1de657cb762cbbd7c3a52",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/yield_collector_v1/finco-yield-collector.service",
+      "target_sha256": "e93d3c9a9b058f835f9213db9bc57276410b04ca58fb42c16170c71da13eb8e2",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/yield_collector_v1/staging/finco-staging-yield-collector.service",
+      "target_sha256": "2333c85954d720832c09d34620e308430b35b3e5235346325f61be267f661e4f",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "deploy/yield_collector_v1/staging/yield-collector.staging.env.example",
+      "target_sha256": "024da3e97f10866dbc24fc4937d8f86ace540ab7c2ed74327648c5af8f763343",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "radar_service/app.py",
+      "target_sha256": "acc5838852eaede830ed45c324aabd0ba486d719716485c5089492e4f584823c",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "radar_service/entitlements.py",
+      "target_sha256": "1629d4c2f9b12df2a4221797a6d6f3e2d09f476a6e386e222c1098ff63f854c3",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "radar_service/routers/crypto_public_router.py",
+      "target_sha256": "ad41ceec5118b66d62cdff5cfdbe6c6731b40213630e2cd479b89bcb20f6d370",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "tests/test_exact_source_release_gate.py",
+      "target_sha256": "9823687ef859d83868116861a618be62bfd24f6ed8ff3245523afd0248b86d31",
+      "mode": "0o644"
+    },
+    {
+      "origin": "CORRECTION_B_STANDALONE_OR_DEPLOY_UNIT",
+      "target_path": "tests/test_radar_service_and_auth_boundary.py",
+      "target_sha256": "b05671325d393e78a3b801d6af00688742e389afca0ade0171b795d49ac81f7f",
+      "mode": "0o644"
+    }
+  ]
+}

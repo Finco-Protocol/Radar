@@ -153,6 +153,7 @@ def create_radar_service_app(
 
     @app.get("/ready")
     def ready():
+        import json as _json
         required_files = [
             TERMINAL_ROOT / "templates" / "radar_terminal.html",
             TERMINAL_ROOT / "static" / "radar_terminal.js",
@@ -170,7 +171,19 @@ def create_radar_service_app(
             os.getenv("FINCO_MODEL_INTERNAL_AUTH_URL", "").strip()
             and os.getenv("FINCO_INTERNAL_AUTH_INTROSPECT_TOKEN", "").strip()
         )
-        snapshot_mode = "OFFLINE_FIXTURE" if _is_offline_fixture_mode() else "LIVE_STORE_UNPOPULATED"
+        snap_path_raw = os.getenv("FINCO_RLIVE_SNAPSHOT_PATH", "").strip()
+        if _is_offline_fixture_mode():
+            snapshot_mode = "OFFLINE_FIXTURE"
+        elif snap_path_raw and Path(snap_path_raw).is_file():
+            try:
+                parsed = _json.loads(Path(snap_path_raw).read_text(encoding="utf-8"))
+                if not isinstance(parsed, dict):
+                    raise ValueError("snapshot root must be JSON object")
+                snapshot_mode = "LIVE_STORE_AVAILABLE"
+            except Exception as exc:
+                raise HTTPException(status_code=503, detail=f"LIVE_STORE_CORRUPT: {exc}") from exc
+        else:
+            snapshot_mode = "LIVE_STORE_UNPOPULATED"
         return {
             "status": "ready",
             "service": "finco-radar",
@@ -179,6 +192,34 @@ def create_radar_service_app(
             "auth_authority_configured": auth_configured,
             "snapshot_mode": snapshot_mode,
         }
+
+    @app.get("/api/v1/radar/assets")
+    def list_radar_assets():
+        from finco_radar.authority.r_live_policy import APPROVED_RLIVE_ASSETS
+        items = [
+            {
+                "economic_asset_uid": p.economic_asset_uid,
+                "canonical_id": p.asset_key.canonical_id,
+                "symbol": p.symbol,
+                "authority_version": p.authority_version,
+            }
+            for p in APPROVED_RLIVE_ASSETS.values()
+        ]
+        return JSONResponse({"schema": "finco.radar.assets.v1", "count": len(items), "items": items})
+
+    @app.get("/api/v1/radar/assets/{economic_asset_uid}")
+    def get_radar_asset(economic_asset_uid: str):
+        from finco_radar.authority.r_live_policy import APPROVED_RLIVE_ASSETS
+        for p in APPROVED_RLIVE_ASSETS.values():
+            if p.economic_asset_uid == economic_asset_uid or p.symbol.lower() == economic_asset_uid.lower():
+                return JSONResponse({
+                    "schema": "finco.radar.asset.detail.v1",
+                    "economic_asset_uid": p.economic_asset_uid,
+                    "canonical_id": p.asset_key.canonical_id,
+                    "symbol": p.symbol,
+                    "authority_version": p.authority_version,
+                })
+        raise HTTPException(status_code=404, detail="Unknown Radar economic asset")
 
     @app.get("/api/v1/radar/session-context")
     def session_context(

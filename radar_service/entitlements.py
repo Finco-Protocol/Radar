@@ -29,16 +29,16 @@ from radar_service.auth_client import (
     introspect_with_model_host,
 )
 
-PUBLIC_RESOURCES = frozenset({"yield.basic", "radar.public", "crypto.public"})
+# Exact canonical resource keys matching FincoProtocol app.protocol.entitlement_evaluator
+PUBLIC_RESOURCES = frozenset({"yield.basic", "tokenized.basic"})
 HOLDER_RESOURCES = frozenset({
+    "crypto.api",
+    "tokenized.dislocation",
+    "tokenized.history",
     "yield.history",
     "yield.advanced_compare",
     "yield.alerts",
     "yield.execution_preflight",
-    "crypto.api",
-    "crypto.tokenized.detail",
-    "crypto.tokenized.history",
-    "crypto.tokenized.signals",
 })
 
 

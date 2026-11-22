@@ -286,7 +286,19 @@ def test_correction_a_security_oracle_and_collector_execution(monkeypatch, tmp_p
     assert validate_csrf_token("u-prod", prod_tok) is True
     monkeypatch.delenv("FINCO_ENV", raising=False)
 
-    # 4. /crypto/alerts/refresh requires auth + valid CSRF; /api/v1/crypto/tokenized/{id}/signals & integrity enforce access
+    # 4. /crypto/alerts/* real SQLite persistence + cross-tenant isolation + canonical Model resource keys
+    alerts_db = tmp_path / "alerts.db"
+    monkeypatch.setenv("FINCO_RADAR_ALERTS_DB_PATH", str(alerts_db))
+    import sqlite3
+    with sqlite3.connect(str(alerts_db)) as conn:
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS radar_crypto_alerts "
+            "(alert_id TEXT PRIMARY KEY, owner_id TEXT NOT NULL, title TEXT NOT NULL, severity TEXT NOT NULL DEFAULT 'info', is_read INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL)"
+        )
+        conn.execute("INSERT INTO radar_crypto_alerts VALUES ('a-1', 'u-crypto', 'Basis widened', 'warn', 0, '2026-11-22T00:00:00Z')")
+        conn.execute("INSERT INTO radar_crypto_alerts VALUES ('a-other', 'u-other', 'Other tenant alert', 'info', 0, '2026-11-22T00:00:00Z')")
+        conn.commit()
+
     def _stub(session_cookie, demo_cookie):
         if session_cookie == "ok-user":
             return IntrospectedSession(
@@ -297,9 +309,9 @@ def test_correction_a_security_oracle_and_collector_execution(monkeypatch, tmp_p
                 entitlements=("crypto.api",),
                 entitlement_decisions={
                     "crypto.api": {"decision": "ALLOW", "reason": "HOLDER_ENTITLED"},
-                    "crypto.tokenized.detail": {"decision": "ALLOW", "reason": "HOLDER_ENTITLED"},
-                    "crypto.tokenized.signals": {"decision": "ALLOW", "reason": "HOLDER_ENTITLED"},
-                    "crypto.tokenized.history": {"decision": "ALLOW", "reason": "HOLDER_ENTITLED"},
+                    "tokenized.basic": {"decision": "ALLOW", "reason": "PUBLIC_RESOURCE"},
+                    "tokenized.dislocation": {"decision": "ALLOW", "reason": "HOLDER_ENTITLED"},
+                    "tokenized.history": {"decision": "ALLOW", "reason": "HOLDER_ENTITLED"},
                 },
             )
         return IntrospectedSession(authenticated=False)
@@ -311,7 +323,15 @@ def test_correction_a_security_oracle_and_collector_execution(monkeypatch, tmp_p
     assert client.post("/crypto/alerts/refresh").status_code == 403  # missing CSRF
     valid_csrf = generate_csrf_token("u-crypto")
     assert client.post("/crypto/alerts/refresh", headers={"X-CSRF-Token": valid_csrf}).status_code == 200
-    assert client.get("/crypto/alerts.json").status_code == 200
+    r_al = client.get("/crypto/alerts.json")
+    assert r_al.status_code == 200 and r_al.json()["unread_count"] == 1
+    # Cross-tenant read attempt -> 404
+    assert client.post("/crypto/alerts/a-other/read", headers={"X-CSRF-Token": valid_csrf}).status_code == 404
+    # Real persisted update -> unread_count drops to 0
+    assert client.post("/crypto/alerts/a-1/read", headers={"X-CSRF-Token": valid_csrf}).status_code == 200
+    assert client.get("/crypto/alerts.json").json()["unread_count"] == 0
+
+    # Canonical Crypto API + Radar Assets
     r_tok = client.get("/api/v1/crypto/tokenized")
     assert r_tok.status_code == 200
     first_sym = r_tok.json()["items"][0]["underlying_symbol"]
@@ -319,6 +339,17 @@ def test_correction_a_security_oracle_and_collector_execution(monkeypatch, tmp_p
     assert client.get(f"/api/v1/crypto/tokenized/{first_sym}/integrity").status_code == 200
     assert client.get(f"/api/v1/crypto/tokenized/{first_sym}/history").status_code == 200
     assert client.get(f"/api/v1/crypto/tokenized/{first_sym}/dislocations").status_code == 200
+    r_assets = client.get("/api/v1/radar/assets")
+    assert r_assets.status_code == 200 and r_assets.json()["count"] >= 1
+
+    # Persisted snapshot readiness: AVAILABLE vs CORRUPT (503)
+    snap_ok = tmp_path / "r_live_snap.json"
+    snap_ok.write_text('{"schema":"r_live.v1","assets":{}}', encoding="utf-8")
+    monkeypatch.delenv("FINCO_RADAR_OFFLINE_FIXTURE", raising=False)
+    monkeypatch.setenv("FINCO_RLIVE_SNAPSHOT_PATH", str(snap_ok))
+    assert client.get("/ready").json()["snapshot_mode"] == "LIVE_STORE_AVAILABLE"
+    snap_ok.write_text("{corrupt-json", encoding="utf-8")
+    assert client.get("/ready").status_code == 503
 
     # 5. Real flock -n -E 75 lock contention verification (prevents dual collector writers)
     flock_bin = shutil.which("flock")
