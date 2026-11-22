@@ -12,7 +12,7 @@ WorkingDirectory=/opt/finco_staging
 EnvironmentFile=/opt/finco_staging/.env.tokenized-market-collector
 Environment=PYTHONDONTWRITEBYTECODE=1
 UMask=0077
-ExecStart=/usr/bin/flock -n -E 75 /opt/finco_staging/storage/tokenized-market-collector.lock /opt/finco_staging/.venv/bin/python -m app.radar_rwa.tokenized_collect
+ExecStart=/usr/bin/flock -n -E 75 /opt/finco_staging/storage/tokenized-market-collector.lock /opt/finco_staging/.venv/bin/python -m radar_service.rwa.tokenized_collect
 TimeoutStartSec=540
 SuccessExitStatus=3
 Restart=no

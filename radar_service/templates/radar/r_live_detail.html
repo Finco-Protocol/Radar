@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FINCO Radar — R-LIVE {{ row.symbol }}</title>
+  <link rel="stylesheet" href="/static/tokens.css">
+  <link rel="stylesheet" href="/static/radar/radar.css">
+  <link rel="stylesheet" href="/static/css/protocol-shell.css">
+  <script src="/static/interaction/overview-charts.js" defer></script>
+</head>
+<body class="radar">
+
+{% with proto_active_page="rlive" %}
+{% include "partials/_protocol_nav.html" %}
+{% endwith %}
+{% include "radar/domain_nav.html" %}
+
+<main class="radar-main" style="padding:24px;max-width:880px">
+
+  <nav style="margin-bottom:20px;font-size:13px">
+    <a href="/radar/r-live" style="color:var(--radar-muted,#8d98a5);text-decoration:none">← R-LIVE</a>
+  </nav>
+
+  <header style="margin-bottom:28px">
+    <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+      <h1 style="font-size:22px;font-weight:700;color:var(--radar-text,#f3f6f8);margin:0">
+        {{ row.symbol }}
+      </h1>
+      {% if row.approved %}
+      <span class="rlive-badge rlive-badge--loading"
+            id="detail-status-badge"
+            data-testid="detail-status-badge">…</span>
+      {% else %}
+      <span class="rlive-badge rlive-badge--unavailable"
+            data-testid="detail-status-badge">UNAVAILABLE</span>
+      {% endif %}
+    </div>
+  </header>
+
+  {% if row.approved %}
+  <section style="margin-bottom:28px">
+    <div class="rlive-kpi-strip" id="detail-kpi-strip" data-testid="detail-kpi-strip">
+      <div class="rlive-kpi"><span class="rlive-kpi__label">Premium / Discount</span><span class="rlive-kpi__value mono" id="kpi-premium">—</span><span class="rlive-kpi__meta" id="kpi-state">—</span></div>
+      <div class="rlive-kpi"><span class="rlive-kpi__label">Economic Basis</span><span class="rlive-kpi__value mono" id="kpi-basis">—</span><span class="rlive-kpi__meta" id="kpi-basis-asof">—</span></div>
+      <div class="rlive-kpi"><span class="rlive-kpi__label">Independent Token Ref.</span><span class="rlive-kpi__value mono" id="kpi-token">—</span><span class="rlive-kpi__meta" id="kpi-token-asof">—</span></div>
+      <div class="rlive-kpi"><span class="rlive-kpi__label">24h Range</span><span class="rlive-kpi__value mono" id="kpi-range">—</span><span class="rlive-kpi__meta" id="kpi-range-meta">—</span></div>
+      <div class="rlive-kpi"><span class="rlive-kpi__label">Evidence age (per leg)</span><span class="rlive-kpi__value mono" id="kpi-freshness">—</span><span class="rlive-kpi__meta" id="kpi-source">—</span></div>
+    </div>
+  </section>
+
+  <p class="muted small" id="history-current-note" data-testid="history-historical-note" role="status" hidden
+     style="margin:0 0 14px;padding:8px 12px;border:1px solid var(--radar-border,#252b33);border-radius:6px"></p>
+
+  <section style="margin-bottom:28px">
+    <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--radar-muted,#8d98a5);margin:0 0 14px">
+      Premium / Discount — 24h canonical range
+    </h2>
+    <div class="rlive-chart" id="chart-premium-wrap">
+      <div class="fo-power-skeleton fo-power-skeleton--block" data-testid="chart-premium-skeleton" style="height:170px"></div>
+      <div data-chart-type="line" data-theme="dark" data-zero-line="true" id="chart-premium"
+           aria-label="Reference premium or discount in basis points over the last 24 hours, from the canonical 24h range series; gaps are missing evidence, never interpolated"
+           style="display:none"></div>
+      <p class="muted small" id="chart-premium-note" style="margin:6px 0 0"></p>
+    </div>
+  </section>
+
+  <section style="margin-bottom:28px">
+    <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--radar-muted,#8d98a5);margin:0 0 14px">
+      Basis vs Token reference — recent history (USD per token)
+    </h2>
+    <div class="rlive-chart" id="chart-prices-wrap">
+      <div class="fo-power-skeleton fo-power-skeleton--block" data-testid="chart-prices-skeleton" style="height:170px"></div>
+      <div data-chart-type="line" data-theme="dark" id="chart-prices"
+           aria-label="Economic basis and independent token reference in USD per token over the most recent collected observations; green is token reference, blue is basis; gaps are missing evidence"
+           style="display:none"></div>
+      <p class="muted small" id="chart-prices-note" style="margin:6px 0 0"></p>
+    </div>
+  </section>
+
+  <section style="margin-bottom:28px" data-testid="source-legs">
+    <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--radar-muted,#8d98a5);margin:0 0 14px">
+      Source legs — Market · Official reference · Oracle
+    </h2>
+    <p class="muted small" style="margin:0 0 10px">
+      Three independent evidence roles. Each leg has its own status, value and age; a fresh leg never makes another leg current.
+      States are those recorded by the collector (see collected time); ages are measured from each source timestamp.
+    </p>
+    <table style="width:100%;border-collapse:collapse;font-size:13px" id="source-legs-table">
+      <thead><tr style="border-bottom:1px solid var(--radar-border,#252b33)">
+        <th style="text-align:left;padding:8px 10px;color:var(--radar-muted,#8d98a5)">Leg</th>
+        <th style="text-align:left;padding:8px 10px;color:var(--radar-muted,#8d98a5)">Status</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--radar-muted,#8d98a5)">Value (USD / Stock Token)</th>
+        <th style="text-align:left;padding:8px 10px;color:var(--radar-muted,#8d98a5)">Age</th>
+        <th style="text-align:left;padding:8px 10px;color:var(--radar-muted,#8d98a5)">Detail</th>
+      </tr></thead>
+      <tbody>
+        <tr data-leg="MARKET"><td style="padding:8px 10px">Market</td><td>—</td><td></td><td></td><td></td></tr>
+        <tr data-leg="OFFICIAL_REFERENCE"><td style="padding:8px 10px">Reference</td><td>—</td><td></td><td></td><td></td></tr>
+        <tr data-leg="ORACLE"><td style="padding:8px 10px">Oracle</td><td>—</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    <p class="muted small" id="source-legs-note" style="margin:8px 0 0"></p>
+  </section>
+
+  <section style="margin-bottom:28px">
+    <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--radar-muted,#8d98a5);margin:0 0 14px">
+      Live Reference
+    </h2>
+    <dl class="kv" id="detail-live-block">
+      <dt>Independent Token Ref.</dt>
+      <dd id="detail-ref-price" class="mono" data-field="reference_price">—</dd>
+      <dt>Economic Basis</dt>
+      <dd id="detail-basis-price" class="mono" data-field="basis_price">—</dd>
+      <dt>Premium / Discount</dt>
+      <dd id="detail-premium" class="mono" data-field="premium_bps">—</dd>
+      <dt>Collected</dt>
+      <dd id="detail-collected-at" data-field="collected_at">—</dd>
+      <dt>Market activity</dt>
+      <dd id="detail-market-activity" data-field="market_activity">—</dd>
+      <dt>Oracle (USDG/USD)</dt>
+      <dd id="detail-oracle" data-field="oracle">—</dd>
+      <dt>Effective evidence</dt>
+      <dd id="detail-effective-evidence" data-field="effective_evidence_at">—</dd>
+      <dt>Sources</dt>
+      <dd id="detail-sources" data-field="sources">—</dd>
+    </dl>
+    <p class="muted small" style="margin-top:10px">
+      Reference observation only — not a tradeable or executable price.
+      The latest canonical price remains visible with its original evidence age.
+      Missing values are never shown as zero.
+    </p>
+    <div style="margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <button type="button" id="detail-refresh-now" data-testid="detail-refresh-now"
+              style="font:inherit;font-size:12px;padding:6px 14px;border-radius:6px;cursor:pointer;
+                     background:rgba(255,255,255,.06);color:var(--radar-text,#f3f6f8);
+                     border:1px solid var(--radar-border,#3a424d)">
+        Refresh now
+      </button>
+      <span class="muted small" id="detail-refresh-status" data-testid="detail-refresh-status"
+            style="margin:0">Showing latest canonical snapshot · polling for updates.</span>
+    </div>
+  </section>
+  {% else %}
+  <section style="margin-bottom:28px">
+    <div style="padding:16px;background:rgba(255,255,255,.04);border-radius:8px;border:1px solid var(--radar-border,#252b33)">
+      <p style="margin:0;color:var(--radar-muted,#8d98a5);font-size:13px">
+        R-LIVE reference data for <strong style="color:var(--radar-text,#f3f6f8)">{{ row.symbol }}</strong>
+        is not yet available. This asset is not in the current approved registry.
+      </p>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if row.approved and jev_visible %}
+  <section style="margin-bottom:28px;padding:14px 16px;border:1px dashed var(--radar-border,#3a424d);border-radius:8px;max-width:100%;box-sizing:border-box"
+           id="jev-intelligence" data-testid="jev-intelligence-panel" data-jev-state="LOADING">
+    <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--radar-muted,#8d98a5);margin:0 0 6px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      <span>Jev Intelligence</span>
+      <span class="rlive-badge rlive-badge--loading" data-testid="jev-experimental-badge">Experimental</span>
+    </h2>
+    <p class="muted small" style="margin:0 0 12px" data-testid="jev-scope-note">
+      Jev interpretation of the canonical evidence above. It is not canonical FINCO market data.
+    </p>
+    <dl class="kv" id="jev-block" style="word-break:break-word">
+      <dt>Market regime (premium series)</dt>
+      <dd id="jev-regime" data-field="jev_market_regime">—</dd>
+      <dt>Attention state</dt>
+      <dd id="jev-attention" data-field="jev_attention">—</dd>
+      <dt>Confidence</dt>
+      <dd id="jev-confidence" data-field="jev_confidence">—</dd>
+      <dt>Observation interpreted</dt>
+      <dd id="jev-observed" data-field="jev_observation_time">—</dd>
+      <dt>Evidence freshness</dt>
+      <dd id="jev-freshness" data-field="jev_evidence_freshness">—</dd>
+      <dt>Interpretation generated</dt>
+      <dd id="jev-evaluated" data-field="jev_evaluated_at">—</dd>
+      <dt>Model</dt>
+      <dd id="jev-model" data-field="jev_resolved_model">—</dd>
+    </dl>
+    <p class="muted small" id="jev-status" data-testid="jev-status" style="margin-top:10px">Loading…</p>
+    <p class="muted small" id="jev-disclosure" style="margin-top:6px">
+      Jev intelligence is a probabilistic interpretation of FINCO canonical market evidence.
+      It does not modify canonical market data and is not an executable price, investment
+      recommendation, FINCO Verify result, or deterministic calculation authority.
+    </p>
+  </section>
+  {% endif %}
+
+  <section style="margin-bottom:28px">
+    <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--radar-muted,#8d98a5);margin:0 0 14px">
+      Identity &amp; Deployment
+    </h2>
+    <dl class="kv">
+      <dt>Symbol</dt><dd class="mono">{{ row.symbol }}</dd>
+      <dt>Canonical ID</dt><dd class="mono" style="font-size:11px;word-break:break-all">{{ row.canonical_id }}</dd>
+      <dt>Registry Status</dt>
+      <dd>{% if row.approved %}Approved{% else %}Not approved{% endif %}</dd>
+    </dl>
+  </section>
+
+  {% if methodology %}
+  <section style="margin-bottom:28px">
+    <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--radar-muted,#8d98a5);margin:0 0 14px">
+      Methodology &amp; Evidence Disclosure
+    </h2>
+    <p style="font-size:13px;color:var(--radar-muted,#8d98a5);line-height:1.6;max-width:640px">
+      {{ methodology }}
+    </p>
+  </section>
+  {% endif %}
+
+  {% if row.approved %}
+  <section>
+    <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--radar-muted,#8d98a5);margin:0 0 14px">
+      History
+    </h2>
+    <div id="detail-history-block">
+      <p class="muted small">Loading history…</p>
+    </div>
+  </section>
+  {% endif %}
+
+</main>
+
+<style>
+.rlive-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.rlive-badge--loading { background: rgba(255,255,255,.07); color: var(--radar-muted,#8d98a5); }
+.rlive-badge--initializing { background: rgba(255,255,255,.07); color: var(--radar-muted,#8d98a5); }
+.rlive-badge--available { background: rgba(34,197,94,.13); color: #22c55e; }
+.rlive-badge--stale { background: rgba(234,179,8,.13); color: #eab308; }
+.rlive-badge--unavailable { background: rgba(255,255,255,.06); color: var(--radar-muted,#8d98a5); }
+</style>
+
+{% if row.approved and jev_visible %}
+<script>
+(function () {
+  // Experimental, read-only. A failure here never affects the canonical R-LIVE panels above.
+  // Every provider-supplied value is written with textContent (no HTML is ever interpreted).
+  var URL = "/api/v1.1/radar/r-live/" + encodeURIComponent({{ row.canonical_id|tojson }}) + "/intelligence";
+  var panel = document.getElementById("jev-intelligence");
+  var MESSAGES = {
+    JEV_TRANSPORT_UNAVAILABLE: "Interpretation temporarily unavailable.",
+    JEV_RATE_LIMITED: "Interpretation paused to limit provider calls.",
+    JEV_API_KEY_NOT_CONFIGURED: "Interpretation is not configured.",
+    JEV_EVALUATION_FAILED: "Interpretation temporarily unavailable.",
+    CANONICAL_CURRENT_NOT_AVAILABLE: "Canonical evidence is stale or unavailable, so no interpretation is offered.",
+    CANONICAL_CURRENT_UNAVAILABLE: "Canonical evidence is unavailable, so no interpretation is offered.",
+    CANONICAL_PREMIUM_NOT_AVAILABLE: "Canonical evidence is unavailable, so no interpretation is offered.",
+    CANONICAL_RETRIEVAL_TIME_UNAVAILABLE: "Canonical evidence is unavailable, so no interpretation is offered.",
+    INSUFFICIENT_HISTORY: "Not enough canonical history for an interpretation yet.",
+    HISTORY_UNAVAILABLE: "Canonical history is unavailable, so no interpretation is offered."
+  };
+  var FRESHNESS = { WITHIN_5M: "last pool activity within 5 minutes", WITHIN_1H: "last pool activity within 1 hour",
+                    WITHIN_6H: "last pool activity within 6 hours", OVER_6H: "last pool activity over 6 hours ago" };
+  function text(id, value) { var n = document.getElementById(id); if (n) { n.textContent = value; } }
+  function pct(v) { var x = parseFloat(v); return isFinite(x) ? (x * 100).toFixed(0) + "%" : "—"; }
+  function clear() {
+    ["jev-regime", "jev-attention", "jev-confidence", "jev-observed", "jev-freshness", "jev-evaluated", "jev-model"]
+      .forEach(function (id) { text(id, "—"); });
+  }
+  function unavailable(reason) {
+    clear();
+    if (panel) { panel.setAttribute("data-jev-state", "UNAVAILABLE"); panel.setAttribute("data-jev-reason", String(reason || "UNKNOWN").slice(0, 64)); }
+    text("jev-status", Object.prototype.hasOwnProperty.call(MESSAGES, reason) ? MESSAGES[reason] : "Interpretation unavailable.");
+  }
+  fetch(URL)
+    .then(function (r) { if (!r.ok) { throw new Error("HTTP_" + r.status); } return r.json(); })
+    .then(function (env) {
+      var d = env && env.data;
+      if (!d || d.state !== "AVAILABLE" || !d.answers) { unavailable(d && d.reason); return; }
+      var reg = d.answers.market_regime, att = d.answers.attention, prov = d.provenance || {};
+      text("jev-regime", String(reg.choice).replace(/_/g, " "));
+      text("jev-attention", att.state);
+      text("jev-confidence", "regime " + pct(reg.confidence) + " · attention " + pct(att.confidence));
+      text("jev-observed", prov.as_of || "—");
+      text("jev-freshness", Object.prototype.hasOwnProperty.call(FRESHNESS, prov.evidence_freshness) ? FRESHNESS[prov.evidence_freshness] : "—");
+      text("jev-evaluated", d.evaluated_at || "—");
+      text("jev-model", d.resolved_model || "—");
+      text("jev-status", "Interpretation of canonical evidence · input " + String(d.input_fingerprint).slice(0, 12));
+      if (panel) { panel.setAttribute("data-jev-state", "AVAILABLE"); }
+    })
+    .catch(function () { unavailable("JEV_TRANSPORT_UNAVAILABLE"); });
+
+})();
+</script>
+{% endif %}
+
+{# Source legs: canonical source-evidence presentation. Gated ONLY on an approved asset — never on JEV visibility. #}
+{% if row.approved %}
+<script>
+(function () {
+  "use strict";
+  // Read-only, network-free route: the server evaluates EFFECTIVE status at read time (no browser-clock authority).
+  var CANONICAL_ID = {{ row.canonical_id | tojson }};
+  var EVIDENCE_URL = "/radar/r-live/" + encodeURIComponent(CANONICAL_ID) + "/evidence";
+  var LEG_LABELS = { MARKET: "Market", OFFICIAL_REFERENCE: "Reference", ORACLE: "Oracle" };
+  var REASON_TEXT = {
+    ORACLE_FEED_NOT_REVIEWED: "Not reviewed — no official oracle feed binding yet",
+    ORACLE_HEARTBEAT_NOT_REVIEWED: "Heartbeat not reviewed",
+    ORACLE_HEARTBEAT_EXCEEDED: "Older than the feed heartbeat",
+    ORACLE_SOURCE_TIMESTAMP_UNAVAILABLE: "Source timestamp unavailable",
+    REFERENCE_STALE: "Older than the reference policy",
+    REFERENCE_SOURCE_TIMESTAMP_UNAVAILABLE: "Source timestamp unavailable"
+  };
+
+  function fmt_age(secs) {
+    if (secs == null) return "—";
+    if (secs < 60) return secs + "s";
+    if (secs < 3600) return Math.floor(secs / 60) + "m";
+    return Math.floor(secs / 3600) + "h";
+  }
+
+  function render_source_legs(payload) {
+    var legs = (payload && payload.legs) || {};
+    Object.keys(LEG_LABELS).forEach(function (role) {
+      var row = document.querySelector("#source-legs-table tr[data-leg='" + role + "']");
+      if (!row) return;
+      var leg = legs[role];
+      var cells = row.querySelectorAll("td");
+      var state, detail, value = null, age = "—";
+      if (!leg) {
+        state = role === "ORACLE" && payload.oracle_binding === "ORACLE_FEED_NOT_REVIEWED" ? "NOT REVIEWED" : "NOT COLLECTED";
+        detail = role === "ORACLE" ? REASON_TEXT.ORACLE_FEED_NOT_REVIEWED.replace(/^Not reviewed — /, "") : "No persisted evidence yet";
+        if (role === "ORACLE" && payload.oracle_binding !== "ORACLE_FEED_NOT_REVIEWED") detail = "No persisted evidence yet";
+      } else {
+        state = leg.reason === "ORACLE_FEED_NOT_REVIEWED" ? "NOT REVIEWED" : leg.state;
+        detail = (leg.reason && (REASON_TEXT[leg.reason] || leg.reason)) || "";
+        if (leg.state === "AVAILABLE" && leg.value != null && !isNaN(parseFloat(leg.value))) {
+          value = parseFloat(leg.value);          // numbers are shown only while the EFFECTIVE status is AVAILABLE
+        }
+        age = fmt_age(leg.age_seconds);
+        if (role === "ORACLE" && leg.l2_liveness_guard === "PINNED_BLOCK_FRESHNESS_ONLY") {
+          // Factual limitation recorded with the observation: no official sequencer feed is published for this chain.
+          detail += (detail ? " · " : "") + "no sequencer feed published — chain block freshness only";
+        }
+        if (leg.collected_at) {
+          detail += (detail ? " · " : "") + "collected " + String(leg.collected_at).replace("T", " ").slice(0, 16) + " UTC";
+        }
+      }
+      cells[1].textContent = state;
+      cells[2].textContent = value != null ? "$" + value.toFixed(4) : "—";
+      cells[3].textContent = age;
+      cells[4].textContent = detail;
+      row.setAttribute("data-effective-state", state);
+    });
+    var note = document.getElementById("source-legs-note");
+    if (note) note.textContent = "";
+  }
+
+  function render_unavailable() {
+    Object.keys(LEG_LABELS).forEach(function (role) {
+      var row = document.querySelector("#source-legs-table tr[data-leg='" + role + "']");
+      if (!row) return;
+      var cells = row.querySelectorAll("td");
+      cells[1].textContent = "UNAVAILABLE";
+      cells[2].textContent = "—";
+      cells[3].textContent = "—";
+      cells[4].textContent = "Source legs could not be loaded";
+    });
+    var note = document.getElementById("source-legs-note");
+    if (note) note.textContent = "Source legs are unavailable right now.";
+  }
+
+  fetch(EVIDENCE_URL, { headers: { accept: "application/json" } })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (payload) { if (payload) render_source_legs(payload); else render_unavailable(); })
+    .catch(render_unavailable);
+})();
+</script>
+{% endif %}
+
+{% if row.approved %}
+<script src="/static/radar/r_live_history_order.js"></script>
+<script>
+(function() {
+  // SNAPSHOT FIRST, CONTINUOUSLY FRESH, READ-ONLY.
+  //
+  // The first meaningful render always comes from the canonical network-free
+  // snapshot projection (/radar/r-live/snapshot). Live acquisition is NEVER
+  // performed on page load — it happens only through the explicit
+  // "Refresh now" control, which calls the rate-limited, coalescing live
+  // endpoint and fails closed. The snapshot poll continues while the page is
+  // active regardless of state (AVAILABLE / STALE / UNAVAILABLE): state
+  // controls presentation only, never whether the browser keeps checking.
+  // No raw innerHTML for API response data — textContent/createElement only.
+  var CANONICAL_ID = {{ row.canonical_id | tojson }};
+  var SNAPSHOT_URL = "/api/v1.1/radar/r-live/snapshot";
+  var LIVE_URL = "/api/v1.1/radar/r-live/" + encodeURIComponent(CANONICAL_ID);
+  var HIST_URL = LIVE_URL + "/history?limit=100";
+  var RANGES_URL = "/api/v1.1/radar/r-live/history/ranges";
+  var POLL_INTERVAL_MS = 20000;
+  var NOT_COLLECTED = "SNAPSHOT_NOT_YET_COLLECTED";
+
+  function fmt_age(secs) {
+    if (secs == null) return "—";
+    if (secs < 60) return secs + "s ago";
+    if (secs < 3600) return Math.floor(secs / 60) + "m ago";
+    return Math.floor(secs / 3600) + "h ago";
+  }
+
+  function fmt_usd(s) {
+    if (s == null) return null;
+    var n = parseFloat(s);
+    return isNaN(n) ? null : "$" + n.toFixed(4);
+  }
+
+  function set_badge(state) {
+    var badge = document.getElementById("detail-status-badge");
+    if (!badge) return;
+    var live = state === "AVAILABLE";
+    badge.className = "rlive-badge rlive-badge--" + (live ? "available" : "unavailable");
+    badge.textContent = live ? "LIVE" : "UNAVAILABLE";
+  }
+
+  function set_text(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = (val != null) ? val : "—";
+  }
+
+  function set_status(msg) {
+    var el = document.getElementById("detail-refresh-status");
+    if (el) el.textContent = msg;
+  }
+
+  function populate(state, data, read_time_ages, presentation_source) {
+    state = (state || "UNAVAILABLE").toUpperCase();
+    data = data || {};
+    set_badge(state);
+
+    var is_current = (state === "AVAILABLE");
+    var is_policy_fresh = is_current && presentation_source !== "CANONICAL_B1_3_HISTORY";
+
+    var ref_txt = null, basis_txt = null, prem_txt = null;
+    if (is_current) {
+      var tr = data.token_reference;
+      if (tr) ref_txt = fmt_usd(tr.price_usd_per_token);
+      var rb = data.robinhood_basis;
+      if (rb) basis_txt = fmt_usd(rb.price_usd_per_token);
+      var pr = data.b1_0_premium;
+      if (pr && pr.value_bps != null) {
+        var bps = parseFloat(pr.value_bps);
+        prem_txt = !isNaN(bps) ? ((bps >= 0 ? "+" : "") + bps.toFixed(1) + " bps") : null;
+      }
+    }
+    set_text("detail-ref-price", ref_txt);
+    set_text("detail-basis-price", basis_txt);
+    set_text("detail-premium", prem_txt);
+
+    // Read-time re-evaluated ages from the snapshot view are preferred;
+    // collection-time ages inside data.freshness are the fallback. State is
+    // always the canonical typed state — never derived from page-load time.
+    var fresh = data.freshness || {};
+    var ages = read_time_ages || {};
+    var market_age = (ages.market_activity_age_seconds != null)
+      ? ages.market_activity_age_seconds : fresh.market_activity_age_seconds;
+    var quote_age = (ages.quote_feed_age_seconds != null)
+      ? ages.quote_feed_age_seconds : fresh.quote_feed_age_seconds;
+    set_text("detail-collected-at", fresh.retrieved_at);
+    set_text("detail-market-activity", fresh.last_pool_activity_at &&
+      market_age != null
+      ? fresh.last_pool_activity_at + " · " + fmt_age(market_age) : null);
+    set_text("detail-oracle", fresh.quote_updated_at &&
+      quote_age != null
+      ? fresh.quote_updated_at + " · " + fmt_age(quote_age)
+        + (is_policy_fresh ? " · AVAILABLE · within source heartbeat policy" : "") : null);
+    set_text("detail-effective-evidence", fresh.effective_evidence_at);
+    // Source provenance: canonical per-observation source labels, shown only
+    // when the payload actually carries them — never invented.
+    var rb_source = (data.robinhood_basis && data.robinhood_basis.source) || null;
+    var tok_source = (data.token_reference && data.token_reference.source) || null;
+    var sources_txt = null;
+    if (rb_source && tok_source) sources_txt = rb_source + " · " + tok_source;
+    else if (rb_source || tok_source) sources_txt = rb_source || tok_source;
+    set_text("detail-sources", sources_txt);
+
+    // KPI strip — same canonical values, terminal presentation. Missing is —
+    // never 0; the state chip always shows the canonical typed state.
+    set_text("kpi-premium", prem_txt);
+    var state_chip = document.getElementById("kpi-state");
+    if (state_chip) {
+      var product_state = is_current ? "LIVE" : "UNAVAILABLE";
+      state_chip.className = "rlive-chip rlive-chip--" + (is_current ? "available" : "unavailable");
+      state_chip.textContent = product_state;
+    }
+    set_text("kpi-basis", basis_txt);
+    set_text("kpi-basis-asof", rb && rb.observed_at ? "as of " + String(rb.observed_at).replace("T", " ").slice(0, 16) : null);
+    set_text("kpi-token", ref_txt);
+    set_text("kpi-token-asof", tr && tr.observed_at ? "as of " + String(tr.observed_at).replace("T", " ").slice(0, 16) : null);
+    var market_age = (ages.market_activity_age_seconds != null) ? ages.market_activity_age_seconds : fresh.market_activity_age_seconds;
+    // Each evidence leg keeps its OWN age — a fresh market leg must never read as a fresh oracle/reference leg.
+    var quote_age_kpi = (ages.quote_feed_age_seconds != null) ? ages.quote_feed_age_seconds : fresh.quote_feed_age_seconds;
+    var legs = [];
+    // Source-specific legs: state · age. The AVAILABLE claim is only made when the canonical overall state is AVAILABLE,
+    // which is assigned only if EVERY leg is inside its reviewed freshness policy; otherwise only the age is shown.
+    var leg_state = is_policy_fresh ? "AVAILABLE · " : "";
+    if (market_age != null) legs.push("Market " + leg_state + fmt_age(market_age));
+    if (quote_age_kpi != null) legs.push("Oracle " + leg_state + fmt_age(quote_age_kpi));
+    set_text("kpi-freshness", legs.length ? legs.join(" · ") : null);
+    set_text("kpi-source", (is_policy_fresh ? "each leg within its source freshness policy · " : "")
+      + (tok_source || rb_source || (is_current ? "LIVE" : "UNAVAILABLE")));
+
+    // Historical visuals: when the current state is not AVAILABLE the charts below show stored history, not current evidence.
+    var hist_note = document.getElementById("history-current-note");
+    if (hist_note) {
+      hist_note.hidden = is_current;
+      hist_note.textContent = is_current ? "" :
+        "Historical · last observed history. The current state is " + state + "; the charts below are stored observations, not current evidence.";
+    }
+  }
+
+  // ── Snapshot-first render + continuous snapshot polling ──────────────────
+  var poll_timer = null;
+  var saw_snapshot_row = false;
+
+  function poll_tick() {
+    if (typeof document !== "undefined" && document.hidden) return;
+    refresh_snapshot();
+  }
+
+  function ensure_polling() {
+    if (!poll_timer) poll_timer = setInterval(poll_tick, POLL_INTERVAL_MS);
+  }
+
+  function render_absent_snapshot(reason) {
+    // No canonical persisted snapshot for this exact identity yet: typed
+    // INITIALIZING presentation — never a hidden blocking live acquisition.
+    saw_snapshot_row = false;
+    set_badge("INITIALIZING");
+    set_status(reason === NOT_COLLECTED
+      ? "Canonical snapshot has not been collected for this identity yet. "
+        + "The background collector fills it independently — no live request was made."
+      : "Canonical snapshot is initializing. No live request was made.");
+  }
+
+  function apply_snapshot(env) {
+    var rows = (env && env.data && env.data.rows) || [];
+    var row = null;
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].canonical_id === CANONICAL_ID) { row = rows[i]; break; }
+    }
+    if (env && env.state === "INITIALIZING") {
+      render_absent_snapshot("SNAPSHOT_STORE_INITIALIZING");
+      ensure_polling();
+      return;
+    }
+    if (!row) {
+      render_absent_snapshot(NOT_COLLECTED);
+      ensure_polling();
+      return;
+    }
+    saw_snapshot_row = true;
+    populate(row.state, row.data, row.read_time_ages, row.source);
+    if (!row.data || !row.data.freshness) {
+      set_status("No canonical observation collected yet for this identity. "
+        + "Use Refresh now for an explicit live acquisition.");
+    } else if (row.source === "CANONICAL_B1_3_HISTORY") {
+      set_status("Showing latest canonical on-chain price · original evidence age shown above.");
+    } else {
+      set_status("Showing latest canonical snapshot · polling for updates.");
+    }
+    ensure_polling(); // continuous freshness — never stops once warm
+  }
+
+  function refresh_snapshot() {
+    return fetch(SNAPSHOT_URL)
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(env) {
+        if (!env) throw new Error("SNAPSHOT_TRANSPORT_ERROR");
+        apply_snapshot(env);
+      })
+      .catch(function() {
+        // Transport failure never triggers a live acquisition and never
+        // erases an already-rendered canonical observation.
+        ensure_polling();
+        if (!saw_snapshot_row) set_status("Canonical snapshot temporarily unavailable — retrying.");
+      });
+  }
+
+  // ── Explicit Refresh now — the only path to live acquisition ────────────
+  var refresh_in_flight = false;
+
+  function refresh_now() {
+    if (refresh_in_flight) return;
+    var button = document.getElementById("detail-refresh-now");
+    refresh_in_flight = true;
+    if (button) { button.disabled = true; button.textContent = "Refreshing…"; }
+    set_status("Requesting one explicit live observation…");
+    fetch(LIVE_URL, {cache: "no-store"})
+      .then(function(r) {
+        if (r.status === 429) throw new Error("REFRESH_RATE_LIMITED");
+        if (!r.ok) throw new Error("HTTP_" + r.status);
+        return r.json();
+      })
+      .then(function(env) {
+        var state = (env && env.state || "UNAVAILABLE").toUpperCase();
+        // A raw acquisition result is NOT the product last-price read model.
+        // Render it directly only when it is genuinely AVAILABLE. If it is
+        // STALE/UNAVAILABLE, preserve the existing canonical display and
+        // re-read the snapshot endpoint, which applies last-canonical fallback.
+        if (state === "AVAILABLE") {
+          populate(state, (env && env.data) || {}, null, "LIVE_ACQUISITION");
+          set_status("Live observation acquired · timestamps above are canonical.");
+          return refresh_snapshot();
+        }
+        set_status("Live request completed — no new fresh observation. "
+          + "Keeping the latest canonical on-chain price.");
+        return refresh_snapshot();
+      })
+      .catch(function(err) {
+        // Fail closed: the prior canonical render stays exactly as it was.
+        var reason = (err && err.message) || "REFRESH_FAILED";
+        set_status(reason === "REFRESH_RATE_LIMITED"
+          ? "Refresh paused to limit provider load — try again shortly. "
+            + "Previous canonical observation preserved."
+          : "Refresh failed (" + reason + ") — previous canonical "
+            + "observation preserved.");
+      })
+      .finally(function() {
+        refresh_in_flight = false;
+        if (button) { button.disabled = false; button.textContent = "Refresh now"; }
+      });
+  }
+
+  var refresh_button = document.getElementById("detail-refresh-now");
+  if (refresh_button) refresh_button.addEventListener("click", refresh_now);
+
+  refresh_snapshot();
+
+  function build_history_table(points) {
+    // Safe DOM construction — no raw innerHTML for history data.
+    var block = document.getElementById("detail-history-block");
+    if (!block) return;
+    if (!points || !points.length) {
+      block.textContent = "";
+      var msg = document.createElement("p");
+      msg.className = "muted small";
+      msg.textContent = "No history available.";
+      block.appendChild(msg);
+      return;
+    }
+    var table = document.createElement("table");
+    table.style.cssText = "width:100%;border-collapse:collapse;font-size:12px";
+    var thead = document.createElement("thead");
+    var hrow = document.createElement("tr");
+    var headers = ["Collected", "Effective evidence", "Basis (USD)", "Token Ref (USD)", "Premium/Discount", "State"];
+    headers.forEach(function(h) {
+      var th = document.createElement("th");
+      th.style.cssText = "text-align:left;padding:6px 10px;color:var(--radar-muted,#8d98a5)";
+      th.textContent = h;
+      hrow.appendChild(th);
+    });
+    thead.appendChild(hrow);
+    table.appendChild(thead);
+    var tbody = document.createElement("tbody");
+    // TABLE order: newest canonical observation first (the chart below uses the opposite, oldest-first axis).
+    FincoRLiveHistoryOrder.tableOrder(points).slice(0, 20).forEach(function(pt) {
+      var tr = document.createElement("tr");
+      // Canonical B1.3 history schema: nested objects, camelCase token reference.
+      var basis_val = (pt.robinhood_basis && pt.robinhood_basis.price_usd_per_token != null)
+        ? ("$" + parseFloat(pt.robinhood_basis.price_usd_per_token).toFixed(4)) : "—";
+      var ref_val = (pt.independent_token_reference && pt.independent_token_reference.priceUsdPerToken != null)
+        ? ("$" + parseFloat(pt.independent_token_reference.priceUsdPerToken).toFixed(4)) : "—";
+      var prem_raw = pt.reference_premium_bps;
+      var prem_val = (prem_raw != null)
+        ? ((parseFloat(prem_raw) >= 0 ? "+" : "") + parseFloat(prem_raw).toFixed(1) + " bps") : "—";
+      var cells = [
+        pt.collected_at || "—",
+        pt.observed_at || "—",
+        basis_val,
+        ref_val,
+        prem_val,
+        pt.state || "—"
+      ];
+      cells.forEach(function(val) {
+        var td = document.createElement("td");
+        td.className = "mono";
+        td.style.cssText = "padding:6px 10px";
+        td.textContent = val;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    block.textContent = "";
+    block.appendChild(table);
+  }
+
+  fetch(HIST_URL)
+    .then(function(r) {
+      if (!r.ok) { throw new Error("TRANSPORT_ERROR_" + r.status); }
+      return r.json();
+    })
+    .then(function(env) {
+      var points = (env && env.data && Array.isArray(env.data.points)) ? env.data.points : [];
+      build_history_table(points);
+      build_recent_charts(points);
+    })
+    .catch(function() {
+      var b = document.getElementById("detail-history-block");
+      if (b) { b.textContent = ""; var p = document.createElement("p"); p.className = "muted small"; p.textContent = "History unavailable."; b.appendChild(p); }
+      chart_transport_failed("chart-prices", "chart-prices-note",
+        "History unavailable — no chart is rendered rather than an incomplete one.");
+    });
+
+  // TRUE 24H SEMANTICS: the premium/discount chart and the 24h Range KPI are
+  // derived ONLY from the canonical 24h range/series authority
+  // (read_r_live_ranges_batch_readonly include_series=True, served by the
+  // read-only ranges endpoint) — never recomputed from a count-limited
+  // last-N history sample, which is not a guaranteed 24-hour window.
+  // Landing sparklines read the same canonical 24h evidence window.
+  fetch(RANGES_URL)
+    .then(function(r) {
+      if (!r.ok) { throw new Error("TRANSPORT_ERROR_" + r.status); }
+      return r.json();
+    })
+    .then(function(env) {
+      var entry = (env && env.data && env.data.assets)
+        ? env.data.assets[CANONICAL_ID] : null;
+      build_24h_views(entry);
+    })
+    .catch(function() {
+      build_24h_views(null);
+    });
+
+  function build_24h_views(entry) {
+    if (!window.FoCharts) return;
+    var premium_el = document.getElementById("chart-premium");
+    if (!premium_el) return;
+    var series = (entry && Array.isArray(entry.series_24h)) ? entry.series_24h : null;
+    var range24 = (entry && entry.range_24h) ? entry.range_24h : null;
+    if (series && series.length >= 2) {
+      premium_el.dataset.points = JSON.stringify(series.map(function (p) {
+        return { t: p.collected_at || "", v: parse_num(p.premium_bps) };
+      }));
+      window.FoCharts.renderElement(premium_el);
+      show_chart("chart-premium", "chart-premium-note",
+        series.length + " canonical observations in the 24h range series · gaps are missing evidence · canonical 24h window.");
+    } else {
+      show_chart("chart-premium", "chart-premium-note",
+        "24h range series not available yet (" + (series ? series.length : 0)
+        + " usable observations) — nothing synthesized.");
+      premium_el.style.display = "none";
+    }
+    // 24h Range KPI — verbatim canonical bounds, never recomputed locally.
+    if (range24 && range24.state === "AVAILABLE"
+        && range24.low_bps != null && range24.high_bps != null) {
+      var lo = parse_num(range24.low_bps), hi = parse_num(range24.high_bps);
+      if (lo != null && hi != null) {
+        set_text("kpi-range", fmt_signed_bps(lo) + " … " + fmt_signed_bps(hi) + " bps");
+        set_text("kpi-range-meta", (range24.observation_count != null
+          ? range24.observation_count + " observations · 24h window"
+          : "24h window"));
+        return;
+      }
+    }
+    set_text("kpi-range", "—");
+    set_text("kpi-range-meta", "no 24h range available");
+  }
+
+  // Charts are a pure presentation of the SAME canonical history points the
+  // table above shows: gaps stay gaps, values are never altered, no
+  // interpolation, no synthetic points, timestamps never rewritten.
+  function chart_points(points, picker) {
+    // CHART order: oldest -> newest (natural left-to-right time axis). The history TABLE deliberately uses the
+    // opposite, newest-first order. Both come from the one tested helper in /static/radar/r_live_history_order.js.
+    return FincoRLiveHistoryOrder.chartOrder(points).map(function(pt) {
+      return { t: pt.collected_at || "", v: picker(pt) };
+    });
+  }
+
+  // Signed bps formatter: +5.0 / -5.0 / 0.0 — the sign is derived from the
+  // value, never hand-prefixed (a naive "+" prefix produces "+-5.0").
+  function fmt_signed_bps(v) {
+    var n = parse_num(v);
+    if (n == null) return "—";
+    return (n > 0 ? "+" : "") + n.toFixed(1);
+  }
+
+  function parse_num(v) {
+    if (v == null || v === "") return null;
+    var n = Number(v);
+    return isFinite(n) ? n : null;
+  }
+
+  function show_chart(id, note_id, note) {
+    var skeleton = document.querySelector("[data-testid='" + id + "-skeleton']");
+    var chart = document.getElementById(id);
+    if (skeleton && skeleton.parentNode) skeleton.parentNode.removeChild(skeleton);
+    if (chart) { chart.style.display = "block"; }
+    if (note_id) set_text(note_id, note);
+  }
+
+  function chart_transport_failed(chart_id, note_id, message) {
+    show_chart(chart_id, note_id, message);
+  }
+
+  function build_recent_charts(points) {
+    if (!window.FoCharts) return;
+    var prices_el = document.getElementById("chart-prices");
+    if (!prices_el) return;
+    var basis_points = chart_points(points, function(pt) {
+      return (pt.robinhood_basis && pt.robinhood_basis.price_usd_per_token != null)
+        ? parse_num(pt.robinhood_basis.price_usd_per_token) : null;
+    });
+    var token_points = chart_points(points, function(pt) {
+      return (pt.independent_token_reference && pt.independent_token_reference.priceUsdPerToken != null)
+        ? parse_num(pt.independent_token_reference.priceUsdPerToken) : null;
+    });
+    var usable_prices = basis_points.filter(function(p) { return p.v != null; }).length;
+    if (usable_prices >= 2) {
+      prices_el.dataset.points = JSON.stringify(basis_points);
+      prices_el.dataset.series2 = JSON.stringify(token_points);
+      window.FoCharts.renderElement(prices_el);
+      show_chart("chart-prices", "chart-prices-note",
+        usable_prices + " canonical observations shown · gaps are missing evidence · recent history: last "
+        + points.length + " collected points (not a 24h window).");
+    } else {
+      show_chart("chart-prices", "chart-prices-note",
+        "Insufficient canonical history for a chart yet (" + usable_prices + " usable observations) — nothing synthesized.");
+      prices_el.style.display = "none";
+    }
+  }
+})();
+</script>
+{% endif %}
+
+</body>
+</html>

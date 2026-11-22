@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FINCO Radar — Tokenized Markets</title>
+  <link rel="stylesheet" href="/static/tokens.css">
+  <link rel="stylesheet" href="/static/radar/radar.css">
+  <link rel="stylesheet" href="/static/css/protocol-shell.css">
+  <link rel="stylesheet" href="/static/css/finco-surface.css">
+  <link rel="stylesheet" href="/static/css/radar-monitor-v2.css">
+</head>
+<body class="radar">
+{% with proto_active_page="tokenized" %}{% include "partials/_protocol_nav.html" %}{% endwith %}
+{% with radar_domain="tokenized" %}{% include "radar/domain_nav.html" %}{% endwith %}
+<main class="radar-main fs-main">
+<header>
+  <p class="fs-eyebrow">FINCO Radar · Tokenized Markets</p>
+  <h1 class="fs-title">Tokenized Markets</h1>
+  <p class="fs-lede">
+    One canonical underlying, every tokenized representation FINCO can resolve by exact identity, with the
+    market evidence that is actually persisted. The same economic underlying does <strong>not</strong> mean the
+    same instrument or the same market authority.
+  </p>
+</header>
+
+<div class="fs-state" data-testid="tm-operational-state" data-state="{{ operational.state.value }}" data-tone="{{ operational.tone }}">
+  <strong data-testid="tm-state-label">{{ operational.label }}</strong>
+  <span>{{ operational.headline }}</span>
+</div>
+
+<div class="fs-kpis" data-testid="tm-coverage">
+  <div class="fs-kpi"><span class="k">Reviewed universe</span><div class="v" data-testid="tm-cov-eligible">{{ operational.coverage.live_eligible }}</div>
+    <div class="m">reviewed exact authorities</div></div>
+  <div class="fs-kpi"><span class="k">Priced now</span><div class="v" data-testid="tm-cov-priced">{{ operational.coverage.priced_now }}</div>
+    <div class="m">fresh priced evidence</div></div>
+  <div class="fs-kpi"><span class="k">History available</span><div class="v" data-testid="tm-cov-history">{{ operational.coverage.history_available }}</div>
+    <div class="m">assets with persisted observations</div></div>
+  <div class="fs-kpi" data-testid="tm-collector-health"><span class="k">Collector</span><div class="v">{{ collector_health.health_state }}</div>
+    <div class="m">{{ collector_health.outcome }}{% if collector_health.last_attempt_at %} · last attempt {{ collector_health.last_attempt_at[:16] }} UTC{% endif %}</div></div>
+</div>
+
+<details class="fs-details" data-testid="tm-research-catalog">
+  <summary>Research catalog: <span data-testid="tm-cov-catalog">{{ operational.coverage.identity_catalog }}</span> identities · identity coverage is not market coverage</summary>
+  <div class="fs-body" data-testid="tm-universe">
+    <p>The catalog is a third-party-seeded <strong>research identity source</strong>. Only FINCO-reviewed live-collection assets and
+      assets with persisted priced evidence are listed on this page. {{ operational.coverage.excluded_identities }} catalog identities are excluded
+      from the public list (malformed, conflicting or unresolved) and stay inspectable.</p>
+    <p><a href="/radar/tokenized-markets?view=catalog">Identity catalog</a> · <a href="/radar/tokenized-markets?view=audit">Audit view</a> ·
+      <a href="/radar/r-live">R-LIVE</a>. Identity is exact registry mapping — no fuzzy ticker matching.</p>
+  </div>
+</details>
+
+{% if access and (not access.history.allowed or not access.dislocation.allowed) %}
+<p class="fs-note" data-testid="tm-premium-access-note">
+  Basis history changes and cross-venue divergence are $FINCO holder resources
+  ({{ access.history.state if not access.history.allowed else access.dislocation.state }}).
+  Identity and current market state remain public.
+</p>
+{% endif %}
+
+{% if landing_view == 'catalog' %}
+<div class="fs-table-wrap" data-testid="tm-catalog-table">
+  <p class="fs-note">Research identity catalog — identity only, <strong>not market coverage</strong>.
+    Showing {{ catalog_rows | length }} of {{ catalog_total }} publicly eligible identities.</p>
+  <table class="fs-table"><thead><tr><th>Underlying</th><th>Venues</th><th>Representations</th></tr></thead><tbody>
+  {% for row in catalog_rows %}
+    <tr data-testid="tm-catalog-row-{{ row.canonical_asset_id }}">
+      <td><a  href="/radar/tokenized-markets/{{ row.canonical_asset_id }}">{{ row.canonical_asset_id }}</a></td>
+      <td>{{ row.venues | join(', ') }}</td><td class="num">{{ row.representation_count }}</td>
+    </tr>
+  {% endfor %}
+  </tbody></table>
+</div>
+{% elif landing_view == 'audit' %}
+<div class="fs-table-wrap" data-testid="tm-audit-table">
+  <p class="fs-note">Excluded identities are kept for inspection and are never deleted. Third-party
+    provenance is preserved; none of these rows is market evidence.</p>
+  <table class="fs-table"><thead><tr><th>Underlying</th><th>Reason</th><th>Platforms</th><th>Seed sources</th></tr></thead><tbody>
+  {% for row in audit_rows %}
+    <tr data-testid="tm-audit-row-{{ row.canonical_asset_id }}">
+      <td>{{ row.canonical_asset_id }}</td><td>{{ row.exclusion_reason }}</td>
+      <td>{{ row.platforms | join(', ') }}</td><td>{{ row.sources | join(', ') }}</td>
+    </tr>
+  {% endfor %}
+  </tbody></table>
+  <p class="fs-note" data-testid="tm-audit-conflicts">{{ audit_conflicts | length }} exact chain+contract
+    registry conflicts (type or underlying disagreement) — such representations are excluded from active composition.</p>
+  <p class="fs-note" data-testid="tm-audit-taxonomy">{{ audit_taxonomy | length }} exact representations where sources agree on
+    the deployment but classify it differently (taxonomy only). Identity is resolved to one representation; each source's own
+    classification is kept below as provenance.</p>
+  <ul class="fs-note" data-testid="tm-audit-taxonomy-list">
+  {% for row in audit_taxonomy[:50] %}
+    <li>{{ row.representation }} · {{ row.chain }}:{{ row.contract }} → {{ row.resolved_instrument_type }}
+      ({% for a in row.assertions %}{{ a.0 }}={{ a.2 }}{% if not loop.last %}; {% endif %}{% endfor %})</li>
+  {% endfor %}
+  </ul>
+</div>
+{% else %}
+
+<section class="fs-section" data-testid="tm-monitor-v2" aria-label="Institutional monitoring workspace">
+  <h2>Market monitor · evidence-first</h2>
+  <div class="fs-kpis tm-monitor-summary" data-testid="tm-monitor-summary">
+    <div class="fs-kpi"><span class="k">Bounded monitored assets</span><div class="v">{{ monitor.monitored }}</div><div class="m">exact reviewed primary universe, up to 60</div></div>
+    <div class="fs-kpi"><span class="k">Proven current basis</span><div class="v">{{ monitor.current_basis }}</div><div class="m">two fresh compatible source prices</div></div>
+    <div class="fs-kpi"><span class="k">Eligible own-history</span><div class="v">{% if monitor.distribution is not none %}{{ monitor.distribution }}{% else %}Locked{% endif %}</div><div class="m">minimum 8 usable observations, 1h span</div></div>
+    <div class="fs-kpi"><span class="k">Current dislocations</span><div class="v">{% if monitor.current_dislocations is not none %}{{ monitor.current_dislocations }}{% else %}Locked{% endif %}</div><div class="m">threshold + fresh evidence only</div></div>
+    <div class="fs-kpi"><span class="k">Current basis unavailable</span><div class="v">{{ monitor.stale_unavailable }}</div><div class="m">stale / incompatible / missing</div></div>
+    <div class="fs-kpi"><span class="k">Deepstate historical proof</span><div class="v">{% if monitor.deepstate_historical is not none %}{{ monitor.deepstate_historical }}{% else %}Locked{% endif %}</div><div class="m">historical execution, never a live cross-venue quote</div></div>
+  </div>
+  <form class="tm-monitor-controls" method="get" action="/radar/tokenized-markets" data-testid="tm-monitor-filters">
+    <label for="tm-search">Underlying <input id="tm-search" type="search" name="q" maxlength="48" value="{{ monitor_query }}" placeholder="Search exact symbol or name"></label>
+    <label for="tm-filter">Evidence <select id="tm-filter" name="filter">
+      {% for key, label in [('all','All assets'), ('available','Current basis'), ('stale','Stale'), ('unavailable','Basis unavailable'), ('dislocations','Current dislocations'), ('premium','Current premium'), ('discount','Current discount'), ('distribution','History eligible'), ('deepstate','Deepstate historical')] %}
+      <option value="{{ key }}" {% if monitor_filter == key %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select></label>
+    <label for="tm-sort">Sort <select id="tm-sort" name="sort">
+      {% for key, label in [('priority','Current dislocation priority'), ('basis_abs','Highest absolute current basis'), ('percentile','Highest eligible percentile'), ('duration','Longest proven dislocation'), ('symbol','Symbol A–Z')] %}
+      <option value="{{ key }}" {% if monitor_sort == key %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select></label>
+    <button type="submit">Apply</button>
+    <a href="/radar/tokenized-markets">Reset</a>
+  </form>
+  <p class="fs-note">Sorts are deterministic and apply only to disclosed values. Missing, stale or entitlement-denied metrics are never treated as zero or as current observations.</p>
+</section>
+
+{% if operational.coverage.priced_now == 0 %}
+<section class="fs-panel fs-empty" data-testid="tm-empty">
+  <h2>{{ operational.coverage.live_eligible }} reviewed assets ready for live collection</h2>
+  <p>No fresh source-observed market prices are currently persisted.</p>
+  {% if reviewed_symbols %}
+  <div class="fs-chips" data-testid="tm-reviewed-symbols">
+    {% for symbol in reviewed_symbols %}<a class="fs-chip" href="/radar/tokenized-markets/{{ symbol }}">{{ symbol }}</a>{% endfor %}
+  </div>
+  {% endif %}
+  {% set stale_rows = rows | selectattr('best_price') | list %}
+  {% if stale_rows %}
+  <p class="fs-note" data-testid="tm-empty-stale">{{ stale_rows | length }} reviewed asset(s) have persisted observations that are no longer fresh;
+    their stored evidence stays available on each asset page.</p>
+  {% endif %}
+  <p class="fs-note" data-testid="tm-empty-collector">Collector: {{ collector_health.health_state }}{% if collector_health.last_attempt_at %} · last attempt {{ collector_health.last_attempt_at[:16] }} UTC{% endif %}</p>
+  {% if rlive_source %}
+  <p class="fs-note" data-testid="tm-empty-rlive">R-LIVE source state:
+    {% for state, count in rlive_source.states.items() %}{{ state }} {{ count }}{% if not loop.last %} · {% endif %}{% endfor %}
+    of {{ rlive_source.total }} reviewed rows.</p>
+  {% endif %}
+  <p><a class="fs-cta" href="/radar/r-live" data-testid="tm-open-rlive">Open R-LIVE</a></p>
+  <p class="fs-note">The market table appears automatically once canonical source-observed market evidence is persisted.
+    Page loads never call providers.</p>
+</section>
+{% endif %}
+{% if operational.coverage.priced_now != 0 or (rows | selectattr('best_price') | list | length) > 0 %}
+<div class="fs-table-wrap tm-monitor-table" data-testid="tokenized-markets-table">
+  <table class="fs-table" aria-label="Current canonical tokenized market and historical intelligence">
+    <thead><tr>
+      <th>Underlying</th><th class="num">Token market</th><th class="num">Official reference</th>
+      <th class="num">Current basis</th><th class="num">24h / 7d change</th>
+      <th class="num">Own-history</th><th>Current dislocation / duration</th>
+      <th>Deepstate historical</th><th>Source / evidence age</th><th>State</th>
+    </tr></thead>
+    <tbody>
+    {% for row in rows %}
+      <tr data-testid="tm-row-{{ row.canonical_asset_id }}">
+        <td><a href="/radar/tokenized-markets/{{ row.canonical_asset_id }}"><strong>{{ row.canonical_asset_id }}</strong></a>
+          {% if row.underlying_name %}<span class="fs-sub">{{ row.underlying_name }}</span>{% endif %}</td>
+        <td class="num">{% if row.best_price is not none %}${{ row.best_price }}<span class="fs-sub">{{ row.best_venue }}</span>
+          {% else %}<span class="fs-missing" data-testid="tm-unavailable-{{ row.canonical_asset_id }}">market unavailable</span>{% endif %}</td>
+        <td class="num">{% if row.reference_price is not none %}${{ row.reference_price }}{% else %}—{% endif %}
+          <span class="fs-sub">{{ row.reference_state or 'UNAVAILABLE' }}</span></td>
+        <td class="num" data-testid="tm-current-basis-{{ row.canonical_asset_id }}">
+          {% if row.current_basis_bps is not none %}{{ row.current_basis_bps }} bp
+          <span class="fs-sub">{{ row.basis_direction }}</span>
+          {% else %}<span class="fs-missing">— (not current)</span>{% endif %}</td>
+        <td class="num" data-testid="tm-basis-24h-{{ row.canonical_asset_id }}">
+          {% if access and not access.history.allowed %}<span class="fs-missing" data-testid="tm-locked-history">locked</span>
+          {% else %}
+            {% if row.basis_change_24h_bps is not none %}{{ row.basis_change_24h_bps }} bp{% else %}—{% endif %}
+            <span class="fs-sub">7d {% if row.basis_change_7d_bps is not none %}{{ row.basis_change_7d_bps }} bp{% else %}—{% endif %}</span>
+          {% endif %}</td>
+        <td class="num" data-testid="tm-distribution-{{ row.canonical_asset_id }}">
+          {% if access and not access.history.allowed %}locked
+          {% elif row.historical and row.historical.historical_median_basis_bps is not none %}
+            median {{ row.historical.historical_median_basis_bps }} bp
+            <span class="fs-sub">percentile {% if row.historical.current_basis_percentile is not none %}{{ row.historical.current_basis_percentile }}%{% else %}—{% endif %}</span>
+            <span class="fs-sub">{{ row.historical.state }} · n={{ row.historical.usable_observation_count }}</span>
+          {% else %}—{% endif %}</td>
+        <td data-testid="tm-persistence-{{ row.canonical_asset_id }}">
+          {% if access and not access.dislocation.allowed %}locked
+          {% elif row.persistence %}
+            <span class="fs-badge {% if row.current_dislocation %}fs-badge--warn{% endif %}">{{ row.persistence.state }}</span>
+            {% if row.persistence.duration_seconds is not none %}<span class="fs-sub">{{ row.persistence.duration_seconds }}s proven</span>
+            {% elif row.persistence.start_state == 'PREHISTORY_UNAVAILABLE' %}<span class="fs-sub">Start unknown / prehistory</span>
+            {% endif %}
+          {% else %}—{% endif %}</td>
+        <td data-testid="tm-deepstate-{{ row.canonical_asset_id }}">
+          {% if not access.history.allowed or not access.dislocation.allowed %}locked
+          {% elif row.deepstate_state %}{{ row.deepstate_state }}<span class="fs-sub">HISTORICAL ONLY</span>
+          {% else %}—{% endif %}</td>
+        <td>{% if row.source_timestamp %}<span class="fs-sub">Source {{ row.source_timestamp[:19] }} UTC</span>{% else %}—{% endif %}
+          {% if row.evidence_age_seconds is not none %}<span class="fs-sub">Age {{ row.evidence_age_seconds }}s</span>{% endif %}
+          {% if row.collected_at %}<span class="fs-sub">Collected {{ row.collected_at[:19] }} UTC</span>{% endif %}</td>
+        <td><span class="fs-badge {% if row.current_basis_bps is not none %}fs-badge--ok{% else %}fs-badge--warn{% endif %}"
+          data-testid="tm-state-{{ row.canonical_asset_id }}">{{ row.evidence_state }}</span></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="10" class="fs-note" data-testid="tm-filter-empty">No monitored assets match the selected evidence filter.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% if not history_available %}
+<p class="fs-note" data-testid="tm-history-note">No history is stored yet. History appears only after the bounded collector persists source-observed evidence.</p>
+{% endif %}
+{% endif %}
+
+<p class="fs-note">
+  Basis = (token price / underlying reference − 1) × 10,000 bp — a reference dislocation measure only, not an
+  executable-arbitrage claim: venues differ in market authority, access, settlement and trading hours. “—” means
+  unavailable; missing evidence is never shown as zero. Asset detail pages carry representations, cross-venue and 7-day detail.
+</p>
+<p class="fs-note">Read-only composition over the canonical venue registry and persisted observations. No trading,
+  execution, custody or recommendation is offered on this surface.</p>
+</main>
+</body>
+</html>

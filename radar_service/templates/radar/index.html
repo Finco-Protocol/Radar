@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FINCO Radar — Market Intelligence</title>
+  <link rel="stylesheet" href="/static/tokens.css">
+  <link rel="stylesheet" href="/static/radar/radar.css">
+  <link rel="stylesheet" href="/static/css/protocol-shell.css">
+  <script src="/static/radar/vendor/htmx.min.js" defer></script>
+  <script src="/static/radar/market-poll.js" defer></script>
+</head>
+<body class="radar">
+
+{% with proto_active_page="radar" %}
+{% include "partials/_protocol_nav.html" %}
+{% endwith %}
+{% include "radar/domain_nav.html" %}
+
+<!-- Asset Identity Header (updated by HTMX OOB swap on refresh) -->
+<div id="radar-asset-header" class="radar-asset-header">
+  <div class="radar-asset-header__primary">
+    {% if selected %}
+    <span class="radar-asset-header__symbol">{{ selected.token_symbol }}</span>
+    <span class="radar-asset-header__chain">{{ selected.chain_id }} · <span class="mono" style="font-size:11px;">{{ selected.contract_address[:20] }}…</span></span>
+    {% elif universe_error %}
+    <span class="radar-asset-header__symbol" style="color:var(--radar-gold);">Universe Unavailable</span>
+    {% else %}
+    <span class="radar-asset-header__symbol">—</span>
+    {% endif %}
+  </div>
+  <div class="radar-asset-header__state">
+    <span class="radar-note" style="font-size:11px;">quote direction only — no wallet, no signing, no transaction submission</span>
+  </div>
+</div>
+
+<main class="radar-main">
+
+  {# ── Featured Equities Board ─────────────────────────────────────────────── #}
+  {% include "radar/featured_board.html" %}
+
+  {# ── Asset selector ──────────────────────────────────────────────────────── #}
+  <form method="get" action="/radar/stocks" class="radar-controls-form">
+    <section class="panel" data-panel="asset-selector" style="margin-bottom:14px;">
+      <h2>Asset Selection</h2>
+      {% if universe_error %}
+      <p class="state-unavailable" style="margin:0;">Robinhood asset universe unavailable — {{ universe_error }}</p>
+      <p class="muted small">Acquisition is disabled until the registry is reachable.</p>
+      <select name="asset_uid" class="asset-selector-select" disabled aria-label="Select asset from Robinhood universe" style="display:none;"></select>
+      {% elif universe %}
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <select name="asset_uid" class="asset-selector-select"
+                aria-label="Select asset from Robinhood universe">
+          {% for a in universe %}
+          <option value="{{ a.economic_asset_uid }}"
+                  {% if selected and selected.economic_asset_uid == a.economic_asset_uid %}selected{% endif %}>
+            {{ a.token_symbol }} — {{ a.token_name }}
+          </option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="refresh-btn" style="white-space:nowrap;">Load Asset</button>
+      </div>
+      <p class="muted small" style="margin:6px 0 0;">
+        {{ universe | length }} asset{{ 's' if universe | length != 1 else '' }} from Robinhood canonical registry.
+        {% if selected %}Selected: <strong style="color:var(--radar-text);">{{ selected.token_symbol }}</strong>{% endif %}
+      </p>
+      {% else %}
+      <p class="state-unavailable" style="margin:0;">Robinhood asset universe unavailable</p>
+      <select name="asset_uid" class="asset-selector-select" disabled aria-label="Select asset from Robinhood universe" style="display:none;"></select>
+      {% endif %}
+    </section>
+  </form>
+
+    <div class="radar-product-grid">
+      <section class="panel panel-target" data-panel="configured-target">
+        <h2>Selected asset</h2>
+        {% if selected %}
+        <p class="muted small" style="margin-bottom:8px;">Identity from official Robinhood registry</p>
+        <dl class="kv">
+          <dt>Symbol</dt><dd>{{ selected.token_symbol }}</dd>
+          <dt>Name</dt><dd>{{ selected.token_name }}</dd>
+          <dt>Chain</dt><dd>{{ selected.chain_id }}</dd>
+          <dt>Contract</dt><dd class="mono">{{ selected.contract_address }}</dd>
+          <dt>Decimals</dt><dd>{{ selected.token_decimals }}</dd>
+        </dl>
+        {# CTA: bound to canonical economic_asset_uid — no ticker-only routing #}
+        <div style="margin-top:10px;">
+          <a href="/radar/equity/{{ selected.economic_asset_uid }}"
+             class="board-details-cta"
+             data-economic-asset-uid="{{ selected.economic_asset_uid }}"
+             data-chain-id="{{ selected.chain_id }}"
+             data-contract-address="{{ selected.contract_address }}">Open Company Terminal →</a>
+        </div>
+        {% elif snapshot_identity_note %}
+        <p class="state-unavailable">{{ snapshot_identity_note }}</p>
+        <p class="muted small">The snapshot's asset is not present in the current universe.</p>
+        {% elif universe_error %}
+        <p class="state-unavailable">Universe unavailable — {{ universe_error }}</p>
+        {% else %}
+        <p class="muted">No asset selected. Choose from the board above or use the selector.</p>
+        {% endif %}
+      </section>
+      <section class="panel execution-coming-soon" data-panel="execution-coming-soon">
+        <h2>Execution Simulation — Coming soon</h2>
+        <p class="muted">Execution routing is not enabled in this environment.</p>
+        <details class="radar-technical-details"><summary>Technical details</summary>
+          <p class="mono small">Read-only · no wallet · no signing · no transaction submission</p>
+          <form method="post" action="/radar/refresh" hx-post="/radar/refresh" hx-target="#radar-panels" hx-swap="innerHTML">
+            <input type="hidden" name="asset_uid" value="{{ selected.economic_asset_uid if selected else '' }}">
+            <label><input type="radio" name="direction" value="BUY" checked disabled> Simulate Buy</label>
+            <label><input type="radio" name="direction" value="SELL" disabled> Simulate Sell</label>
+            <label><input type="radio" name="size" value="100" checked disabled> $100</label>
+            <label><input type="radio" name="size" value="1000" disabled> $1,000</label>
+            <button type="submit" class="refresh-btn" disabled>Check Execution</button>
+          </form>
+        </details>
+      </section>
+    </div>
+
+  {# ── Corporate Fundamentals ───────────────────────────────────────────────── #}
+  {# Outside #radar-panels so quote Refresh does not reload it.
+     Asset selection (GET) triggers a fresh read.
+     id="equity-details" is the stable anchor for Details CTA links. #}
+  <div id="equity-details">
+  {% include "radar/equity_fundamentals.html" %}
+  </div>
+
+  {# ── Simulation Result Panels ────────────────────────────────────────────── #}
+  <div id="radar-panels" class="radar-panels">
+    {% if snapshot_identity_note and not view %}
+    <section class="panel panel-error">
+      <h2>Snapshot identity</h2>
+      <p class="state-unavailable">{{ snapshot_identity_note }}</p>
+      <p class="muted small">The snapshot's asset UID is not present in the current Robinhood universe. No asset substitution is performed.</p>
+    </section>
+    {% elif load_error %}
+    <section class="panel panel-error">
+      <h2>Snapshot</h2>
+      <p class="state-unavailable">{{ load_error }}</p>
+    </section>
+    {% elif view %}
+    {% include "radar/panels.html" %}
+    {% else %}
+    <section class="panel panel-idle">
+      <h2>Simulation Panels</h2>
+      <p class="muted">No simulation yet. Select an asset, choose a direction and size, then <strong style="color:#d7dee5;">Check Execution</strong>.</p>
+      <p class="muted small">The panels will show Reference · Executable · Directional GAP · Settlement · Freshness · Evidence for each field.</p>
+      <p class="muted small" style="font-style:italic;">Simulation only — no order is submitted.</p>
+    </section>
+    {% endif %}
+  </div>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,667 @@
+{
+  "schema": "FINCO_RADAR_PROVENANCE_ADAPTATIONS_V2",
+  "predecessor_commit": "5034eadcae0792506d0e37b44b27e2ba78190fb1",
+  "predecessor_tree": "8f0f76c77fddd5cae0a83937699bc9c7df87a807",
+  "source_repo": "Finco-Protocol/FincoProtocol",
+  "source_commit": "707e68b290694c57b470f4a112c190abb3d02ac9",
+  "source_tree": "0d4e8961c33e7bab7aa94077ee4fe9b561061ba2",
+  "entry_count": 82,
+  "entries": [
+    {
+      "source_path": "app/radar_rwa/__init__.py",
+      "source_git_blob": "16e848783112eb1c966d28aa1e3cf7d30d123bde",
+      "target_path": "radar_service/rwa/__init__.py",
+      "target_sha256": "bf80ad4948a137a85ed1cf2620ca129f51aef38cfd1753ee7ab0bcb3dc4af839",
+      "adapted": true,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/bnb_coingecko.py",
+      "source_git_blob": "c4eec776c6e9431c582ffad87e60529eeaca00cb",
+      "target_path": "radar_service/rwa/bnb_coingecko.py",
+      "target_sha256": "1dfc7f1fd2b43957eff0be7e848cbf75a435f1e831769556fdacc93cba6ddbfc",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/bnb_contracts.py",
+      "source_git_blob": "e5181ec58421e28cbe51e160438ca0b37d71d611",
+      "target_path": "radar_service/rwa/bnb_contracts.py",
+      "target_sha256": "4e75c241f825b4de02b04d1f54f75552c864f0304a594726fcd4ca937767e05d",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/bnb_history.py",
+      "source_git_blob": "30efc6a5c0f8f2c4f52510d48a76317e0b382d3d",
+      "target_path": "radar_service/rwa/bnb_history.py",
+      "target_sha256": "2879b61af791802396f4e81ac3a620a4513c37a69f466dab141cec0a08cd0185",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/bnb_identity.py",
+      "source_git_blob": "25aadbeebf9b8d87c59f5f3c49dd282c0206d230",
+      "target_path": "radar_service/rwa/bnb_identity.py",
+      "target_sha256": "c026fa4cc526c837a13a8dd770d5257657ba1b6699aacd034e8b76adf1d4334f",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/bnb_intelligence.py",
+      "source_git_blob": "0570376927f90ed8a9ae5e4cc704e6fadb5514ac",
+      "target_path": "radar_service/rwa/bnb_intelligence.py",
+      "target_sha256": "a83eb651a29f058c56d27c559507e5105ac761e8d3d4a5713f9938a644b78baa",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/bnb_service.py",
+      "source_git_blob": "6be0dc7e4aa123b04e52f530f364ab11322b51ba",
+      "target_path": "radar_service/rwa/bnb_service.py",
+      "target_sha256": "34c7ffe50f46802f3cc9cc32ef5222e46f841af8358ec10206306d4a02f71f1e",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/bnb_snapshot.py",
+      "source_git_blob": "eaef98517304d1887fadfe07689526fe2c23c87d",
+      "target_path": "radar_service/rwa/bnb_snapshot.py",
+      "target_sha256": "5945bd4f1d9f826adde9bd1db51051b454ef644637f5308391e7b0a618e2455d",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/coingecko.py",
+      "source_git_blob": "a1459679394ddce27092b9b45648c014726112ff",
+      "target_path": "radar_service/rwa/coingecko.py",
+      "target_sha256": "4e26e9531f987e2ce6750ec792b166ec4836dad1511b785a816c5e17c7c62597",
+      "adapted": true,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/collector_health.py",
+      "source_git_blob": "aa4c91408f77ac703b31743240652f0afda1c5c8",
+      "target_path": "radar_service/rwa/collector_health.py",
+      "target_sha256": "1fb00c53ff043b15b6c3791fca1fa4c69a32f3ae280607364448e95e238cd7bd",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/contracts.py",
+      "source_git_blob": "0e29de238424e4b0dfc62b3d979d48e3b8201ec2",
+      "target_path": "radar_service/rwa/contracts.py",
+      "target_sha256": "864cfde51e7c8cd83f90b1f5860e96a99908e97b3ce81953070bbc048cc820ed",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/deepstate_chain.py",
+      "source_git_blob": "0ee1ef2b47a8342952694a39715869ed4dcbef0e",
+      "target_path": "radar_service/rwa/deepstate_chain.py",
+      "target_sha256": "197a01d229ae6a74abf207aae655ece79057b2fe7beb8d81cd4cb3f9e3833f47",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/deepstate_collect.py",
+      "source_git_blob": "4c76d0745a0ce2adb5a6f5f05e8c55dbbcedd50a",
+      "target_path": "radar_service/rwa/deepstate_collect.py",
+      "target_sha256": "fd30ddb07141896f7ce5cd1898d04a8882f6ccdd03dd62e7f169232146e48cd9",
+      "adapted": true,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/jev_intelligence/__init__.py",
+      "source_git_blob": "afbc1e0329a077e2866edeb8eda1eee280d9d3c9",
+      "target_path": "radar_service/rwa/jev_intelligence/__init__.py",
+      "target_sha256": "88e2109613eebcaf6a19d3cebeaa2191f5b34b5fd759e78b6c6e96a454f58990",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/jev_intelligence/cache.py",
+      "source_git_blob": "f45ff589381a14e65c9d70fabdc1faa992e4ee38",
+      "target_path": "radar_service/rwa/jev_intelligence/cache.py",
+      "target_sha256": "8c37f29f9c506294460f3a0202723a73ef8991cf6201faaea0f1af77029e244e",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/jev_intelligence/config.py",
+      "source_git_blob": "1711d595a0cc594faf1239a6386222357e023e9e",
+      "target_path": "radar_service/rwa/jev_intelligence/config.py",
+      "target_sha256": "c227b81efcf2932a08df9b4477daba3513460c15353b8081e388511a498edb73",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/jev_intelligence/contracts.py",
+      "source_git_blob": "628e187ec6c5f38deb03a30df29fcdd7e8418335",
+      "target_path": "radar_service/rwa/jev_intelligence/contracts.py",
+      "target_sha256": "6b58c792e03a15c30e528f83e99576e174d7f49dfd0f39899d15a4e4f6c79631",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/jev_intelligence/features.py",
+      "source_git_blob": "b5a0318f9dda912ed77d60351fe6af9ace8aabe7",
+      "target_path": "radar_service/rwa/jev_intelligence/features.py",
+      "target_sha256": "f5453e072c7ff7304ef8d5855c9d69b74e5fbe744275df6f3de6fe74f5bfc66e",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/jev_intelligence/questions.py",
+      "source_git_blob": "dce8c1f3b24e1dcb961d3c6e3aca7671ee81689b",
+      "target_path": "radar_service/rwa/jev_intelligence/questions.py",
+      "target_sha256": "3f45d5f3e26e554a26dd552d63195f85b1b2446b2370433c79ff15fee8f80aeb",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/jev_intelligence/service.py",
+      "source_git_blob": "3a55bb3c1a6235849e15a80da9297fd8066d2f0b",
+      "target_path": "radar_service/rwa/jev_intelligence/service.py",
+      "target_sha256": "7a26c85683142ecf2aabdbbf8c85b9ab497d10864245d1abe3409d0282a0ca5f",
+      "adapted": true,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/jev_intelligence/shadow.py",
+      "source_git_blob": "48f1409a083874771add11552a6e467d12e2f9d9",
+      "target_path": "radar_service/rwa/jev_intelligence/shadow.py",
+      "target_sha256": "65a6e0321d038320bf28ad113a144713f2ee3d04423d5eb2153b99e5769d1fae",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/jev_intelligence/telemetry.py",
+      "source_git_blob": "cefa22fbe9b635161a77f22a4ae0ebf3966ddffe",
+      "target_path": "radar_service/rwa/jev_intelligence/telemetry.py",
+      "target_sha256": "9b4ac93e480f03892e481c4e7903a18a310e325d768db1b7e340ea2693395d7f",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/jev_intelligence/transport.py",
+      "source_git_blob": "bbbb92464da6f1bbeb484d6c32d574955b6e9350",
+      "target_path": "radar_service/rwa/jev_intelligence/transport.py",
+      "target_sha256": "553ba9a2c28506c7f18bd5fc2172c739cc8b27cb93ceaaa7725d23231a02e62e",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/keccak.py",
+      "source_git_blob": "67195cb45c7011d4cbe6ba06eebc809e042b6de5",
+      "target_path": "radar_service/rwa/keccak.py",
+      "target_sha256": "32eb92c7c57114825072e432d88720088e36050e55e7a13ba7f1eacd79011fdd",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/multi_source_collect.py",
+      "source_git_blob": "5d27e9b3a4ba4f306863ab0ea550cce29c2dabe9",
+      "target_path": "radar_service/rwa/multi_source_collect.py",
+      "target_sha256": "88a091ca01a94284bcda6aaf748352ca753cdc70783c7347708e0e739e54f3e2",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/multi_source_evidence.py",
+      "source_git_blob": "2148202bec29edc9c04ea1e20643152f7cc61aa6",
+      "target_path": "radar_service/rwa/multi_source_evidence.py",
+      "target_sha256": "bf4d643552412b659625f4aa37617909832014dd29217b057b6f9a82c4199115",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/r_live_collect.py",
+      "source_git_blob": "ee20090799db94d9468fdd56ffb353906b301934",
+      "target_path": "radar_service/rwa/r_live_collect.py",
+      "target_sha256": "7b711d464e132b961388db6f4ebf61a8f6f4f8d4e092ee2784e1a2149595d833",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/r_live_public_acquisition.py",
+      "source_git_blob": "319f505fc9dfd3c9c516d0e43c695e82abb450e6",
+      "target_path": "radar_service/rwa/r_live_public_acquisition.py",
+      "target_sha256": "bcfb71650ffe0567b4209134e14db99213ff61358a34893dd5b328f41f62cfe9",
+      "adapted": true,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/r_live_service.py",
+      "source_git_blob": "6c0e291db48fd208ecd1dc59e39e16dc03df273e",
+      "target_path": "radar_service/rwa/r_live_service.py",
+      "target_sha256": "8ad969081cc468a6832736a4c853e0590fd9d81b489fb150e31ebcee542c2a1d",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/r_live_snapshot_store.py",
+      "source_git_blob": "4179c296c803f42040b2811dc70ef55a1cdfa1d0",
+      "target_path": "radar_service/rwa/r_live_snapshot_store.py",
+      "target_sha256": "f1c236a78cd9a458fe4711308829cd8d18511e9b9a4f6beafbebdfd6c2f319e6",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/r_live_snapshot_view.py",
+      "source_git_blob": "d54ce69ed4f3277e5334d758b3adf367ceccc166",
+      "target_path": "radar_service/rwa/r_live_snapshot_view.py",
+      "target_sha256": "411018980b30c02670e8788d42c0a2139d836c7454942f1f89d54f1615ffca9b",
+      "adapted": true,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/r_live_warming.py",
+      "source_git_blob": "c29fe4cdfe4e07df6ecd82a2a714f13f4b78d7e9",
+      "target_path": "radar_service/rwa/r_live_warming.py",
+      "target_sha256": "f049ef5095702345f33be7157fc10c6a56fbaf869867b1ad93c510945ce2a6d4",
+      "adapted": true,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/robinhood_registry_snapshot_store.py",
+      "source_git_blob": "5460c8605b76f7bab52fa499a025a330b7265b39",
+      "target_path": "radar_service/rwa/robinhood_registry_snapshot_store.py",
+      "target_sha256": "7a2085b9ff3a76383ed61cd03706ba80bbed1aacdabde02d710069396629e9c6",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/rwa_basis.py",
+      "source_git_blob": "b81040d82e678672a6322573e097c7602ddf82fc",
+      "target_path": "radar_service/rwa/rwa_basis.py",
+      "target_sha256": "cc06986926d4a7102b533f8f1d31cdf3222cc19ff7c0143d3a3e5701f2d9088f",
+      "adapted": true,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/service.py",
+      "source_git_blob": "2c1d68542c98198bf57ed9e271f07df2fcfb2743",
+      "target_path": "radar_service/rwa/service.py",
+      "target_sha256": "54873afbb1f9aa46f256f6ae15b9cb4581d2581ad11cc844c994652ffa15f30e",
+      "adapted": true,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/stock_token_oracle.py",
+      "source_git_blob": "fb74e2e81bc51565a15611be8cde7da73f3c441b",
+      "target_path": "radar_service/rwa/stock_token_oracle.py",
+      "target_sha256": "cb39e50f2ff14c734ff8f2ca57875deec7e458cdbb450e14399edb7d826c4aab",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/stock_token_oracle_registry.py",
+      "source_git_blob": "fc64b260ae86b0ae33cfd259f970368e74fd9132",
+      "target_path": "radar_service/rwa/stock_token_oracle_registry.py",
+      "target_sha256": "6700005f44416171c32413e838be17f45c179c4e50652faad4c42ce201b6a11c",
+      "adapted": false,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/radar_rwa/tokenized_collect.py",
+      "source_git_blob": "031765fc845ddc999f8490b4a2d60810261a349d",
+      "target_path": "radar_service/rwa/tokenized_collect.py",
+      "target_sha256": "8b691745c0b6ff5336d9b63f37ead753749664e7868ab0995793c3f0defa71d9",
+      "adapted": true,
+      "reason": "Namespace relocation app.radar_rwa -> radar_service.rwa (zero Model dependency)"
+    },
+    {
+      "source_path": "app/api/v1_1/r_live_public_router.py",
+      "source_git_blob": "a659bf808e6c2ca45c9ee6795922405df679fc80",
+      "target_path": "radar_service/routers/r_live_public_router.py",
+      "target_sha256": "f96abc02958871d4bd9f88ddc6ac36eb6a49ad38c9583233486333d9f824940b",
+      "adapted": true,
+      "reason": "Relocate Radar v1.1 public router to radar_service.routers"
+    },
+    {
+      "source_path": "app/api/v1_1/rwa_basis_public_router.py",
+      "source_git_blob": "b65674b1d303254fc19012f6245a57c7cbb64e96",
+      "target_path": "radar_service/routers/rwa_basis_public_router.py",
+      "target_sha256": "c795500bcc77fb0b996b93ab92ca805833794a0d79503fe9f261d509912e5601",
+      "adapted": true,
+      "reason": "Relocate Radar v1.1 public router to radar_service.routers"
+    },
+    {
+      "source_path": "app/templates/crypto/overview.html",
+      "source_git_blob": "3dae78268a3066c3d1ccb08010e0da2033326e9b",
+      "target_path": "radar_service/templates/crypto/overview.html",
+      "target_sha256": "36ee5af5a3ba153edc50b58076aac9fa3c194de71af4ff598068d7a8b38e73ee",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/partials/_crypto_domain_nav.html",
+      "source_git_blob": "d8d0150959599a98a41d193b1da169939faa1151",
+      "target_path": "radar_service/templates/partials/_crypto_domain_nav.html",
+      "target_sha256": "127a2c0819d690b8ebac039dab2b428aa70248610f09ad60fd49d8203b45c249",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/partials/_finco_logo.html",
+      "source_git_blob": "f7b0efc3136e579231de02ad612c7c47334ca992",
+      "target_path": "radar_service/templates/partials/_finco_logo.html",
+      "target_sha256": "05b9852bae592d485a333ee77c4b133f529877e7cb8b4179ed50095664b881f7",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/partials/_protocol_nav.html",
+      "source_git_blob": "5c96be276086c38c2ea40db2e609ccab91afe9bd",
+      "target_path": "radar_service/templates/partials/_protocol_nav.html",
+      "target_sha256": "ec0aa675f384659a3c68d90cba056f2d4f07edfd10c372757183de4670e9f6b7",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/crypto.html",
+      "source_git_blob": "bc9ee52de13231269ba4e67d96cdf25e13cd171c",
+      "target_path": "radar_service/templates/radar/crypto.html",
+      "target_sha256": "83d69de55ff4940f1acbc36196500835342f3fd6f93e52f1811ac8a4f497d608",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/crypto_subnav.html",
+      "source_git_blob": "142bd61a552ea081c7d2108fa70b0a75de72cee2",
+      "target_path": "radar_service/templates/radar/crypto_subnav.html",
+      "target_sha256": "16a7ef5e70c364e19f43ab493098659e53a4886d7dab39bf062bdedf49ab3d33",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/derivatives.html",
+      "source_git_blob": "7e5daa82ab793d5af8ae198dd55b9838a4ed85e5",
+      "target_path": "radar_service/templates/radar/derivatives.html",
+      "target_sha256": "e1a5eaeef26055d49cced8fdef80ea822bb317d0a3a97e2e6ca01370e8ab0f85",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/domain_nav.html",
+      "source_git_blob": "3399f5ea78818c23b7d1cc771dc74bdbe98ade63",
+      "target_path": "radar_service/templates/radar/domain_nav.html",
+      "target_sha256": "e546fe5d0e1ee681a0f84d5fe93b933a0f1140059979d1b70b9a55619680edb5",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/economy.html",
+      "source_git_blob": "c8662b61197102e1a3fb52faad9a4be30de7f0b7",
+      "target_path": "radar_service/templates/radar/economy.html",
+      "target_sha256": "c6f94792620bc3e7cb6b668a615bcb321befa0be8a96fb465d5e612c0f50422c",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/equity_fundamentals.html",
+      "source_git_blob": "e5af6cdaf13e19bd46e088178a055863440d4ef0",
+      "target_path": "radar_service/templates/radar/equity_fundamentals.html",
+      "target_sha256": "c0e64dbaf4e31845a411c8ae3b6ec040802714699180820929b6e27bc1eec17a",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/equity_terminal.html",
+      "source_git_blob": "50c8109719d106887391ac2fd2f9c8bb168604e7",
+      "target_path": "radar_service/templates/radar/equity_terminal.html",
+      "target_sha256": "82e53c890990598b685bd1397d4acbe7d67a201e251b01e1461f4f60562becf4",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/featured_board.html",
+      "source_git_blob": "770f451c4f4f457b33b19942b5f424473009d877",
+      "target_path": "radar_service/templates/radar/featured_board.html",
+      "target_sha256": "09d093a181d2d913d05b63e2ba2a47d2f007bfa7a392c3648a70c11b166eef46",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/index.html",
+      "source_git_blob": "25b19b2b488fa4f6f272be0e663f0e41c5227654",
+      "target_path": "radar_service/templates/radar/index.html",
+      "target_sha256": "80046c301da20040ab443f6bcf9bff7c16da620b3c6a5c7b8eb41ee5c006b2ff",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/inspector.html",
+      "source_git_blob": "c7b2f7a0c22ff5063b5ad82c2affb8ccd988a018",
+      "target_path": "radar_service/templates/radar/inspector.html",
+      "target_sha256": "d150f060ac4ecc25aa34a28af5910ccc694c609fc09bc81c06039204b7e4d8d9",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/panels.html",
+      "source_git_blob": "4a94492133ca95e75d58951284057c5d0e25a7d7",
+      "target_path": "radar_service/templates/radar/panels.html",
+      "target_sha256": "1e1fd7521c5600d52d78d488b3d156deaf162c3ddbd8c28fe8b656a326d18883",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/partials/execution_simulator_result.html",
+      "source_git_blob": "c2913444257c42508bf00dde7bbf07af783b26ee",
+      "target_path": "radar_service/templates/radar/partials/execution_simulator_result.html",
+      "target_sha256": "61d7aff1e7c2168887a5f92f3a18fe9d817545956b361e3ec418a6f6fe567f82",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/r_live_detail.html",
+      "source_git_blob": "5c86272aa140e6b595cdebed2078b78206818696",
+      "target_path": "radar_service/templates/radar/r_live_detail.html",
+      "target_sha256": "3ba5920f7acb68b90a1cb1770ee6fba5535b641516a78f1f1919c3df45d822b8",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/r_live_landing.html",
+      "source_git_blob": "051a045b8a0442eeb9c0a1666bc04569796feada",
+      "target_path": "radar_service/templates/radar/r_live_landing.html",
+      "target_sha256": "28e0140228f9ce45b86a582c753cd13918b6743a8921f3ae212a0f1e3101896a",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/rwa.html",
+      "source_git_blob": "982689c2e974734b84b89ba423e65506aec3ee24",
+      "target_path": "radar_service/templates/radar/rwa.html",
+      "target_sha256": "68775ba81f91ffb5ffa195d0e60208f7c6132d6421f7bfdfe117b76438cb2ce9",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/rwa_basis.html",
+      "source_git_blob": "436208272556c2de64d0b684a412b01687a00d3a",
+      "target_path": "radar_service/templates/radar/rwa_basis.html",
+      "target_sha256": "7c8c2e6d911f3b8e719467ced23cf3fa3f63fc0fca35db620640d92b1c39ae60",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/rwa_bnb.html",
+      "source_git_blob": "3daf6909c4027e5d433d357f288062d89ae51604",
+      "target_path": "radar_service/templates/radar/rwa_bnb.html",
+      "target_sha256": "18f82f16be6f28b8061b4447d74d2f5e00115cca6db3fde5ea46fd9a55e1d3b0",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/rwa_tabs.html",
+      "source_git_blob": "5b62f191b1a8d31775636c4992f280de4fe5aa21",
+      "target_path": "radar_service/templates/radar/rwa_tabs.html",
+      "target_sha256": "bd4bab12ac2ac486ca4e858f2c34ab010cbb4f285cbcca3e645077488aaf31d1",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/stablecoins.html",
+      "source_git_blob": "63efb93c82a0989b1029d3cf8a318d6efc304639",
+      "target_path": "radar_service/templates/radar/stablecoins.html",
+      "target_sha256": "df1775861d5f7d53ad6fe5bf27407bb15d05572d2d1047d20c770c9980bbc137",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/tokenized_markets.html",
+      "source_git_blob": "e74ffaab6a9aebea7035a4f7fb9cb6eb1bb6b904",
+      "target_path": "radar_service/templates/radar/tokenized_markets.html",
+      "target_sha256": "cd4ac33e86f140e1d3e94a8d321a8791c5f3647ab5f991557203fdc1313286cf",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/radar/tokenized_markets_detail.html",
+      "source_git_blob": "a2a2492856f1d783f3548589b9a90552c99b84bc",
+      "target_path": "radar_service/templates/radar/tokenized_markets_detail.html",
+      "target_sha256": "26e1b3c55b57af428f95af82a0f4edf953f6d6424207688b3f4f50bcf7991ba1",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/yield/base.html",
+      "source_git_blob": "d127cffcd38590918b155db21122c1891d50904d",
+      "target_path": "radar_service/templates/yield/base.html",
+      "target_sha256": "17ca94cc40bf92b567ddfe0089e18ebb127035e524d126657b0f3232c6b776d6",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/yield/compare.html",
+      "source_git_blob": "9f13b9920e2fba8da69749bdac3d3ecb2cef7e54",
+      "target_path": "radar_service/templates/yield/compare.html",
+      "target_sha256": "2bff0252d36c60d75e2bddf4caf3f0657ec7666e1b240ce9a798baf7605c1e2f",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/yield/detail.html",
+      "source_git_blob": "d4d93de32da242307f72247da9a5023b62c787a1",
+      "target_path": "radar_service/templates/yield/detail.html",
+      "target_sha256": "fcfed1abb5eedaca3e8f2006f5e98aaf7a3ad36f21d510b099197b0512465a35",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/yield/disabled.html",
+      "source_git_blob": "b94208f92483e4fc33f6ccb417ef45a4f53d42c4",
+      "target_path": "radar_service/templates/yield/disabled.html",
+      "target_sha256": "8ecbd019f98f3ae2106e6abfd2a90a47962ba8c16ba4a08e15ff87c4395f7280",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/yield/explore.html",
+      "source_git_blob": "e8b0d08aec6928cd329327354ec0204f0c1d2ef6",
+      "target_path": "radar_service/templates/yield/explore.html",
+      "target_sha256": "9aca58648c8879bed30e762c621f698176f76d6f74c241686d56c4311fa8570f",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/yield/filter_error.html",
+      "source_git_blob": "e3bb27c982a8c72ff1e57bd07ebfeefab45d389a",
+      "target_path": "radar_service/templates/yield/filter_error.html",
+      "target_sha256": "01eff28b20d1bc017e664b4c8709dffe52bc7a4f48c4619bdfd9e03d05767a3a",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "app/templates/yield/monitor.html",
+      "source_git_blob": "e6f5776369337197ddda314ba0cb99766ffecb53",
+      "target_path": "radar_service/templates/yield/monitor.html",
+      "target_sha256": "0faa4c98bc26ced0d245b2cab0220df11375bea4ff99cc3d39ce9f4bec9500c7",
+      "adapted": false,
+      "reason": "Byte-identical Jinja2 template packaged for standalone Radar/Crypto/Yield web"
+    },
+    {
+      "source_path": "finco_yield/access.py",
+      "source_git_blob": "548bb891c42f9319fe59349fc0afd859c5bab45c",
+      "target_path": "finco_yield/access.py",
+      "target_sha256": "f68b038287f5aa39e5d1b772aba2f194f325070db96399e0b01346e1a975fb49",
+      "adapted": true,
+      "reason": "Replace app.protocol.entitlement_evaluator/app.auth with radar_service.entitlements + fail-closed authority error"
+    },
+    {
+      "source_path": "finco_yield/web.py",
+      "source_git_blob": "40b7600ccb4864389943f8ebbca3e220959382c7",
+      "target_path": "finco_yield/web.py",
+      "target_sha256": "7a3e9bc2352d5e4bad7735ba8cd934aa79cb431e3dd44f4b0339223b279cbfdc",
+      "adapted": true,
+      "reason": "Point Jinja2Templates to packaged radar_service/templates and replace app.* auth/entitlement imports"
+    },
+    {
+      "source_path": "finco_yield/evaluate_alerts.py",
+      "source_git_blob": "0d0a7b54b5766b7cf4f8971069034b938bb50f8d",
+      "target_path": "finco_yield/evaluate_alerts.py",
+      "target_sha256": "5bf2c2b4420f586265b42193c52271416351726875c44595239409ce5291b1b0",
+      "adapted": true,
+      "reason": "Replace app.yield_alerts_gateway with finco_yield.alerts_store standalone gateway"
+    },
+    {
+      "source_path": "app/radar_economy/__init__.py",
+      "source_git_blob": "bb360426820c93bbf2491f862ff535e549e0fbf2",
+      "target_path": "radar_service/economy/__init__.py",
+      "target_sha256": "b7a51cf990966559046b544d0ccbc8ba20ead6abf98c4e136842a7943cc1d1af",
+      "adapted": true,
+      "reason": "Relocate Radar-owned app.radar_economy -> radar_service.economy for finco_yield.treasury"
+    },
+    {
+      "source_path": "app/radar_economy/contracts.py",
+      "source_git_blob": "30e1f2b36d29167144185b1b61fc44a1fcce0409",
+      "target_path": "radar_service/economy/contracts.py",
+      "target_sha256": "8b21f86de895148812eaeb5a856374742fa2b72420140464f7a6d2993a48aece",
+      "adapted": false,
+      "reason": "Relocate Radar-owned app.radar_economy -> radar_service.economy for finco_yield.treasury"
+    },
+    {
+      "source_path": "app/radar_economy/fred.py",
+      "source_git_blob": "fb99965f36afe5ba93fac4b0c155336d405aca9d",
+      "target_path": "radar_service/economy/fred.py",
+      "target_sha256": "1daf61e7b2e80432ae49214209edf17e421847ac944d63ebb5263ae4fb067ff7",
+      "adapted": true,
+      "reason": "Relocate Radar-owned app.radar_economy -> radar_service.economy for finco_yield.treasury"
+    },
+    {
+      "source_path": "app/radar_economy/registry.py",
+      "source_git_blob": "c9a6c62c12b9dc80ef28bb0a62268fa7a8f7af41",
+      "target_path": "radar_service/economy/registry.py",
+      "target_sha256": "ac21780bb21c5a5a235c7bfef5f2f3f8710fb43bf9adab2a8d3158721f687a24",
+      "adapted": true,
+      "reason": "Relocate Radar-owned app.radar_economy -> radar_service.economy for finco_yield.treasury"
+    },
+    {
+      "source_path": "app/radar_economy/service.py",
+      "source_git_blob": "bcfb3c844a7f34b0363854feb9a02722c3e1385a",
+      "target_path": "radar_service/economy/service.py",
+      "target_sha256": "5b2a332af9b3a7eb59ee5ad8e8bca52e11dc67f85d20d6872e264e284ca73a8f",
+      "adapted": true,
+      "reason": "Relocate Radar-owned app.radar_economy -> radar_service.economy for finco_yield.treasury"
+    },
+    {
+      "source_path": "app/runtime/client_rate_limit.py",
+      "source_git_blob": "f681369c00ce6977624633f8330ef6dbdc951950",
+      "target_path": "radar_service/rate_limit.py",
+      "target_sha256": "8d3c50869d974eee2e32d627fb26de2fef27c5a5069203f7f0e267551ba0c5ac",
+      "adapted": false,
+      "reason": "Standalone client rate limiter copy for Radar public routes"
+    },
+    {
+      "source_path": "finco_yield/treasury.py",
+      "source_git_blob": "f3f57360f13958c427dc179db42940e728379501",
+      "target_path": "finco_yield/treasury.py",
+      "target_sha256": "3ff64e96d38a36aa91c3e7a69dde15881872fd61e0ecec478f76b80a72313238",
+      "adapted": true,
+      "reason": "Point finco_yield.treasury to radar_service.economy"
+    }
+  ]
+}

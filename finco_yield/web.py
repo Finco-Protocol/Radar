@@ -78,7 +78,8 @@ async def _enforce_premium(request: Request, resource: YieldResource):
 router = APIRouter(prefix="/yield", tags=["yield-beta"])
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
-_templates = Jinja2Templates(directory=str(_REPO_ROOT / "app" / "templates"))
+import radar_service as _radar_svc
+_templates = Jinja2Templates(directory=str(Path(_radar_svc.__file__).resolve().parent / "templates"))
 _templates.env.autoescape = True
 
 
@@ -496,8 +497,8 @@ async def yield_explore(
             "support_state": opportunity.support_state.value,
         })
 
-    from app.auth import generate_csrf_token
-    from app.crypto_access import get_wallet_state
+    from radar_service.entitlements import generate_csrf_token
+    from radar_service.entitlements import get_wallet_state
     from finco_yield.watchlist import list_watchlist_items
 
     user = _request_user(request)
@@ -574,13 +575,13 @@ async def yield_compare(request: Request, uid: list[str] = Query(default=[])):
 
 
 def _request_user(request: Request):
-    from app.auth import resolve_request_session
+    from radar_service.entitlements import resolve_request_session
     return resolve_request_session(request)
 
 
 def _wallet_state_for_request(request: Request) -> str:
     """Wallet presentation state; a wallet-store outage is typed UNAVAILABLE."""
-    from app.crypto_access import get_wallet_state
+    from radar_service.entitlements import get_wallet_state
     user = _request_user(request)
     try:
         state, _ = get_wallet_state(user.user_id if user else None)
@@ -597,7 +598,7 @@ async def _resource_decisions_for_request(request: Request):
     typed unavailable decisions instead of an unhandled 500.  Entitlement
     state stays independent of position detection and vice versa.
     """
-    from app.protocol.entitlement_evaluator import (
+    from radar_service.entitlements import (
         evaluate_all_resources,
         wallet_context_for_session,
     )
@@ -617,13 +618,13 @@ async def _decisions_for_wallet(wallet):
     for expected provider/RPC failures.  An unexpected programming error must
     propagate to logs/tests, never masquerade as "no decisions".
     """
-    from app.protocol.entitlement_evaluator import evaluate_all_resources
+    from radar_service.entitlements import evaluate_all_resources
     return dict(await evaluate_all_resources(wallet))
 
 
 def _wallet_context_fail_soft(user):
     """Canonical wallet context; a wallet-store outage is typed UNAVAILABLE."""
-    from app.protocol.entitlement_evaluator import wallet_context_for_session
+    from radar_service.entitlements import wallet_context_for_session
     try:
         return wallet_context_for_session(user), None
     except (sqlite3.Error, OSError, ValueError) as exc:
@@ -633,7 +634,7 @@ def _wallet_context_fail_soft(user):
 
 def _verified_wallet_fail_soft(user_id):
     """Wallet-store read for the monitor; outage is typed, never a crash."""
-    from app.protocol.wallet_auth import get_verified_wallet
+    from radar_service.entitlements import get_verified_wallet
     try:
         return get_verified_wallet(user_id), None
     except (sqlite3.Error, OSError, ValueError) as exc:
@@ -694,8 +695,8 @@ async def yield_monitor(request: Request):
     propagate and fail visibly in logs.
     """
     _require()
-    from app.auth import generate_csrf_token
-    from app.crypto_access import build_crypto_access_snapshot, get_wallet_state
+    from radar_service.entitlements import generate_csrf_token
+    from radar_service.entitlements import build_crypto_access_snapshot, get_wallet_state
     from finco_yield.watchlist import list_watchlist_items
 
     user = _request_user(request)
@@ -789,7 +790,7 @@ async def prototype_removed():
 
 def _enforce_csrf(request: Request, form) -> JSONResponse | None:
     """Existing FINCO CSRF primitives for cookie-authenticated mutations."""
-    from app.auth import validate_csrf_token
+    from radar_service.entitlements import validate_csrf_token
     token = form.get("csrf_token") if form is not None else None
     if not token:
         token = request.headers.get("x-csrf-token")
@@ -805,7 +806,7 @@ def _enforce_csrf(request: Request, form) -> JSONResponse | None:
 async def yield_access_json(request: Request):
     """Presentation of actual Agent A resource decisions; no C-side evaluator."""
     _require()
-    from app.crypto_access import build_crypto_access_snapshot
+    from radar_service.entitlements import build_crypto_access_snapshot
 
     wallet_state = _wallet_state_for_request(request)
     decisions = await _resource_decisions_for_request(request)
@@ -1143,7 +1144,7 @@ async def transaction_plan(request: Request, opportunity_uid: str):
             409,
         )
 
-    from app.protocol.wallet_auth import get_verified_wallet
+    from radar_service.entitlements import get_verified_wallet
 
     user = _request_user(request)
     if not user:

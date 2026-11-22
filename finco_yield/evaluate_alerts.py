@@ -94,7 +94,7 @@ def run_evaluation(
     discover_users: Callable[[], list[str]] | None = None,
 ) -> dict[str, Any]:
     """Evaluate every canonical watchlist owner once; return the report."""
-    from app.yield_alerts_gateway import YieldAlertsGateway
+    from finco_yield.alerts_store import YieldAlertsStore as YieldAlertsGateway
     from .watchlist import list_watchlist_user_ids
 
     started = now()

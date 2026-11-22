@@ -15,9 +15,9 @@ from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from typing import Any
 
-from app.radar_economy.contracts import EconomySection, EconomyTransform
-from app.radar_economy.fred import FredEconomyProvider
-from app.radar_economy.registry import EconomySeriesDefinition
+from radar_service.economy.contracts import EconomySection, EconomyTransform
+from radar_service.economy.fred import FredEconomyProvider
+from radar_service.economy.registry import EconomySeriesDefinition
 
 TREASURY_SERIES = EconomySeriesDefinition(
     key="yield_treasury_3mo",

@@ -1,0 +1,198 @@
+{% extends "yield/base.html" %}
+{% block title %}{{ o.name }} — FINCO Yield{% endblock %}
+{% block content %}
+<p class="k">FINCO Yield · Opportunity Detail</p>
+<h1>{{ o.name }}</h1>
+<p class="sub">{{ o.protocol }} · {{ chain }} · {{ o.underlying_symbol }}</p>
+
+<div class="nav">
+  <a class="a" href="/yield">← Explore</a>
+  {% if source_href %}
+    <a class="a" href="{{ source_href }}" rel="noopener noreferrer">Open official source ↗</a>
+  {% else %}
+    <span class="a muted-link">Official source unavailable</span>
+  {% endif %}
+  <a class="a" href="/yield/{{ o.uid }}/evidence.json">Evidence JSON</a>
+</div>
+
+<div class="grid">
+  <section class="card">
+    <h2>Headline</h2>
+    <p>Total APY: {{ total_apy }}</p>
+    <p>TVL: {{ tvl }}</p>
+    <p>Evidence: <span class="y-badge">{{ o.source_type.value }}</span></p>
+    <p>Freshness:
+      <span class="y-badge {% if freshness == 'CURRENT' %}y-badge-current{% elif freshness == 'STALE' %}y-badge-stale{% elif freshness in ('INVALID', 'UNAVAILABLE', 'FUTURE_TIMESTAMP') %}y-badge-invalid{% else %}y-badge-unknown{% endif %}">{{ freshness }}</span>
+      <span data-testid="last-observed-detail">· Last observed: {{ last_observed }}</span></p>
+    <p data-testid="data-origin-detail">Data origin:
+      <span class="y-badge {% if origin == 'Source-observed' %}y-badge-live{% else %}y-badge-reference{% endif %}">{{ 'LIVE' if origin == 'Source-observed' else 'REFERENCE' }}</span>
+      {{ origin }}{% if provider != "—" %} · Provider: {{ provider }}{% endif %}{% if o.fetched_at %} · Fetched: {{ fetched }}{% endif %}</p>
+  </section>
+
+  <section class="card">
+    <h2>Yield Source</h2>
+    <p>Base: {{ base_apy }}</p>
+    <p>Rewards: {{ rewards_apy }}</p>
+    <p>Reward dependency: {{ reward_dependency }}</p>
+    <p>Reward-Off APY: {{ reward_off_apy }}</p>
+    <p class="sub">Base is the explicit provider field (netApyExcludingRewards); Rewards APY has no explicit provider field and is never derived by subtraction.</p>
+  </section>
+
+  <section class="card" data-testid="yield-benchmark-stability">
+    <h2>Benchmark &amp; Stability</h2>
+    <p>30d average APY: <span data-testid="apy-30d-avg">{{ apy_30d_avg }}</span>
+      {% if apy_30d_avg_source %}<span class="y-badge">{{ apy_30d_avg_source }}</span>{% endif %}</p>
+    <p>APY volatility (30d sigma): <span data-testid="apy-sigma-30d">{{ sigma_30d }}</span>
+      {% if sigma_30d_source %}<span class="y-badge">{{ sigma_30d_source }}</span>{% endif %}</p>
+    <p>3M Treasury (DGS3MO): <span data-testid="treasury-yield">{{ treasury_yield }}</span>
+      <span class="y-badge">{{ treasury_state }}</span>
+      {% if treasury_period %}<span class="sub">{{ treasury_period }}</span>{% endif %}</p>
+    <p>Yield spread vs Treasury: <span data-testid="treasury-spread">{{ spread_bps }}</span>
+      {% if spread_source %}<span class="y-badge">{{ spread_source }}</span>{% endif %}</p>
+    <p class="sub">Spread exists only when the yield observation AND a fresh Treasury observation both exist — missing evidence stays “—”, never zero.</p>
+  </section>
+
+  <section class="card">
+    <h2>History</h2>
+    <p>Observations: {{ history.observation_count }}</p>
+    <p>Real span: {{ history.history_days }} days</p>
+    <p>Windows: {% if history.available_windows %}{{ history.available_windows|join(", ") }}{% else %}UNAVAILABLE — no fabricated backfill{% endif %}</p>
+    {% if history.observation_count %}
+    <div class="y-chart" data-testid="apy-history-chart">
+      <div class="fo-power-skeleton fo-power-skeleton--block" data-testid="apy-chart-skeleton" style="height:150px"></div>
+      <div data-chart-type="line" data-zero-line="true" id="apy-history-chart"
+           aria-label="APY history, canonical observations only; gaps are missing evidence, never interpolated"
+           style="display:none"></div>
+      <p class="y-subtext" id="apy-chart-note"></p>
+    </div>
+    {% endif %}
+  </section>
+
+  <section class="card" data-testid="yield-intelligence" data-intelligence-status="{{ intelligence.status if intelligence else intelligence_history_status }}">
+    <h2>Yield Intelligence</h2>
+    {% if intelligence and intelligence.available %}
+      <p class="sub">Derived from canonical observation history as of {{ intelligence.as_of }}. Descriptive only: no forecast, no interpolation, no recommendation.</p>
+      <p>Latest observation: <span data-testid="intel-latest-observed">{{ intelligence.latest_observed }}</span> · Freshness: <span data-testid="intel-freshness">{{ intelligence.freshness }}</span></p>
+      <table class="table" data-testid="intel-table">
+        <thead><tr><th></th><th>Current</th>{% for h in intelligence.horizons %}<th>{{ h.name }} Δ</th>{% endfor %}</tr></thead>
+        <tbody>
+          <tr data-testid="intel-apy-row"><th>APY</th><td>{{ intelligence.current_apy }}</td>
+            {% for h in intelligence.horizons %}<td data-testid="intel-apy-delta-{{ h.name }}">{{ h.apy_delta }}{% if h.apy_direction != "UNAVAILABLE" %} <small>{{ h.apy_direction }}</small>{% endif %}</td>{% endfor %}</tr>
+          <tr data-testid="intel-tvl-row"><th>TVL</th><td>{{ intelligence.current_tvl }}</td>
+            {% for h in intelligence.horizons %}<td data-testid="intel-tvl-delta-{{ h.name }}">{{ h.tvl_delta }}{% if h.tvl_delta_pct != "—" %} ({{ h.tvl_delta_pct }}){% endif %}{% if h.tvl_direction != "UNAVAILABLE" %} <small>{{ h.tvl_direction }}</small>{% endif %}</td>{% endfor %}</tr>
+          <tr><th>APY range</th><td>—</td>
+            {% for h in intelligence.horizons %}<td data-testid="intel-apy-range-{{ h.name }}">{{ h.apy_range }}</td>{% endfor %}</tr>
+          <tr><th>TVL range</th><td>—</td>
+            {% for h in intelligence.horizons %}<td data-testid="intel-tvl-range-{{ h.name }}">{{ h.tvl_range }}</td>{% endfor %}</tr>
+          <tr><th>Observations</th><td>—</td>
+            {% for h in intelligence.horizons %}<td data-testid="intel-count-{{ h.name }}">{{ h.observations }} ({{ h.apy_available }} with APY, {{ h.tvl_available }} with TVL)</td>{% endfor %}</tr>
+          <tr><th>APY sigma</th><td>—</td>
+            {% for h in intelligence.horizons %}<td data-testid="intel-sigma-{{ h.name }}">{{ h.apy_sigma }}{% if h.apy_sigma_source %} <small>{{ h.apy_sigma_source }}</small>{% endif %}</td>{% endfor %}</tr>
+          <tr><th>History coverage</th><td>—</td>
+            {% for h in intelligence.horizons %}<td data-testid="intel-coverage-{{ h.name }}">{{ h.coverage }}</td>{% endfor %}</tr>
+        </tbody>
+      </table>
+      <p class="bound">A delta compares the latest observation with the newest observation at or before the horizon cutoff. “—” means unavailable, never zero.</p>
+    {% elif intelligence %}
+      <p data-testid="intel-insufficient">INSUFFICIENT_HISTORY — no canonical observation exists for this opportunity yet. Nothing is shown rather than a placeholder zero.</p>
+    {% elif intelligence_history_status == "HISTORY_NOT_CONFIGURED" %}
+      <p data-testid="intel-not-configured">HISTORY_NOT_CONFIGURED — Yield history is not configured in this environment. Intelligence is unavailable.</p>
+    {% elif intelligence_history_status == "ACCESS_RESTRICTED" %}
+      <p data-testid="intel-restricted">Yield Intelligence is derived from Yield History and follows the existing History access decision for this session.</p>
+    {% else %}
+      <p data-testid="intel-unavailable">HISTORY_UNAVAILABLE — canonical history could not be read. Intelligence is unavailable.</p>
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <h2>Exit</h2>
+    <p>Type: {{ exit_type }}</p>
+    <p>Capacity: {{ capacity }}</p>
+    <p>Fee: {{ fee }}</p>
+    <p>Slippage: {{ slippage }}</p>
+  </section>
+
+  <section class="card">
+    <h2>Dependencies / Risk Flags</h2>
+    <p>No inferred dependency graph. FINCO does not use an opaque risk score.</p>
+    <p>Support: {{ support_state }}</p>
+    <p>APY components: {{ component_state }}</p>
+  </section>
+
+  <section class="card">
+    <h2>Scenario</h2>
+    {% for scenario in scenario_rows %}
+      <p><b>{{ scenario.name }}</b>: {{ scenario.result }} · {{ scenario.note }}</p>
+    {% endfor %}
+  </section>
+
+  <section class="card">
+    <h2>Evidence</h2>
+    <p class="hash">Input: {{ evidence.canonical_input_hash }}</p>
+    <p class="hash">Output: {{ evidence.canonical_output_hash }}</p>
+    <p class="mono">{{ o.source_uri }}</p>
+  </section>
+</div>
+
+<section class="card" style="margin-top:14px">
+  <h2>Enter Position</h2>
+  <p>Canonical destination, underlying and share token are resolved from the exact opportunity UID.</p>
+  {% if not execution_enabled %}
+    <button class="btn" disabled data-testid="yield-execution-disabled">Execution flag OFF</button>
+  {% else %}
+    <form class="action-form" method="post" action="/yield/{{ o.uid }}/plan">
+      <label>Amount in underlying base units
+        <input name="amount" type="number" min="1" required>
+      </label>
+      <button class="btn">Review transaction plan</button>
+    </form>
+  {% endif %}
+  <p class="warn">Bare ERC-4626 previewDeposit is an estimate, not a universal min-shares guarantee. Production signing remains disabled until a protected route is approved.</p>
+</section>
+
+<p class="bound">No custody. No server-side signing. No automatic broadcast. No auto-invest or rebalance.</p>
+{% if history.observation_count %}
+<script>
+(function () {
+  "use strict";
+  // Chart data is the SAME canonical observation history the tables show
+  // (read-only /history.json). Gaps stay gaps; no interpolation, no
+  // synthetic backfill, timestamps never rewritten.
+  var CHART = document.getElementById("apy-history-chart");
+  function start() {
+    if (!CHART || !window.FoCharts) return;
+  fetch("/yield/{{ o.uid }}/history.json", {cache: "no-store"})
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (payload) {
+      var points = (payload && Array.isArray(payload.observations)) ? payload.observations : [];
+      var series = points.map(function (p) {
+        var v = (p.payload && p.payload.apy_total != null) ? Number(p.payload.apy_total) : null;
+        return { t: p.observed_at || "", v: (v != null && isFinite(v)) ? v * 100 : null };
+      });
+      var usable = series.filter(function (p) { return p.v != null; }).length;
+      var skeleton = document.querySelector("[data-testid='apy-chart-skeleton']");
+      if (skeleton && skeleton.parentNode) skeleton.parentNode.removeChild(skeleton);
+      if (usable < 2) {
+        var note = document.getElementById("apy-chart-note");
+        if (note) note.textContent = "Insufficient canonical history for a chart yet — nothing synthesized.";
+        return;
+      }
+      CHART.dataset.points = JSON.stringify(series);
+      window.FoCharts.renderElement(CHART);
+      var note2 = document.getElementById("apy-chart-note");
+      if (note2) note2.textContent = usable + " canonical observations shown · APY in percent · gaps are missing evidence.";
+    })
+    .catch(function () {
+      var skeleton = document.querySelector("[data-testid='apy-chart-skeleton']");
+      if (skeleton && skeleton.parentNode) skeleton.parentNode.removeChild(skeleton);
+      var note = document.getElementById("apy-chart-note");
+      if (note) note.textContent = "History unavailable — no chart is rendered rather than an incomplete one.";
+    });
+  }
+  // overview-charts.js is deferred: start once it has actually loaded.
+  if (window.FoCharts) { start(); }
+  else { window.addEventListener("load", start); }
+})();
+</script>
+{% endif %}
+{% endblock %}
