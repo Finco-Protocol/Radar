@@ -8,11 +8,11 @@ After=network-online.target
 Type=oneshot
 User=finco
 Group=finco
-WorkingDirectory=/opt/finco_staging
-EnvironmentFile=/opt/finco_staging/.env.r-live-collector
+WorkingDirectory=/opt/finco_radar_staging
+EnvironmentFile=/opt/finco_radar_staging/.env.r-live-collector
 Environment=PYTHONDONTWRITEBYTECODE=1
 UMask=0077
-ExecStart=/usr/bin/flock -n -E 75 /opt/finco_staging/storage/r-live-collector.lock /opt/finco_staging/.venv/bin/python -m app.radar_rwa.r_live_collect
+ExecStart=/usr/bin/flock -n -E 75 /opt/finco_radar_staging/storage/r-live-collector.lock /opt/finco_radar_staging/.venv/bin/python -m radar_service.rwa.r_live_collect
 TimeoutStartSec=540
 Restart=no
 StandardOutput=journal
@@ -20,7 +20,7 @@ StandardError=journal
 SyslogIdentifier=finco-staging-r-live-collector
 NoNewPrivileges=true
 ProtectSystem=strict
-ReadWritePaths=/opt/finco_staging/storage
+ReadWritePaths=/opt/finco_radar_staging/storage
 ProtectHome=true
 PrivateTmp=true
 

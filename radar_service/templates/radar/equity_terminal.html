@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if terminal and terminal.company_name %}{{ terminal.company_name }} — Company Terminal{% else %}Company Terminal — FINCO Radar{% endif %}</title>
+  <link rel="stylesheet" href="/static/tokens.css">
+  <link rel="stylesheet" href="/static/radar/radar.css">
+  <link rel="stylesheet" href="/static/css/protocol-shell.css">
+  <script src="/static/radar/vendor/htmx.min.js" defer></script>
+  <script src="/static/radar/market-poll.js" defer></script>
+</head>
+<body class="radar">
+
+{% with proto_active_page="radar" %}
+{% include "partials/_protocol_nav.html" %}
+{% endwith %}
+
+{% set tv = terminal %}
+
+<div class="page-container">
+{# ── Error / unavailable ──────────────────────────────────────────────────── #}
+{% if tv and tv.state in ("ASSET_UNIVERSE_UNAVAILABLE", "ASSET_NOT_FOUND_IN_UNIVERSE", "FUNDAMENTALS_NOT_FOUND", "SOURCE_UNAVAILABLE", "FUNDAMENTALS_CONFIG_INVALID") %}
+<section class="panel panel-error" data-panel="equity-terminal-error">
+  <h1 style="font-size:18px;margin:0 0 12px;font-weight:600;">Company Terminal</h1>
+  <p class="state-unavailable">{{ tv.state }}</p>
+  {% if tv.state == "ASSET_NOT_FOUND_IN_UNIVERSE" %}
+  <p class="muted small">Asset UID was not found in the current Robinhood universe.</p>
+  {% if tv.economic_asset_uid %}<p class="muted small mono">UID: {{ tv.economic_asset_uid }}</p>{% endif %}
+  {% elif tv.state == "FUNDAMENTALS_NOT_FOUND" %}
+  <p class="muted small">Asset exists in the Robinhood universe, but no matching fundamentals record is available.</p>
+  {% if tv.symbol %}<p class="muted small">Symbol: <strong>{{ tv.symbol }}</strong></p>{% endif %}
+  {% if tv.economic_asset_uid %}<p class="muted small mono">UID: {{ tv.economic_asset_uid }}</p>{% endif %}
+  {% elif tv.state == "SOURCE_UNAVAILABLE" %}
+  <p class="muted small">Equity fundamentals database is not configured or is currently unavailable.</p>
+  {% elif tv.state == "FUNDAMENTALS_CONFIG_INVALID" %}
+  <p class="muted small">Equity fundamentals database mode is misconfigured. Check FINCO_EQUITY_FUNDAMENTALS_DB_MODE.</p>
+  {% elif tv.state == "ASSET_UNIVERSE_UNAVAILABLE" %}
+  <p class="muted small">The Robinhood asset universe is currently unavailable. Try again shortly.</p>
+  {% endif %}
+  <p style="margin-top:16px;"><a href="/radar/stocks" class="muted small">← Back to Stocks</a></p>
+</section>
+
+{% elif tv %}
+
+{# ── Company Terminal header ──────────────────────────────────────────────── #}
+<section class="terminal-header" data-market-terminal-uid="{{ tv.economic_asset_uid }}">
+  <div class="terminal-header__nav">
+    <a href="/radar/stocks" class="terminal-header__back">← Stocks</a>
+  </div>
+
+  <div class="terminal-header__title-row">
+    <h1 class="terminal-header__company">{{ tv.company_name }}</h1>
+    {% if tv.identity and tv.identity.available %}
+    <span class="terminal-header__meta">{{ tv.identity.symbol }}
+      {% if tv.identity.underlying_ticker and tv.identity.underlying_ticker != tv.identity.symbol %} · {{ tv.identity.underlying_ticker }}{% endif %}
+      {% if tv.identity.exchange %} · {{ tv.identity.exchange }}{% endif %}
+      {% if tv.identity.currency %} · {{ tv.identity.currency }}{% endif %}
+    </span>
+    {% endif %}
+    <span class="terminal-header__price" data-market-terminal-uid="{{ tv.economic_asset_uid }}">
+      <strong data-market-price>—</strong>
+      <small>Bid <span data-market-bid>—</span></small>
+      <small>Ask <span data-market-ask>—</span></small>
+      <small data-market-state>UNAVAILABLE</small>
+      <small data-market-source>Source unavailable</small>
+    </span>
+  </div>
+
+  <div class="terminal-header__state-strip">
+    {# Availability state chip #}
+    {% if tv.state == "AVAILABLE" %}
+    <span class="state-chip state-chip--available">{{ tv.state }}</span>
+    {% elif tv.state == "PARTIAL" %}
+    <span class="state-chip state-chip--partial">{{ tv.state }}</span>
+    {% else %}
+    <span class="state-chip state-chip--unavail">{{ tv.state }}</span>
+    {% endif %}
+
+    {# Identity state chip #}
+    {% if tv.identity_state == "VERIFIED" %}
+    <span class="state-chip state-chip--verified">IDENTITY_VERIFIED</span>
+    {% elif tv.identity_state == "IDENTITY_MISMATCH" %}
+    <span class="state-chip state-chip--mismatch">IDENTITY_MISMATCH — financial data suppressed</span>
+    {% elif tv.identity_state == "PARTIAL_IDENTITY" %}
+    <span class="state-chip state-chip--partial-identity">PARTIAL_IDENTITY</span>
+    {% endif %}
+  </div>
+
+  {# Asset switcher #}
+  {% if universe and universe|length > 1 %}
+  <div class="terminal-header__switcher">
+    <label class="muted small" for="terminal-asset-switch">Switch asset:</label>
+    <select id="terminal-asset-switch"
+            onchange="location='/radar/equity/'+this.value"
+            class="asset-selector-select"
+            style="padding:4px 8px;width:auto;font-size:12px;">
+      {% for a in universe %}
+      <option value="{{ a.economic_asset_uid }}"{% if a.economic_asset_uid == tv.economic_asset_uid %} selected{% endif %}>
+        {{ a.token_symbol }}{% if a.token_name %} — {{ a.token_name }}{% endif %}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+  {% endif %}
+</section>
+
+{# ── Tab bar ─────────────────────────────────────────────────────────────── #}
+<div class="terminal-tabs" role="tablist">
+  <a href="?tab=overview&timeframe={{ tv.nav.timeframe }}&statement={{ tv.nav.statement }}"
+     class="tab-btn{% if tv.nav.tab == 'overview' %} tab-active{% endif %}" role="tab"
+     aria-selected="{{ 'true' if tv.nav.tab == 'overview' else 'false' }}"
+     onclick="switchTab(event,this,'tab-overview')">
+    Overview
+  </a>
+  <a href="?tab=financials&timeframe={{ tv.nav.timeframe }}&statement={{ tv.nav.statement }}"
+     class="tab-btn{% if tv.nav.tab == 'financials' %} tab-active{% endif %}" role="tab"
+     aria-selected="{{ 'true' if tv.nav.tab == 'financials' else 'false' }}"
+     onclick="switchTab(event,this,'tab-financials')">
+    Financials
+  </a>
+  <a href="?tab=token-market&timeframe={{ tv.nav.timeframe }}&statement={{ tv.nav.statement }}"
+     class="tab-btn{% if tv.nav.tab == 'token-market' %} tab-active{% endif %}" role="tab"
+     aria-selected="{{ 'true' if tv.nav.tab == 'token-market' else 'false' }}"
+     onclick="switchTab(event,this,'tab-token-market')">
+    Token Market
+  </a>
+  <a href="?tab=evidence&timeframe={{ tv.nav.timeframe }}&statement={{ tv.nav.statement }}"
+     class="tab-btn{% if tv.nav.tab == 'evidence' %} tab-active{% endif %}" role="tab"
+     aria-selected="{{ 'true' if tv.nav.tab == 'evidence' else 'false' }}"
+     onclick="switchTab(event,this,'tab-evidence')">
+    Evidence
+  </a>
+</div>
+
+{# ═══════════════════════════════════════════════════════════════════════════ #}
+{# TAB: OVERVIEW                                                               #}
+{# ═══════════════════════════════════════════════════════════════════════════ #}
+<div id="tab-overview" class="tab-panel" style="display:{% if tv.nav.tab == 'overview' %}block{% else %}none{% endif %};">
+
+  {% if tv.ttm_history %}
+  {% set latest = tv.ttm_history[0] %}
+  <section class="panel" aria-label="Key fundamentals">
+    <h2>Key Fundamentals · TTM {{ latest.period_end }}</h2>
+    <div class="terminal-fundamentals-grid">
+      <div><span>Revenue</span><strong>{{ latest.revenues }}</strong></div>
+      <div><span>Revenue growth</span><strong>{{ latest.revenue_growth }}</strong></div>
+      <div><span>Gross margin</span><strong>{{ latest.gross_margin }}</strong></div>
+      <div><span>EBIT margin</span><strong>{{ latest.ebit_margin }}</strong></div>
+      <div><span>Net margin</span><strong>{{ latest.net_margin }}</strong></div>
+      <div><span>ROE</span><strong>{{ latest.return_on_equity }}</strong></div>
+    </div>
+  </section>
+  {% endif %}
+
+  <div class="terminal-overview-grid">
+
+    {# Identity card #}
+    <section class="panel panel-identity" data-panel="identity">
+      <h2>Asset Identity</h2>
+      {% if tv.identity and tv.identity.available %}
+      <dl class="kv">
+        <dt>Symbol</dt><dd>{{ tv.identity.symbol }}</dd>
+        {% if tv.identity.underlying_ticker %}<dt>Ticker</dt><dd>{{ tv.identity.underlying_ticker }}</dd>{% endif %}
+        {% if tv.identity.exchange %}<dt>Exchange</dt><dd>{{ tv.identity.exchange }}</dd>{% endif %}
+        {% if tv.identity.currency %}<dt>Currency</dt><dd>{{ tv.identity.currency }}</dd>{% endif %}
+        {% if tv.identity.security_type %}<dt>Security type</dt><dd>{{ tv.identity.security_type }}</dd>{% endif %}
+        {# CIK/FIGI remain available in Evidence, not the ordinary overview. #}
+      </dl>
+      {% else %}
+      <p class="muted small">Identity data not available.</p>
+      {% endif %}
+    </section>
+
+    {# Reporting context card #}
+    <section class="panel panel-freshness" data-panel="freshness">
+      <h2>Reporting Context</h2>
+      {% if tv.freshness %}
+      {% set fr = tv.freshness %}
+      <dl class="kv">
+        <dt>TTM period end</dt><dd>{{ fr.ttm_period_end }}</dd>
+        <dt>TTM filing date</dt><dd>{{ fr.ttm_filing_date }}</dd>
+        <dt>Latest quarter</dt><dd>{{ fr.quarterly_period_end }}</dd>
+        <dt>Latest annual</dt><dd>{{ fr.annual_period_end }}</dd>
+      </dl>
+      {% else %}
+      <p class="muted small">Reporting context not available.</p>
+      {% endif %}
+    </section>
+
+  </div>
+
+  {# Company profile #}
+  {% if tv.profile %}
+  {% set prof = tv.profile %}
+  <section class="panel panel-profile" data-panel="company-profile" style="margin-top:14px;max-width:700px;">
+    <h2>Company Profile</h2>
+    {% if prof.available %}
+    <dl class="kv">
+      {% for row in prof.rows %}
+      <dt>{{ row.key }}</dt><dd>{{ row.value }}</dd>
+      {% endfor %}
+    </dl>
+    <p class="muted small" style="margin-top:8px;">Profile updated {{ prof.fetched_at }}</p>
+    {% else %}
+    <p class="state-unavailable">PROFILE_UNAVAILABLE</p>
+    {% if prof.parse_error %}<p class="muted small mono">{{ prof.parse_error }}</p>{% endif %}
+    {% endif %}
+  </section>
+  {% endif %}
+
+</div>
+
+{# ═══════════════════════════════════════════════════════════════════════════ #}
+{# TAB: FINANCIALS                                                             #}
+{# ═══════════════════════════════════════════════════════════════════════════ #}
+<div id="tab-financials" class="tab-panel" style="display:{% if tv.nav.tab == 'financials' %}block{% else %}none{% endif %};">
+
+  {# Statement controls #}
+  <div class="stmt-ctrl-row">
+    <div class="stmt-ctrl-group" role="group" aria-label="Timeframe">
+      <span class="stmt-ctrl-label">Timeframe</span>
+      {% for tf in ("annual", "quarterly", "ttm") %}
+      <a href="?tab=financials&timeframe={{ tf }}&statement={{ tv.nav.statement }}"
+         class="stmt-ctrl-btn{% if tv.nav.timeframe == tf %} stmt-ctrl-btn--active{% endif %}">
+        {{ tf | title }}
+      </a>
+      {% endfor %}
+    </div>
+    <div class="stmt-ctrl-group" role="group" aria-label="Statement">
+      <span class="stmt-ctrl-label">Statement</span>
+      {% for stmt, label in (("income","Income"), ("balance","Balance Sheet"), ("cashflow","Cash Flow")) %}
+      <a href="?tab=financials&timeframe={{ tv.nav.timeframe }}&statement={{ stmt }}"
+         class="stmt-ctrl-btn{% if tv.nav.statement == stmt %} stmt-ctrl-btn--active{% endif %}">
+        {{ label }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# Statement matrix (multi-period cross-tab) #}
+  {% if tv.statement_matrix %}
+  {% set sm = tv.statement_matrix %}
+  {% if sm.available and sm.rows %}
+  <p class="muted small" style="margin-bottom:8px;">{{ sm.unit_note }}</p>
+  <div style="overflow-x:auto;">
+    <table class="fin-table">
+      <thead>
+        <tr>
+          <th>Line Item</th>
+          {% for ph in sm.period_headers %}
+          <th>{{ ph.label }}{% if ph.state != 'AVAILABLE' %} <span class="muted" style="font-weight:400;font-size:10px;">({{ ph.state }})</span>{% endif %}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+      {% for row in sm.rows %}
+      <tr class="stmt-row">
+        <td>{{ row.label }}</td>
+        {% for cell in row.cells %}
+        <td{% if cell == '—' %} class="cell-missing"{% endif %}>{{ cell }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% elif sm.state == "SOURCE_DATA_MALFORMED" %}
+  <p class="state-unavailable" style="margin-bottom:16px;">SOURCE_DATA_MALFORMED — Statement payload could not be parsed for the selected period.</p>
+  {% else %}
+  <p class="muted small" style="margin-bottom:16px;">No statement data available for the selected period and timeframe.</p>
+  {% endif %}
+  {% endif %}
+
+  {# TTM summary #}
+  <h3 class="terminal-section-heading" style="margin-top:24px;">TTM (Trailing Twelve Months)</h3>
+  {% if tv.ttm_history %}
+  {% set snap = tv.ttm_history[0] %}
+  <p class="muted small">Period end: {{ snap.period_end }} · Filed: {{ snap.filing_date }}</p>
+  <dl class="kv" style="max-width:600px;margin-bottom:16px;">
+    <dt>Revenue</dt><dd{% if snap.revenues == '—' %} class="muted"{% endif %}>{{ snap.revenues }}</dd>
+    <dt>Revenue growth</dt><dd{% if snap.revenue_growth == '—' %} class="muted"{% endif %}>{{ snap.revenue_growth }}</dd>
+    <dt>Gross margin</dt><dd{% if snap.gross_margin == '—' %} class="muted"{% endif %}>{{ snap.gross_margin }}</dd>
+    <dt>EBIT margin</dt><dd{% if snap.ebit_margin == '—' %} class="muted"{% endif %}>{{ snap.ebit_margin }}</dd>
+    <dt>EBITDA margin</dt><dd{% if snap.ebitda_margin == '—' %} class="muted"{% endif %}>{{ snap.ebitda_margin }}</dd>
+    <dt>Net margin</dt><dd{% if snap.net_margin == '—' %} class="muted"{% endif %}>{{ snap.net_margin }}</dd>
+    <dt>Free cash flow</dt><dd{% if snap.free_cash_flow == '—' %} class="muted"{% endif %}>{{ snap.free_cash_flow }}</dd>
+    <dt>FCF margin</dt><dd{% if snap.fcf_margin == '—' %} class="muted"{% endif %}>{{ snap.fcf_margin }}</dd>
+    <dt>Return on equity</dt><dd{% if snap.return_on_equity == '—' %} class="muted"{% endif %}>{{ snap.return_on_equity }}</dd>
+    <dt>Net debt</dt><dd{% if snap.net_debt == '—' %} class="muted"{% endif %}>{{ snap.net_debt }}</dd>
+    <dt>Debt / equity</dt><dd{% if snap.debt_to_equity == '—' %} class="muted"{% endif %}>{{ snap.debt_to_equity }}</dd>
+  </dl>
+  {% else %}
+  <p class="muted small">No TTM data available.</p>
+  {% endif %}
+
+  {# Annual history #}
+  <h3 class="terminal-section-heading">Annual History</h3>
+  {% if tv.annual_history %}
+  <div style="overflow-x:auto;">
+    <table class="fin-table">
+      <thead>
+        <tr>
+          <th>Period</th>
+          <th>Revenue</th>
+          <th>Rev growth</th>
+          <th>Gross margin</th>
+          <th>Net margin</th>
+          <th>EBIT margin</th>
+          <th>ROE</th>
+          <th>Debt/equity</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for row in tv.annual_history %}
+      <tr class="annual-history-row">
+        <td style="font-weight:600;text-align:left !important;">{{ row.period_end }}</td>
+        <td>{{ row.revenues }}</td>
+        <td>{{ row.revenue_growth }}</td>
+        <td>{{ row.gross_margin }}</td>
+        <td>{{ row.net_margin }}</td>
+        <td>{{ row.ebit_margin }}</td>
+        <td>{{ row.return_on_equity }}</td>
+        <td>{{ row.debt_to_equity }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="muted small">No annual history available.</p>
+  {% endif %}
+
+  {# Quarterly history #}
+  <h3 class="terminal-section-heading">Quarterly History</h3>
+  {% if tv.quarterly_history %}
+  <div style="overflow-x:auto;">
+    <table class="fin-table">
+      <thead>
+        <tr>
+          <th>Period</th>
+          <th style="text-align:left;">Q</th>
+          <th>Revenue</th>
+          <th>Rev growth</th>
+          <th>Gross margin</th>
+          <th>Net margin</th>
+          <th>EBIT margin</th>
+          <th>ROE</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for row in tv.quarterly_history %}
+      <tr class="quarterly-history-row">
+        <td style="font-weight:600;text-align:left !important;">{{ row.period_end }}</td>
+        <td style="text-align:left !important;">{{ row.fiscal_quarter }}</td>
+        <td>{{ row.revenues }}</td>
+        <td>{{ row.revenue_growth }}</td>
+        <td>{{ row.gross_margin }}</td>
+        <td>{{ row.net_margin }}</td>
+        <td>{{ row.ebit_margin }}</td>
+        <td>{{ row.return_on_equity }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="muted small">No quarterly history available.</p>
+  {% endif %}
+
+</div>
+
+{# ═══════════════════════════════════════════════════════════════════════════ #}
+{# TAB: TOKEN MARKET                                                           #}
+{# ═══════════════════════════════════════════════════════════════════════════ #}
+<div id="tab-token-market" class="tab-panel" style="display:{% if tv.nav.tab == 'token-market' %}block{% else %}none{% endif %};">
+
+  <section class="panel panel-token-market" data-panel="token-market">
+    <h2>Token Market</h2>
+
+    <details class="radar-market-details" style="margin-bottom:18px;" open><summary>Market details</summary>
+      <dl class="kv" style="max-width:520px;">
+        <dt>Reference Price</dt>
+        <dd><span data-market-tab-price data-market-price style="font-variant-numeric:tabular-nums;">—</span></dd>
+        <dt>Bid</dt>
+        <dd><span data-market-bid style="font-variant-numeric:tabular-nums;">—</span></dd>
+        <dt>Ask</dt>
+        <dd><span data-market-ask style="font-variant-numeric:tabular-nums;">—</span></dd>
+        <dt>State</dt>
+        <dd><span data-market-tab-state class="muted small">Waiting for official reference.</span></dd>
+        <dt>Observed</dt>
+        <dd><span data-market-tab-observed class="muted small">—</span></dd>
+      </dl>
+    </details>
+
+    {% if tv.selected_token %}
+    <details style="margin-bottom:20px;">
+      <summary class="muted small" style="cursor:pointer;">Token identity</summary>
+      <dl class="kv" style="max-width:600px;margin-top:8px;">
+        <dt>Token symbol</dt><dd>{{ tv.selected_token.symbol }}</dd>
+        <dt>Economic asset UID</dt><dd class="mono">{{ tv.selected_token.economic_asset_uid }}</dd>
+        <dt>Chain ID</dt><dd class="mono">{{ tv.selected_token.chain_id }}</dd>
+        <dt>Contract address</dt><dd class="mono">{{ tv.selected_token.contract_address }}</dd>
+      </dl>
+    </details>
+    {% endif %}
+
+    <section class="execution-coming-soon" aria-label="Execution simulation status">
+      <h3>Execution Simulation — Coming soon</h3>
+      <span class="radar-legacy-hook">Execution Simulator</span>
+      <p>Live execution routing is not enabled in this environment. Market reference and company evidence remain available.</p>
+      <p class="muted small">Simulation only — no order is submitted.</p>
+      <details class="execution-technical-details" open><summary>Technical details</summary>
+        <p class="mono small">Read-only product mode · no wallet · no signing · no transaction submission.</p>
+        <form method="post" action="/radar/equity/{{ tv.economic_asset_uid }}/simulate" hx-post="/radar/equity/{{ tv.economic_asset_uid }}/simulate" hx-target="#sim-result-{{ tv.economic_asset_uid }}" hx-swap="innerHTML" aria-label="Legacy execution simulation controls — unavailable">
+          <label><input type="radio" name="direction" value="BUY" checked disabled> Simulate Buy</label>
+          <label><input type="radio" name="direction" value="SELL" disabled> Simulate Sell</label>
+          <label><input type="radio" name="size" value="100" checked disabled> $100</label>
+          <label><input type="radio" name="size" value="1000" disabled> $1,000</label>
+          <button type="submit" class="refresh-btn" disabled>Unavailable — Coming soon</button>
+        </form>
+        <div id="sim-result-{{ tv.economic_asset_uid }}"></div>
+      </details>
+    </section>
+  </section>
+
+</div>
+
+{# ═══════════════════════════════════════════════════════════════════════════ #}
+{# TAB: EVIDENCE                                                               #}
+{# ═══════════════════════════════════════════════════════════════════════════ #}
+<div id="tab-evidence" class="tab-panel" style="display:{% if tv.nav.tab == 'evidence' %}block{% else %}none{% endif %};">
+
+  {% if tv.identity %}
+  <section class="panel" aria-label="Market identity evidence">
+    <h2>Market Identity</h2>
+    <dl class="kv">
+      <dt>Economic asset UID</dt><dd class="mono">{{ tv.economic_asset_uid }}</dd>
+      {% if tv.identity.cik %}<dt>CIK</dt><dd class="mono">{{ tv.identity.cik }}</dd>{% endif %}
+      {% if tv.identity.figi %}<dt>FIGI</dt><dd class="mono">{{ tv.identity.figi }}</dd>{% endif %}
+      {% if tv.selected_token %}
+      <dt>Chain</dt><dd>{{ tv.selected_token.chain_id }}</dd>
+      <dt>Contract</dt><dd class="mono">{{ tv.selected_token.contract_address }}</dd>
+      {% endif %}
+    </dl>
+  </section>
+  {% endif %}
+
+  {# Profile evidence #}
+  <section class="panel panel-profile-evidence" data-panel="profile-evidence">
+    <h2>Profile Evidence</h2>
+    {% if tv.profile_evidence and tv.profile_evidence.available %}
+    {% set pe = tv.profile_evidence %}
+    <dl class="kv" style="max-width:640px;">
+      <dt>Provider</dt><dd>{{ pe.provider }}</dd>
+      <dt>Source contract</dt><dd class="mono" style="word-break:break-all;">{{ pe.source_contract }}</dd>
+      <dt>Fetched at</dt><dd>{{ pe.fetched_at }}</dd>
+      <dt>Payload hash</dt><dd class="mono" style="word-break:break-all;">{{ pe.payload_hash }}</dd>
+    </dl>
+    {% else %}
+    <p class="muted small">No profile evidence available.</p>
+    {% endif %}
+  </section>
+
+  {# Snapshot evidence #}
+  <section class="panel panel-snapshot-evidence" data-panel="snapshot-evidence" style="margin-top:14px;">
+    <h2>Snapshot Evidence</h2>
+    <p class="muted small" style="margin-bottom:10px;">Financial reporting periods available in the equity fundamentals database.</p>
+    {% if tv.snapshot_evidence %}
+    {# Show uniform provider/contract once at top when all periods share the same source #}
+    {% if tv.snapshot_evidence_meta and tv.snapshot_evidence_meta.uniform_provider %}
+    <p class="muted small" style="margin-bottom:8px;">
+      Source: <strong>{{ tv.snapshot_evidence_meta.uniform_provider }}</strong>
+      {% if tv.snapshot_evidence_meta.uniform_source_contract %}
+      · <span class="mono">{{ tv.snapshot_evidence_meta.uniform_source_contract }}</span>
+      {% endif %}
+      · {{ tv.snapshot_evidence_meta.row_count }} period{{ 's' if tv.snapshot_evidence_meta.row_count != 1 else '' }}
+    </p>
+    {% endif %}
+    <div style="overflow-x:auto;">
+      <table class="evidence-table">
+        <thead>
+          <tr>
+            <th>Timeframe</th>
+            <th>FY</th>
+            <th>Q</th>
+            <th>Period end</th>
+            <th>Filing date</th>
+            {% if not (tv.snapshot_evidence_meta and tv.snapshot_evidence_meta.uniform_provider) %}<th>Provider</th>{% endif %}
+            {% if not (tv.snapshot_evidence_meta and tv.snapshot_evidence_meta.uniform_source_contract) %}<th>Source contract</th>{% endif %}
+            <th>Fetched at</th>
+            <th>Normalised at</th>
+            <th>Payload hash</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for ev in tv.snapshot_evidence %}
+        <tr class="snapshot-evidence-row">
+          <td>{{ ev.timeframe }}</td>
+          <td>{{ ev.fiscal_year }}</td>
+          <td>{{ ev.fiscal_quarter }}</td>
+          <td class="mono">{{ ev.period_end }}</td>
+          <td class="mono">{{ ev.filing_date }}</td>
+          {% if not (tv.snapshot_evidence_meta and tv.snapshot_evidence_meta.uniform_provider) %}<td>{{ ev.provider }}</td>{% endif %}
+          {% if not (tv.snapshot_evidence_meta and tv.snapshot_evidence_meta.uniform_source_contract) %}<td>{{ ev.source_contract }}</td>{% endif %}
+          <td class="mono" title="{{ ev.fetched_at }}">{{ ev.fetched_at_display | default(ev.fetched_at) }}</td>
+          <td class="mono" title="{{ ev.normalized_at }}">{{ ev.normalized_at_display | default(ev.normalized_at) }}</td>
+          <td class="mono" style="word-break:break-all;max-width:120px;">{{ ev.payload_hash }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="muted small">No snapshot evidence available.</p>
+    {% endif %}
+  </section>
+
+  {# Source lineage — collapsed by default to reduce visual noise #}
+  <section class="panel panel-lineage" data-panel="source-lineage" style="margin-top:14px;">
+    <details>
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;padding:4px 0;">Source Lineage</summary>
+      <p class="muted small" style="margin:8px 0 10px;">Acquisition and normalisation chain for this asset's financial data.</p>
+      {% if tv.lineage %}
+      <table class="evidence-table" style="width:100%;">
+        <thead>
+          <tr>
+            <th>Lineage ID</th>
+            <th>Stage</th>
+            <th>Provider</th>
+            <th>Fetched</th>
+            <th>Payload hash</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for lin in tv.lineage %}
+        <tr class="lineage-row">
+          <td class="mono">{{ lin.lineage_id }}</td>
+          <td>{{ lin.stage }}</td>
+          <td>{{ lin.provider }}</td>
+          <td class="mono" style="font-size:10.5px;">{{ lin.fetched_at }}</td>
+          <td class="mono" style="font-size:10.5px;word-break:break-all;">
+            {% if lin.payload_hash != '—' %}{{ lin.payload_hash[:16] }}…{% else %}—{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="muted small">No lineage records available.</p>
+      {% endif %}
+    </details>
+  </section>
+
+  {# Dividends #}
+  <section class="panel panel-dividends" data-panel="dividends" style="margin-top:14px;">
+    <h2>Dividends</h2>
+    {% if tv.dividends %}
+    <div style="overflow-x:auto;">
+      <table class="evidence-table" style="width:auto;">
+        <thead>
+          <tr>
+            <th>Declaration</th>
+            <th>Ex-div</th>
+            <th>Record</th>
+            <th>Pay</th>
+            <th style="text-align:right;">Amount</th>
+            <th>Currency</th>
+            <th style="text-align:right;">Freq</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for d in tv.dividends %}
+        <tr class="dividend-row">
+          <td>{{ d.declaration_date }}</td>
+          <td>{{ d.ex_dividend_date }}</td>
+          <td>{{ d.record_date }}</td>
+          <td>{{ d.pay_date }}</td>
+          <td style="text-align:right;font-variant-numeric:tabular-nums;">{{ d.cash_amount }}</td>
+          <td>{{ d.currency }}</td>
+          <td style="text-align:right;">{{ d.frequency }}</td>
+          <td>{{ d.dividend_type }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="muted small">No dividend records available.</p>
+    {% endif %}
+  </section>
+
+  {# Stock splits #}
+  <section class="panel panel-splits" data-panel="splits" style="margin-top:14px;">
+    <h2>Stock Splits</h2>
+    {% if tv.splits %}
+    <table class="evidence-table" style="width:auto;">
+      <thead>
+        <tr>
+          <th>Execution date</th>
+          <th style="text-align:right;">From</th>
+          <th style="text-align:right;">To</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for s in tv.splits %}
+      <tr class="split-row">
+        <td>{{ s.execution_date }}</td>
+        <td style="text-align:right;">{{ s.split_from }}</td>
+        <td style="text-align:right;">{{ s.split_to }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="muted small">No stock split records available.</p>
+    {% endif %}
+  </section>
+
+</div>
+
+{% else %}
+<section class="panel panel-error" data-panel="equity-terminal-error">
+  <h1 style="font-size:18px;margin:0 0 12px;font-weight:600;">Company Terminal</h1>
+  <p class="state-unavailable">UNAVAILABLE</p>
+  <p style="margin-top:16px;"><a href="/radar/stocks" class="muted small">← Back to Stocks</a></p>
+</section>
+{% endif %}
+
+</div>
+
+<script>
+function switchTab(evt, btn, targetId) {
+  evt.preventDefault();
+  var panels = document.querySelectorAll('.tab-panel');
+  for (var i = 0; i < panels.length; i++) {
+    panels[i].style.display = 'none';
+  }
+  var tabs = document.querySelectorAll('.tab-btn');
+  for (var j = 0; j < tabs.length; j++) {
+    tabs[j].classList.remove('tab-active');
+    tabs[j].setAttribute('aria-selected', 'false');
+  }
+  var panel = document.getElementById(targetId);
+  if (panel) panel.style.display = 'block';
+  btn.classList.add('tab-active');
+  btn.setAttribute('aria-selected', 'true');
+}
+</script>
+
+</body>
+</html>

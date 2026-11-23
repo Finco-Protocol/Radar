@@ -1,15 +1,22 @@
-"""Runnable standalone FINCO Radar FastAPI service host (Option B).
+"""Runnable standalone FINCO Radar / Crypto / Yield FastAPI service host (Option B).
 
 Mounts:
-- GET /health, GET /ready (fail-closed asset & contract readiness check)
+- GET /health, GET /ready (honest dependency, template, registry, and snapshot-mode readiness)
 - Authentic finco_radar.terminal.web R6 terminal (/radar, /radar/api/snapshot, /radar/static/*)
-- GET /api/v1/radar/session-context (authenticated via Model host internal introspection)
-- GET /api/v1.1/radar/bridge-contract (read-only Model <-> Market Bridge v1 descriptor)
+- Authentic finco_yield.web router (/yield, /yield/* — all 14 Yield web & API routes)
+- Authentic R-LIVE public API (/api/v1.1/radar/r-live/*)
+- Authentic RWA-Basis public API (/api/v1.1/radar/rwa-basis*)
+- Authentic Crypto Tokenized & Yield APIs (/api/v1/crypto/tokenized*, /api/v1/crypto/yield*)
+- GET /api/v1/radar/session-context (strict typed fail-closed Model host introspection;
+  cookies match FincoProtocol app/auth.py: finco_session + finco_demo)
+- GET /api/v1.1/radar/bridge-contract & GET /api/v1.1/radar/bridge/model-keys (read-only bridge)
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
 from dataclasses import replace
+from datetime import datetime, timezone
+import os
+from pathlib import Path
 from typing import Callable, Optional
 
 from fastapi import Cookie, FastAPI, HTTPException
@@ -29,34 +36,97 @@ from finco_radar.terminal.contracts import (
 )
 from finco_radar.terminal.presenter import reconstruct_terminal_digest
 from finco_radar.terminal.web import ROOT as TERMINAL_ROOT, create_radar_app
-from radar_service.auth_client import IntrospectFn, introspect_with_model_host
-from radar_service.bridge_contract import BRIDGE_CONTRACT_V1
+from finco_yield.registry import load_bundled_registry
+from finco_yield.web import router as yield_web_router
+from radar_service.auth_client import (
+    COOKIE_NAME,
+    DEMO_COOKIE_NAME,
+    IntrospectFn,
+    IntrospectionUnavailableError,
+    introspect_with_model_host,
+)
+from radar_service.bridge_contract import (
+    BRIDGE_CONTRACT_V1,
+    BridgeUnavailableError,
+    fetch_model_public_keys,
+)
+from radar_service.routers.crypto_public_router import router as crypto_public_router
+from radar_service.routers.r_live_public_router import router as r_live_public_router
+from radar_service.routers.rwa_basis_public_router import router as rwa_basis_public_router
+
+TEMPLATES_ROOT = Path(__file__).resolve().parent / "templates"
 
 
-def _default_offline_snapshot() -> TerminalSnapshot:
-    """Deterministic offline-safe initial snapshot (no live RPC/provider call on boot)."""
+def _is_staging_or_prod() -> bool:
+    return os.getenv("FINCO_ENV", "").strip().lower() in ("prod", "production", "staging")
+
+
+def _is_offline_fixture_mode() -> bool:
+    if _is_staging_or_prod():
+        return False
+    return os.getenv("FINCO_RADAR_OFFLINE_FIXTURE", "0").strip().lower() in ("1", "true", "yes", "on")
+
+
+def _offline_fixture_snapshot() -> TerminalSnapshot:
+    """Explicit offline test fixture snapshot (used ONLY when FINCO_RADAR_OFFLINE_FIXTURE=1)."""
     v = DisplayValue("0", "0.00")
     snap = TerminalSnapshot(
         TerminalStatus.TERMINAL_OK,
         datetime(2026, 11, 22, 0, 0, 0, tzinfo=timezone.utc),
-        AssetHeader("OFFLINE", "Offline Standby Asset", "offline-standby", 1, "0x0", "1:0x0", "standby"),
+        AssetHeader("OFFLINE_FIXTURE", "Offline Test Fixture Asset", "offline-fixture", 1, "0x0", "1:0x0", "fixture"),
         ReferencePanel(
             v, v, v, v, v, "2026-11-22T00:00:00+00:00", v,
-            "STANDBY", "NOT_HALTED", "CURRENT", "UNRESOLVED", "NONE", "CURRENT",
-            True, (), "Offline deterministic standby snapshot",
+            "FIXTURE", "NOT_HALTED", "CURRENT", "UNRESOLVED", "NONE", "CURRENT",
+            True, (), "Explicit offline fixture mode (FINCO_RADAR_OFFLINE_FIXTURE=1)",
         ),
         (), (),
         LiquidityPanel(
             v, v, v, "WITHIN_POLICY", "WITHIN_POLICY", v, v,
-            False, False, "standby", "standby", "standby", "standby",
+            False, False, "fixture", "fixture", "fixture", "fixture",
             "COST_INCLUSION_UNRESOLVED", "Provider cost inclusion is unresolved.",
         ),
-        SignalPanel(False, "SIGNALS SUPPRESSED", ("OFFLINE_STANDBY",), (), "NO MATERIAL SIGNAL"),
-        HistoryPanel(False, "No previous comparable observation available", (), "standby"),
-        (CandidateAuditEntry("OFFLINE", "SELECTED"),),
-        "standby", "", "standalone-boot",
+        SignalPanel(False, "SIGNALS SUPPRESSED", ("OFFLINE_FIXTURE_MODE",), (), "NO MATERIAL SIGNAL"),
+        HistoryPanel(False, "No previous comparable observation available", (), "fixture"),
+        (CandidateAuditEntry("OFFLINE_FIXTURE", "SELECTED"),),
+        "fixture", "", "offline-fixture",
     )
     return replace(snap, terminal_snapshot_digest=reconstruct_terminal_digest(snap))
+
+
+def _unconfigured_live_snapshot() -> TerminalSnapshot:
+    """Honest degraded snapshot when no live persisted snapshot store is populated yet.
+
+    NEVER masquerades as TERMINAL_OK production data.
+    """
+    v = DisplayValue("0", "0.00")
+    now = datetime.now(timezone.utc)
+    snap = TerminalSnapshot(
+        TerminalStatus.TERMINAL_INPUT_INVALID,
+        now,
+        AssetHeader("UNCONFIGURED", "No Persisted Snapshot Loaded", "unconfigured", 1, "0x0", "1:0x0", "unconfigured"),
+        ReferencePanel(
+            v, v, v, v, v, now.isoformat(), v,
+            "UNAVAILABLE", "NOT_HALTED", "STALE", "UNRESOLVED", "NONE", "STALE",
+            False, ("NO_PERSISTED_SNAPSHOT",), "No persisted collector snapshot available; run r_live_collect.",
+        ),
+        (), (),
+        LiquidityPanel(
+            v, v, v, "WITHIN_POLICY", "WITHIN_POLICY", v, v,
+            False, False, "unavailable", "unavailable", "unavailable", "unavailable",
+            "COST_INCLUSION_UNRESOLVED", "No live snapshot loaded.",
+        ),
+        SignalPanel(False, "SIGNALS SUPPRESSED", ("NO_PERSISTED_SNAPSHOT",), (), "NO MATERIAL SIGNAL"),
+        HistoryPanel(False, "No previous comparable observation available", (), "unconfigured"),
+        (CandidateAuditEntry("UNCONFIGURED", "NO_SNAPSHOT"),),
+        "unconfigured", "", "live-store-empty",
+    )
+    return replace(snap, terminal_snapshot_digest=reconstruct_terminal_digest(snap))
+
+
+def _default_runtime_snapshot() -> TerminalSnapshot:
+    if _is_offline_fixture_mode():
+        return _offline_fixture_snapshot()
+    return _unconfigured_live_snapshot()
 
 
 def create_radar_service_app(
@@ -64,60 +134,154 @@ def create_radar_service_app(
     snapshot_provider: Optional[Callable[[], TerminalSnapshot]] = None,
     introspector: Optional[IntrospectFn] = None,
 ) -> FastAPI:
-    provider = snapshot_provider or _default_offline_snapshot
+    provider = snapshot_provider or _default_runtime_snapshot
     auth_fn = introspector or introspect_with_model_host
 
     app = create_radar_app(provider)
     app.title = "FINCO Radar Standalone Service"
-    app.version = "0.1.0"
+    app.version = "0.2.0"
+    app.state.introspector = auth_fn
+
+    # Mount full standalone Radar / R-LIVE / RWA-Basis / Crypto / Yield routers
+    app.include_router(yield_web_router)
+    app.include_router(r_live_public_router, prefix="/api/v1.1")
+    app.include_router(rwa_basis_public_router, prefix="/api/v1.1")
+    app.include_router(crypto_public_router)
 
     @app.get("/health")
     def health():
-        return {"status": "ok", "service": "finco-radar", "version": "0.1.0"}
+        return {
+            "status": "ok",
+            "service": "finco-radar",
+            "version": app.version,
+            "mode": "offline_fixture" if _is_offline_fixture_mode() else "live_store",
+        }
 
     @app.get("/ready")
     def ready():
-        required_assets = (
+        import sqlite3
+        from radar_service.rwa.r_live_snapshot_store import (
+            read_snapshots_readonly,
+            snapshot_exists_readonly,
+        )
+
+        required_files = [
             TERMINAL_ROOT / "templates" / "radar_terminal.html",
-            TERMINAL_ROOT / "static" / "radar_terminal.css",
             TERMINAL_ROOT / "static" / "radar_terminal.js",
-        )
-        missing = [p.name for p in required_assets if not p.is_file()]
+            TERMINAL_ROOT / "static" / "radar_terminal.css",
+            TEMPLATES_ROOT / "yield" / "explore.html",
+            TEMPLATES_ROOT / "yield" / "base.html",
+        ]
+        missing = [p.name for p in required_files if not p.is_file()]
         if missing:
-            return JSONResponse(status_code=503, content={"ready": False, "missing_assets": missing})
-        probe_env = build_evidence_envelope(
-            surface="finco_radar.service.ready",
-            evidence_type="readiness-probe",
-            payload={"service": "finco-radar"},
-            authority_refs=("finco_radar",),
+            raise HTTPException(status_code=503, detail=f"Missing packaged assets: {missing}")
+
+        env_probe = build_evidence_envelope(surface="radar", evidence_type="readiness_probe", payload={"probe": "ready"})
+        yield_count = len(load_bundled_registry().all())
+        auth_configured = bool(
+            os.getenv("FINCO_MODEL_INTERNAL_AUTH_URL", "").strip()
+            and os.getenv("FINCO_INTERNAL_AUTH_INTROSPECT_TOKEN", "").strip()
         )
+        is_prod = os.getenv("FINCO_ENV", "").strip().lower() in ("prod", "production", "staging")
+        r_live_db = os.getenv("R_LIVE_SNAPSHOT_DB_PATH", "").strip()
+        persisted_snapshot_count = 0
+
+        if _is_offline_fixture_mode() and not is_prod:
+            snapshot_mode = "OFFLINE_FIXTURE"
+        elif r_live_db and Path(r_live_db).is_file():
+            try:
+                conn = sqlite3.connect(f"file:{r_live_db}?mode=ro", uri=True)
+                try:
+                    conn.execute("SELECT name FROM sqlite_master LIMIT 1").fetchall()
+                finally:
+                    conn.close()
+                if not snapshot_exists_readonly(path=r_live_db):
+                    snapshot_mode = "LIVE_STORE_UNPOPULATED"
+                else:
+                    rows = read_snapshots_readonly(path=r_live_db)
+                    persisted_snapshot_count = len(rows)
+                    snapshot_mode = "LIVE_STORE_AVAILABLE" if persisted_snapshot_count > 0 else "LIVE_STORE_UNPOPULATED"
+            except (sqlite3.DatabaseError, ValueError) as exc:
+                raise HTTPException(status_code=503, detail=f"LIVE_STORE_CORRUPT: {exc}") from exc
+        else:
+            snapshot_mode = "LIVE_STORE_UNPOPULATED"
+
         return {
-            "ready": True,
+            "status": "ready",
             "service": "finco-radar",
-            "envelope_schema": probe_env.schema,
+            "envelope_schema": env_probe.schema,
+            "yield_registry_count": yield_count,
+            "persisted_snapshot_count": persisted_snapshot_count,
+            "auth_authority_configured": auth_configured,
+            "snapshot_mode": snapshot_mode,
         }
 
+    @app.get("/api/v1/radar/assets")
+    def list_radar_assets():
+        from finco_radar.authority.r_live_policy import APPROVED_RLIVE_ASSETS
+        items = [
+            {
+                "economic_asset_uid": p.economic_asset_uid,
+                "canonical_id": p.asset_key.canonical_id,
+                "symbol": p.symbol,
+                "authority_version": p.authority_version,
+            }
+            for p in APPROVED_RLIVE_ASSETS.values()
+        ]
+        return JSONResponse({"schema": "finco.radar.assets.v1", "count": len(items), "items": items})
+
+    @app.get("/api/v1/radar/assets/{economic_asset_uid}")
+    def get_radar_asset(economic_asset_uid: str):
+        from finco_radar.authority.r_live_policy import APPROVED_RLIVE_ASSETS
+        for p in APPROVED_RLIVE_ASSETS.values():
+            if p.economic_asset_uid == economic_asset_uid or p.symbol.lower() == economic_asset_uid.lower():
+                return JSONResponse({
+                    "schema": "finco.radar.asset.detail.v1",
+                    "economic_asset_uid": p.economic_asset_uid,
+                    "canonical_id": p.asset_key.canonical_id,
+                    "symbol": p.symbol,
+                    "authority_version": p.authority_version,
+                })
+        raise HTTPException(status_code=404, detail="Unknown Radar economic asset")
+
     @app.get("/api/v1/radar/session-context")
-    def radar_session_context(
-        finco_session: Optional[str] = Cookie(default=None),
-        finco_demo_session: Optional[str] = Cookie(default=None),
+    def session_context(
+        finco_session: Optional[str] = Cookie(default=None, alias=COOKIE_NAME),
+        finco_demo: Optional[str] = Cookie(default=None, alias=DEMO_COOKIE_NAME),
     ):
-        ident = auth_fn(session_token=finco_session, demo_session_token=finco_demo_session)
-        if ident.error and ident.error.startswith(("INTROSPECT_TRANSPORT_ERROR", "INTROSPECT_HTTP_5")):
-            raise HTTPException(status_code=503, detail="AUTH_INTROSPECTION_UNAVAILABLE")
-        if not ident.authenticated:
-            raise HTTPException(status_code=401, detail="AUTHENTICATION_REQUIRED")
-        return {
+        if not finco_session and not finco_demo:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        try:
+            verdict = auth_fn(finco_session, finco_demo)
+        except IntrospectionUnavailableError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        if not verdict.authenticated:
+            raise HTTPException(status_code=401, detail="Invalid or expired session")
+        return JSONResponse({
             "authenticated": True,
-            "session_kind": ident.session_kind,
-            "user_id": ident.user_id,
-            "tenant_id": ident.tenant_id,
-            "entitlements": list(ident.entitlements),
-        }
+            "session_kind": verdict.session_kind,
+            "user_id": verdict.user_id,
+            "tenant_id": verdict.tenant_id,
+            "entitlements": list(verdict.entitlements),
+            "wallet_verified": verdict.wallet_verified,
+            "wallet_address": verdict.wallet_address,
+        })
 
     @app.get("/api/v1.1/radar/bridge-contract")
     def bridge_contract():
-        return BRIDGE_CONTRACT_V1
+        return JSONResponse(BRIDGE_CONTRACT_V1)
+
+    @app.get("/api/v1.1/radar/bridge/model-keys")
+    def bridge_model_keys():
+        try:
+            keys = fetch_model_public_keys()
+        except BridgeUnavailableError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        return JSONResponse({
+            "schema": "finco.radar.bridge.model_keys.v1",
+            "mode": "READ_ONLY",
+            "keys": keys,
+        })
 
     return app
 

@@ -8,13 +8,13 @@ After=network-online.target
 Type=oneshot
 User=finco
 Group=finco
-WorkingDirectory=/opt/finco_protocol
+WorkingDirectory=/opt/finco_radar
 EnvironmentFile=/etc/finco/yield-collector.env
 Environment=PYTHONDONTWRITEBYTECODE=1
 StateDirectory=finco/yield
 StateDirectoryMode=0750
 UMask=0027
-ExecStart=/usr/bin/flock -n -E 75 /var/lib/finco/yield/yield-collector.lock /opt/finco_protocol/.venv/bin/python -m finco_yield.collect_live
+ExecStart=/usr/bin/flock -n -E 75 /var/lib/finco/yield/yield-collector.lock /opt/finco_radar/.venv/bin/python -m finco_yield.collect_live
 TimeoutStartSec=240
 # Exit 3 = PARTIAL (valid observations persisted, some targets failed): visible
 # in the report/journal but not a failed unit. Exit 2/4/75 stay failures.

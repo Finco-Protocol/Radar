@@ -78,7 +78,8 @@ async def _enforce_premium(request: Request, resource: YieldResource):
 router = APIRouter(prefix="/yield", tags=["yield-beta"])
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
-_templates = Jinja2Templates(directory=str(_REPO_ROOT / "app" / "templates"))
+import radar_service as _radar_svc
+_templates = Jinja2Templates(directory=str(Path(_radar_svc.__file__).resolve().parent / "templates"))
 _templates.env.autoescape = True
 
 
@@ -496,8 +497,8 @@ async def yield_explore(
             "support_state": opportunity.support_state.value,
         })
 
-    from app.auth import generate_csrf_token
-    from app.crypto_access import get_wallet_state
+    from radar_service.entitlements import generate_csrf_token
+    from radar_service.entitlements import get_wallet_state
     from finco_yield.watchlist import list_watchlist_items
 
     user = _request_user(request)
@@ -515,7 +516,7 @@ async def yield_explore(
             "market_summary": market_summary,
             "saved_uids": saved_uids,
             "user": user,
-            "csrf_token": generate_csrf_token(),
+            "csrf_token": generate_csrf_token(user.user_id if user else ""),
             "source_status": source_status,
             "research_mode": research_mode,
             "hidden_reference_count": hidden_reference_count,
@@ -574,20 +575,26 @@ async def yield_compare(request: Request, uid: list[str] = Query(default=[])):
 
 
 def _request_user(request: Request):
-    from app.auth import resolve_request_session
-    return resolve_request_session(request)
+    from radar_service.auth_client import IntrospectionUnavailableError
+    from radar_service.entitlements import resolve_request_session
+    try:
+        return resolve_request_session(request)
+    except IntrospectionUnavailableError as exc:
+        raise HTTPException(status_code=503, detail="AUTH_AUTHORITY_UNAVAILABLE") from exc
 
 
-def _wallet_state_for_request(request: Request) -> str:
+def _wallet_state_for_request(request: Request) -> dict[str, Any] | str:
     """Wallet presentation state; a wallet-store outage is typed UNAVAILABLE."""
-    from app.crypto_access import get_wallet_state
+    from radar_service.entitlements import get_wallet_state
     user = _request_user(request)
     try:
-        state, _ = get_wallet_state(user.user_id if user else None)
+        res = get_wallet_state(request, user)
     except (sqlite3.Error, OSError, ValueError) as exc:
         _log_authority_unavailable("wallet_store", exc)
         return "UNAVAILABLE"
-    return state
+    if isinstance(res, dict):
+        return res
+    return res[0]
 
 
 async def _resource_decisions_for_request(request: Request):
@@ -597,7 +604,7 @@ async def _resource_decisions_for_request(request: Request):
     typed unavailable decisions instead of an unhandled 500.  Entitlement
     state stays independent of position detection and vice versa.
     """
-    from app.protocol.entitlement_evaluator import (
+    from radar_service.entitlements import (
         evaluate_all_resources,
         wallet_context_for_session,
     )
@@ -617,13 +624,13 @@ async def _decisions_for_wallet(wallet):
     for expected provider/RPC failures.  An unexpected programming error must
     propagate to logs/tests, never masquerade as "no decisions".
     """
-    from app.protocol.entitlement_evaluator import evaluate_all_resources
+    from radar_service.entitlements import evaluate_all_resources
     return dict(await evaluate_all_resources(wallet))
 
 
 def _wallet_context_fail_soft(user):
     """Canonical wallet context; a wallet-store outage is typed UNAVAILABLE."""
-    from app.protocol.entitlement_evaluator import wallet_context_for_session
+    from radar_service.entitlements import wallet_context_for_session
     try:
         return wallet_context_for_session(user), None
     except (sqlite3.Error, OSError, ValueError) as exc:
@@ -631,14 +638,17 @@ def _wallet_context_fail_soft(user):
         return None, "WALLET_STORE_UNAVAILABLE"
 
 
-def _verified_wallet_fail_soft(user_id):
+def _verified_wallet_fail_soft(session_or_uid):
     """Wallet-store read for the monitor; outage is typed, never a crash."""
-    from app.protocol.wallet_auth import get_verified_wallet
+    from radar_service.entitlements import get_verified_wallet
     try:
-        return get_verified_wallet(user_id), None
+        raw = get_verified_wallet(session_or_uid if isinstance(session_or_uid, dict) else None)
     except (sqlite3.Error, OSError, ValueError) as exc:
         _log_authority_unavailable("wallet_store", exc)
         return None, "WALLET_STORE_UNAVAILABLE"
+    if isinstance(raw, str) and raw:
+        return {"wallet_address": raw}, None
+    return raw, None
 
 
 def _log_authority_unavailable(authority: str, exc: Exception) -> None:
@@ -694,15 +704,15 @@ async def yield_monitor(request: Request):
     propagate and fail visibly in logs.
     """
     _require()
-    from app.auth import generate_csrf_token
-    from app.crypto_access import build_crypto_access_snapshot, get_wallet_state
+    from radar_service.entitlements import generate_csrf_token
+    from radar_service.entitlements import build_crypto_access_snapshot, get_wallet_state
     from finco_yield.watchlist import list_watchlist_items
 
     user = _request_user(request)
     if not user:
         return RedirectResponse("/login", 302)
 
-    wallet, wallet_error = _verified_wallet_fail_soft(user.user_id)
+    wallet, wallet_error = _verified_wallet_fail_soft(user)
 
     positions_view: list[dict] = []
     positions_error: str | None = None
@@ -736,7 +746,8 @@ async def yield_monitor(request: Request):
         )
 
     try:
-        wallet_state, _ = get_wallet_state(user.user_id)
+        ws_res = get_wallet_state(request, user)
+        wallet_state = ws_res if isinstance(ws_res, dict) else ws_res[0]
     except (sqlite3.Error, OSError, ValueError) as exc:
         _log_authority_unavailable("wallet_store", exc)
         wallet_state = "UNAVAILABLE"
@@ -745,7 +756,7 @@ async def yield_monitor(request: Request):
         decisions = {}
     else:
         decisions = await _decisions_for_wallet(wallet_context)
-    access = build_crypto_access_snapshot(wallet_state, resource_decisions=decisions)
+    access = build_crypto_access_snapshot(wallet_state, session=user, resource_decisions=decisions)
     if context_error is not None:
         access["entitlement_unavailable"] = context_error
 
@@ -771,7 +782,7 @@ async def yield_monitor(request: Request):
             "watchlist": watchlist_items,
             "watchlist_state": watchlist_state["state"],
             "watchlist_count": watchlist_state["count"],
-            "csrf_token": generate_csrf_token(),
+            "csrf_token": generate_csrf_token(user.user_id if user else ""),
         },
     )
 
@@ -789,11 +800,13 @@ async def prototype_removed():
 
 def _enforce_csrf(request: Request, form) -> JSONResponse | None:
     """Existing FINCO CSRF primitives for cookie-authenticated mutations."""
-    from app.auth import validate_csrf_token
+    from radar_service.entitlements import validate_csrf_token
+    user = _request_user(request)
+    uid = user.user_id if user else ""
     token = form.get("csrf_token") if form is not None else None
     if not token:
         token = request.headers.get("x-csrf-token")
-    if not validate_csrf_token(token or ""):
+    if not validate_csrf_token(uid, token or ""):
         return JSONResponse(
             status_code=403,
             content={"state": "UNAVAILABLE", "reason": "CSRF_TOKEN_INVALID"},
@@ -805,7 +818,7 @@ def _enforce_csrf(request: Request, form) -> JSONResponse | None:
 async def yield_access_json(request: Request):
     """Presentation of actual Agent A resource decisions; no C-side evaluator."""
     _require()
-    from app.crypto_access import build_crypto_access_snapshot
+    from radar_service.entitlements import build_crypto_access_snapshot
 
     wallet_state = _wallet_state_for_request(request)
     decisions = await _resource_decisions_for_request(request)
@@ -1143,7 +1156,7 @@ async def transaction_plan(request: Request, opportunity_uid: str):
             409,
         )
 
-    from app.protocol.wallet_auth import get_verified_wallet
+    from radar_service.entitlements import get_verified_wallet
 
     user = _request_user(request)
     if not user:
@@ -1151,7 +1164,8 @@ async def transaction_plan(request: Request, opportunity_uid: str):
             {"code": "UNAUTHENTICATED", "error": "Authentication required."},
             401,
         )
-    wallet = get_verified_wallet(user.user_id)
+    wallet_addr = get_verified_wallet(user)
+    wallet = {"wallet_address": wallet_addr} if isinstance(wallet_addr, str) and wallet_addr else wallet_addr
     if not wallet:
         return JSONResponse(
             {"code": "WALLET_NOT_VERIFIED", "error": "Verified wallet required."},

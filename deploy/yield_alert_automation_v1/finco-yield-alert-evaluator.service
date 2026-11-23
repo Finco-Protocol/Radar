@@ -8,13 +8,13 @@ After=network-online.target
 Type=oneshot
 User=finco
 Group=finco
-WorkingDirectory=/opt/finco_protocol
+WorkingDirectory=/opt/finco_radar
 EnvironmentFile=/etc/finco/yield-alert-evaluator.env
 Environment=PYTHONDONTWRITEBYTECODE=1
 StateDirectory=finco/yield
 StateDirectoryMode=0750
 UMask=0027
-ExecStart=/usr/bin/flock -n -E 75 /var/lib/finco/yield/yield-alert-evaluator.lock /opt/finco_protocol/.venv/bin/python -m finco_yield.evaluate_alerts
+ExecStart=/usr/bin/flock -n -E 75 /var/lib/finco/yield/yield-alert-evaluator.lock /opt/finco_radar/.venv/bin/python -m finco_yield.evaluate_alerts
 TimeoutStartSec=240
 # Exit 3 = PARTIAL (some users evaluated, failures listed in the report): visible
 # in the journal but not a failed unit. Exit 2 / 4 / 75 remain failures.
@@ -25,7 +25,7 @@ StandardError=journal
 SyslogIdentifier=finco-yield-alert-evaluator
 NoNewPrivileges=true
 ProtectSystem=strict
-ReadWritePaths=/var/lib/finco
+ReadWritePaths=/var/lib/finco/radar /var/lib/finco/yield
 ProtectHome=true
 PrivateTmp=true
 

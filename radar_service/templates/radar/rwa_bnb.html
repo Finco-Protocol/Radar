@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FINCO Radar — BNB Tokenized Assets</title>
+  <link rel="stylesheet" href="/static/tokens.css">
+  <link rel="stylesheet" href="/static/radar/radar.css">
+  <link rel="stylesheet" href="/static/radar/rwa.css?v=b1-3">
+  <link rel="stylesheet" href="/static/css/protocol-shell.css">
+</head>
+<body class="radar rwa-page">
+{% with proto_active_page="radar" %}{% include "partials/_protocol_nav.html" %}{% endwith %}
+{% include "radar/domain_nav.html" %}
+{% include "radar/crypto_subnav.html" %}
+{% set rwa_view = 'bnb' %}
+{% include "radar/rwa_tabs.html" %}
+
+<main class="radar-main rwa-main bnb-rwa-main">
+  <header class="rwa-hero">
+    <div>
+      <p class="rwa-eyebrow">FINCO RADAR / BNB SMART CHAIN / MARKET OBSERVATION</p>
+      <h1>BNB Tokenized Assets</h1>
+      <p class="muted">CoinGecko-listed tokenized assets with BNB platform evidence. This is an observed subset, not a verified BNB RWA universe.</p>
+    </div>
+    <div class="rwa-health" data-state="{{ dashboard.state }}">
+      <span class="rwa-health__state">{{ dashboard.state }}</span>
+      {% if dashboard.last_known_good %}
+      <span class="muted small" data-lkg-fallback="true">Last-known-good fallback — refresh is currently failing; the preserved observation is shown as STALE.</span>
+      {% endif %}
+      <span class="mono">retrieved {{ dashboard.retrieved_at }}</span>
+    </div>
+  </header>
+
+  <section class="panel rwa-boundary bnb-boundary">
+    <strong>Authority boundary</strong>
+    <span>BNB deployment identity is chain 56 plus exact contract address when CoinGecko supplies one. Market prices, caps and volumes are CoinGecko coin-level observations, not BNB-only quantities or executable quotes. Robinhood economic binding: Unavailable without exact canonical registry evidence. Reference premium requires a bound Robinhood basis and an approved independent token reference. Execution gap additionally requires an exact route quote. Missing evidence is never shown as zero.</span>
+  </section>
+
+  <section class="rwa-count-grid bnb-count-grid" aria-label="BNB observed-set summary">
+    <article class="panel rwa-count"><span>Observed BNB listings</span><strong>{{ dashboard.observed_count }}</strong></article>
+    <article class="panel rwa-count"><span>Exact deployments</span><strong>{{ dashboard.deployment_available_count }}</strong><small>{{ dashboard.deployment_unavailable_count }} unavailable</small></article>
+    <article class="panel rwa-count"><span>Observed-set market cap</span><strong>{{ dashboard.observed_market_cap_display }}</strong><small>{{ dashboard.market_cap_contributors }} current, identified contributors</small></article>
+    <article class="panel rwa-count"><span>Observed-set 24h volume</span><strong>{{ dashboard.observed_volume_24h_display }}</strong><small>{{ dashboard.volume_contributors }} current, identified contributors</small></article>
+  </section>
+
+  <section class="panel bnb-provenance">
+    <div><strong>Source and coverage</strong><p>{{ dashboard.source }} · {{ dashboard.selection }}</p></div>
+    <div><strong>Metric scope</strong><p>CoinGecko asset-level, across its listed deployments; not BNB-specific market size.</p></div>
+    <div><strong>RWA TVL</strong><p class="state-unavailable">Unavailable — no RWA-specific TVL authority.</p></div>
+    <div><strong>Freshness</strong><p>{{ dashboard.current_count }} current · {{ dashboard.stale_count }} stale. Stale and unidentified rows are excluded from aggregates.</p></div>
+    <a href="{{ dashboard.category_source_url }}" rel="noopener noreferrer" target="_blank">CoinGecko category source</a>
+  </section>
+
+  {% if dashboard.reason %}
+  <section class="panel panel-error" role="status">
+    <h2>BNB market observation unavailable</h2>
+    <p class="state-unavailable">No current, exact-deployment market aggregate is available.</p>
+    <p class="muted small">Missing source evidence is not replaced with a symbol match, a guessed contract, or generic chain TVL.</p>
+  </section>
+  {% endif %}
+
+  {% if dashboard.degraded_reasons %}
+  <section class="panel bnb-caveats" role="status">
+    <strong>Coverage caveats</strong>
+    <ul>{% for reason in dashboard.degraded_reasons %}<li class="mono">{{ reason }}</li>{% endfor %}</ul>
+  </section>
+  {% endif %}
+
+  <section class="rwa-section" aria-label="BNB tokenized-asset observations">
+    <div class="rwa-section__heading"><div><h2>Observed assets</h2><p class="muted small">Market data, BNB deployment, and Robinhood economic identity are separate evidence layers. No ticker or provider-ID mapping is inferred.</p></div></div>
+    {% if dashboard.observations %}
+    <div class="bnb-filter-bar" role="toolbar" aria-label="Observation filters" data-testid="bnb-filter-bar">
+      <button type="button" class="bnb-filter is-active" data-filter="all" data-testid="bnb-filter-all">ALL OBSERVED</button>
+      <button type="button" class="bnb-filter" data-filter="bound" data-testid="bnb-filter-bound"
+              title="Rows with an exact source-proven economic identity binding to the canonical registry">BOUND</button>
+      <button type="button" class="bnb-filter" data-filter="actionable" data-testid="bnb-filter-actionable"
+              title="Rows with an actually available execution route capability — a BNB contract alone never implies execution">ACTIONABLE</button>
+      <span class="muted small bnb-filter-note">ALL OBSERVED = valid observed RWA market rows · BOUND = exact source-proven identity binding · ACTIONABLE = execution capability actually exists</span>
+    </div>
+    <div class="rwa-table-wrap panel bnb-table-wrap">
+      <table class="rwa-table bnb-rwa-table" data-testid="bnb-rwa-table">
+        <thead><tr><th>Asset / provider ID</th><th>Capabilities</th><th>Asset-level price</th><th>Asset-level mcap</th><th>Asset-level 24h volume</th><th>24h</th><th>Freshness / source</th><th>Reference premium</th><th>Execution gap</th></tr></thead>
+        <tbody>
+        {% for row in dashboard.observations %}
+          {% set caps = row.capabilities %}
+          <tr data-provider-id="{{ row.provider_id }}" data-state="{{ row.state }}"
+              data-cap-bound="{{ '1' if caps.rh_identity == 'BOUND' else '0' }}"
+              data-cap-actionable="{{ '1' if caps.execution == 'AVAILABLE' else '0' }}">
+            <td data-label="Asset"><strong>{{ row.name }}</strong><span class="mono rwa-symbol">{{ row.symbol }} · {{ row.provider_id }}</span></td>
+            <td data-label="Capabilities" class="bnb-capabilities" data-testid="bnb-capabilities">
+              <span class="cap-chip cap-chip--{{ caps.market_data|lower }}" title="Market data (observed)">MARKET {{ caps.market_data }}</span>
+              <span class="cap-chip cap-chip--{{ 'available' if caps.bnb_deployment == 'AVAILABLE' else 'unavailable' }}" title="Exact BNB deployment (chain 56 + contract)">DEPLOYMENT {{ 'AVAILABLE' if caps.bnb_deployment == 'AVAILABLE' else 'UNAVAILABLE' }}</span>
+              <span class="cap-chip cap-chip--{{ 'bound' if caps.rh_identity == 'BOUND' else 'unbound' }}" title="Robinhood economic identity binding">RH IDENTITY {{ caps.rh_identity }}</span>
+              {% if caps.reference_premium != 'NOT_SUPPORTED' or caps.execution != 'NOT_SUPPORTED' %}
+              <span class="cap-chip cap-chip--{{ caps.reference_premium|lower }}" title="Reference premium (requires bound Robinhood basis)">PREMIUM {{ caps.reference_premium }}</span>
+              <span class="cap-chip cap-chip--{{ caps.execution|lower }}" title="Execution route capability">EXECUTION {{ caps.execution }}</span>
+              {% endif %}
+              <details><summary>Authority detail</summary>
+                <span class="mono rwa-time">Deployment: {{ row.asset_key.canonical_id if row.asset_key else row.deployment_reason }}</span>
+                <span class="mono rwa-time">Robinhood binding: {{ row.canonical_identity.state }} · {{ row.canonical_identity.authority_source or row.canonical_identity.reason or 'Exact canonical registry evidence' }}{% if row.canonical_identity.observed_at %} · {{ row.canonical_identity.observed_at }}{% endif %}</span>
+                {% if row.canonical_identity.economic_asset_uid %}<span class="mono rwa-time">{{ row.canonical_identity.economic_asset_uid }}</span>{% endif %}
+              </details>
+            </td>
+            <td data-label="Asset-level price">{{ row.price_display }}</td>
+            <td data-label="Asset-level mcap">{{ row.market_cap_display }}</td>
+            <td data-label="Asset-level 24h volume">{{ row.volume_display }}</td>
+            <td data-label="24h change">{{ row.change_display }}</td>
+            <td data-label="Freshness / source"><span class="rwa-state rwa-state--{{ row.state|lower }}">{{ row.state }}</span><span class="mono rwa-time">{{ row.observed_at or 'Timestamp unavailable' }}</span><span class="mono rwa-time">{{ row.source }} · {{ row.market_endpoint }}</span></td>
+            <td data-label="Reference premium" class="bnb-intelligence-cell">
+              {% if caps.reference_premium == 'AVAILABLE' %}
+                <strong class="mono">{{ row.intelligence.reference_premium.value_bps }} bps</strong>
+              {% else %}
+                <span class="cap-chip cap-chip--{{ caps.reference_premium|lower }}">{{ caps.reference_premium }}</span>
+              {% endif %}
+              <details><summary>Price evidence</summary>
+                <span class="mono rwa-time">{{ row.intelligence.reference_premium.state }} · {{ row.intelligence.reference_premium.reason or 'Current evidence' }}</span>
+                <span class="mono rwa-time">Robinhood basis: {{ row.intelligence.robinhood_basis.price_usd_per_token or 'Unavailable' }} USD/token · {{ row.intelligence.robinhood_basis.state }} · {{ row.intelligence.robinhood_basis.source or row.intelligence.robinhood_basis.reason or 'Unavailable' }} · {{ row.intelligence.robinhood_basis.observed_at or 'Timestamp unavailable' }}</span>
+                <span class="mono rwa-time">Independent token reference: {{ row.intelligence.independent_token_reference.price_usd_per_token or 'Unavailable' }} USD/token · {{ row.intelligence.independent_token_reference.state }} · {{ row.intelligence.independent_token_reference.source or row.intelligence.independent_token_reference.reason or 'Unavailable' }} · {{ row.intelligence.independent_token_reference.observed_at or 'Timestamp unavailable' }}</span>
+                <span class="mono rwa-time">Formula: {{ row.intelligence.reference_premium.formula or 'Unavailable' }}</span>
+                <span class="mono rwa-time">Evidence times: {{ row.intelligence.reference_premium.observed_at|join(', ') or 'Unavailable' }}</span>
+              </details>
+            </td>
+            <td data-label="Execution gap" class="bnb-intelligence-cell">
+              {% if caps.execution == 'AVAILABLE' %}
+                <strong class="mono">{{ row.intelligence.execution_gap.effective_gap_bps }} bps</strong>
+                <span class="mono rwa-time">Execution impact {{ row.intelligence.execution_gap.execution_impact_bps }} bps</span>
+              {% else %}
+                <span class="cap-chip cap-chip--{{ caps.execution|lower }}">{{ caps.execution }}</span>
+              {% endif %}
+              <details><summary>Execution and history</summary>
+                <span class="mono rwa-time">{{ row.intelligence.execution_gap.state }} · {{ row.intelligence.execution_gap.reason or 'Current evidence' }}</span>
+                <span class="mono rwa-time">Effective price: {{ row.intelligence.execution.effective_price_usd_per_token or 'Unavailable' }} USD/token · {{ row.intelligence.execution.provider or row.intelligence.execution.reason or 'Unavailable' }}</span>
+                <span class="mono rwa-time">Notional: {{ row.intelligence.execution.requested_notional_usd or 'Unavailable' }} USD · route: {{ row.intelligence.execution.route or 'Unavailable' }} · {{ row.intelligence.execution.observed_at or 'Timestamp unavailable' }}</span>
+                <span class="mono rwa-time">Fee {{ row.intelligence.execution.fee_cost_usd or 'Unavailable' }} · gas {{ row.intelligence.execution.gas_cost_usd or 'Unavailable' }} (evidence only; inclusion unresolved)</span>
+                {% if row.intelligence_history %}
+                  {% for point in row.intelligence_history[:5] %}<span class="mono rwa-time">{{ point.observed_at }} · premium {{ point.reference_premium_bps }} bps ({{ point.state }}) · total gap {{ point.total_execution_gap_bps or 'Unavailable' }} ({{ point.execution_state }})</span>{% endfor %}
+                {% else %}<span class="mono rwa-time">History unavailable</span>{% endif %}
+              </details>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="panel bnb-empty">No BNB-listed tokenized-asset observations with usable provider evidence are available.</div>
+    {% endif %}
+  </section>
+
+  <footer class="rwa-footnote"><span>Read-only market intelligence. No trading, custody, economic-equivalence claim, or execution authority.</span></footer>
+</main>
+<script src="/static/radar/rwa_bnb_filters.js" defer></script>
+</body>
+</html>

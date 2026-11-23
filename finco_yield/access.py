@@ -19,10 +19,12 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any
 
-from app.protocol.entitlement_evaluator import (
+from radar_service.auth_client import IntrospectionUnavailableError
+from radar_service.entitlements import (
     Decision,
     ResourceAccessDecision,
     evaluate_resource_access,
+    resolve_request_session,
     wallet_context_for_session,
 )
 
@@ -173,9 +175,17 @@ async def resolve_yield_access(request: Any, resource: YieldResource) -> YieldAc
             reason="PUBLIC_RESOURCE",
         )
 
-    from app.auth import resolve_request_session
-
-    session = resolve_request_session(request)
+    try:
+        session = resolve_request_session(request)
+    except IntrospectionUnavailableError:
+        return YieldAccessDecision(
+            resource=resource,
+            state=YieldAccessState.ENTITLEMENT_AUTHORITY_UNAVAILABLE,
+            access_allowed=False,
+            token_entitled=False,
+            gate_active=True,
+            reason="ENTITLEMENT_AUTHORITY_UNAVAILABLE",
+        )
     # Canonical helper preserves authenticated subject_id and obtains the
     # verified wallet binding; no display string is substituted for identity.
     wallet = wallet_context_for_session(session)

@@ -1,0 +1,116 @@
+{
+  "schema": "FINCO_RADAR_PROVENANCE_CORRECTION_A_V3",
+  "immutable_source_repo": "Finco-Protocol/FincoProtocol",
+  "immutable_source_commit": "707e68b290694c57b470f4a112c190abb3d02ac9",
+  "immutable_source_tree": "0d4e8961c33e7bab7aa94077ee4fe9b561061ba2",
+  "predecessor_main_commit": "5034eadcae0792506d0e37b44b27e2ba78190fb1",
+  "predecessor_pr1_commit": "07d6ec88bdd9737e3c4c79aad27bd12ed28875f8",
+  "predecessor_pr1_tree": "b4f50fd3967f664f1d2fe875dd7d7c2f6a501e84",
+  "entry_count": 13,
+  "entries": [
+    {
+      "origin": "MIGRATED_FROM_FINCOPROTOCOL",
+      "source_path": "app/radar_rwa/data/stock_token_oracle_candidates.json",
+      "source_git_blob": "6a9a8163f0c1b537d555f365fe43a1c7590fa2de",
+      "target_path": "radar_service/rwa/data/stock_token_oracle_candidates.json",
+      "target_sha256": "337a59d162823e9833abf4c0224ee01061a6f568ced0838a2254a2ef38c2c9f8",
+      "mode": "0o644"
+    },
+    {
+      "origin": "MIGRATED_FROM_FINCOPROTOCOL",
+      "source_path": "app/radar_rwa/data/stock_token_oracle_feeds.json",
+      "source_git_blob": "46970221b23c3f18f463c6c0b6561b20b69a8685",
+      "target_path": "radar_service/rwa/data/stock_token_oracle_feeds.json",
+      "target_sha256": "6048d8a2c0ebdca6bb17f5736266621e149cf7cd55b93370459d613ea2ce1d1c",
+      "mode": "0o644"
+    },
+    {
+      "origin": "MIGRATED_FROM_FINCOPROTOCOL",
+      "source_path": "tests/test_rwa_basis_v1.py",
+      "source_git_blob": "955ab66c08601b5df0781dce948bec8b64a6f087",
+      "target_path": "tests/test_rwa_basis_v1.py",
+      "target_sha256": "348e1528e9b40992e7eb77c7e526eb71730360d6b6e48615fcad364ec0c4ee71",
+      "mode": "0o644"
+    },
+    {
+      "origin": "MIGRATED_FROM_FINCOPROTOCOL",
+      "source_path": "tests/test_stock_token_oracle_candidates.py",
+      "source_git_blob": "bb2eb549e8c17d9ec13d96e770686e12a4290642",
+      "target_path": "tests/test_stock_token_oracle_candidates.py",
+      "target_sha256": "130847ab5f61cb122409abcd6bc7dc7777eb4186e341abd746556b9029edbab2",
+      "mode": "0o644"
+    },
+    {
+      "origin": "MIGRATED_FROM_FINCOPROTOCOL",
+      "source_path": "tests/test_yield_v1.py",
+      "source_git_blob": "65df42dd04ffe41c231dc2b3cfce58fc842ea13d",
+      "target_path": "tests/test_yield_v1.py",
+      "target_sha256": "568655611e6166d168260361633917f91efe876305c1de538ca18287fa2cd4f7",
+      "mode": "0o644"
+    },
+    {
+      "origin": "MIGRATED_FROM_FINCOPROTOCOL",
+      "source_path": "tests/test_yield_y0.py",
+      "source_git_blob": "6f87d155caa3ded5009a83dd17767282b77af7e7",
+      "target_path": "tests/test_yield_y0.py",
+      "target_sha256": "a6b87cae02e052eca1f6ad46cdeb7b7145c3f1d66b7b76fc0b93533ea7654be0",
+      "mode": "0o644"
+    },
+    {
+      "origin": "NEW_OR_ADAPTED_STANDALONE",
+      "source_path": null,
+      "source_git_blob": null,
+      "target_path": ".github/workflows/radar_ci.yml",
+      "target_sha256": "8055a453433983f04fd6564a3031008207c6e8ced860c496e1e4019aed604bb6",
+      "mode": "0o644"
+    },
+    {
+      "origin": "NEW_OR_ADAPTED_STANDALONE",
+      "source_path": null,
+      "source_git_blob": null,
+      "target_path": "MIGRATION_AND_ROLLBACK.md",
+      "target_sha256": "36bc324b635bf459bbb600792195e37570318cc5410853b2e00138eba38c594f",
+      "mode": "0o644"
+    },
+    {
+      "origin": "NEW_OR_ADAPTED_STANDALONE",
+      "source_path": null,
+      "source_git_blob": null,
+      "target_path": "deploy/nginx/radar_gateway_candidate.conf",
+      "target_sha256": "ba320a3ade974e90bcc83aee64bb94062a196f4a1d1153b5ed0df9dfae12067b",
+      "mode": "0o644"
+    },
+    {
+      "origin": "NEW_OR_ADAPTED_STANDALONE",
+      "source_path": null,
+      "source_git_blob": null,
+      "target_path": "pyproject.toml",
+      "target_sha256": "706a317fad8b17108466bef5b23f3a276dcd4f9506f707ba046719cc9d6212bc",
+      "mode": "0o644"
+    },
+    {
+      "origin": "NEW_OR_ADAPTED_STANDALONE",
+      "source_path": null,
+      "source_git_blob": null,
+      "target_path": "radar_service/entitlements.py",
+      "target_sha256": "4f59476a92c69a18aa0b9b2963ac5a5addeabbec3e342eab236a23db22c78520",
+      "mode": "0o644"
+    },
+    {
+      "origin": "NEW_OR_ADAPTED_STANDALONE",
+      "source_path": null,
+      "source_git_blob": null,
+      "target_path": "radar_service/routers/crypto_public_router.py",
+      "target_sha256": "d6f9cea57d9e07c007444de67c303cfb037074ad5fbdd5d3c7f81608a6bc5e45",
+      "mode": "0o644"
+    },
+    {
+      "origin": "NEW_OR_ADAPTED_STANDALONE",
+      "source_path": null,
+      "source_git_blob": null,
+      "target_path": "tests/test_radar_service_and_auth_boundary.py",
+      "target_sha256": "a477e99480afa3e914e6998266aa574bfe1a49412586c84569348c4c697f4c13",
+      "mode": "0o644"
+    }
+  ]
+}

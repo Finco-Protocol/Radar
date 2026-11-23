@@ -1,0 +1,256 @@
+{% extends "yield/base.html" %}
+{% block title %}FINCO Yield — Explore{% endblock %}
+{% block content %}
+<div class="y-header">
+  <p class="k">FINCO Yield · V1 Beta</p>
+  <h1>Explore</h1>
+  <p class="y-lede">Evidence-backed DeFi opportunities. Freshness and source stay visible; FINCO does not rank a winner.</p>
+  {% if source_status %}
+  <p class="y-note y-status-line" data-testid="yield-source-status" data-origin="{{ source_status.origin }}">
+    {% if source_status.origin == "SNAPSHOT" and source_status.live_rows %}
+      Source-observed snapshot generated {{ source_status.generated_at }} · {{ source_status.live_rows }} source-observed row(s){% if source_status.reference_rows %}, {{ source_status.reference_rows }} reference-only row(s) with no source observation{% endif %}. A source-observed row may still be STALE; each row shows its own freshness.
+    {% elif source_status.origin == "REFERENCE_FALLBACK" %}
+      Live snapshot unavailable ({{ source_status.reason }}). Showing the bundled reference sample — not live data.
+    {% else %}
+      Showing the bundled reference sample — not live data. No live collection is configured.
+    {% endif %}
+  </p>
+  {% endif %}
+  <p class="y-note" data-testid="yield-live-only-note" data-research-mode="{{ 'on' if research_mode else 'off' }}">
+    {% if research_mode %}
+      Research mode — includes a bundled <strong>reference sample</strong> that is not live data. Reference rows are labelled and never indicate current market conditions.
+      <a href="/yield">Back to live opportunities</a>
+    {% else %}
+      Showing live, source-observed opportunities only{% if hidden_reference_count %}; {{ hidden_reference_count }} reference-sample row(s) are hidden{% endif %}.
+      <a href="/yield?include_reference=1">Research mode: include reference sample</a>
+    {% endif %}
+  </p>
+</div>
+<div class="nav">
+  <a class="a" href="/">FINCO</a>
+  <a class="a" href="/yield/monitor">Wallet Monitor</a>
+</div>
+
+<form class="y-controls" method="get" action="/yield" data-testid="yield-filters">
+  {% if research_mode %}<input type="hidden" name="include_reference" value="1">{% endif %}
+  <div class="y-controls-primary">
+    <div class="y-field">
+      <label for="f-chain">Chain</label>
+      <select id="f-chain" name="chain_id">
+        <option value="">All chains</option>
+        {% for cid, label in chain_choices %}
+        <option value="{{ cid }}" {% if filters.chain_id == cid|string %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="y-field">
+      <label for="f-asset">Asset</label>
+      <input id="f-asset" name="asset" placeholder="e.g. USDC" value="{{ filters.asset }}" autocomplete="off">
+    </div>
+    <div class="y-field">
+      <label for="f-min-tvl">Min TVL (USD)</label>
+      <input id="f-min-tvl" name="min_tvl" inputmode="numeric" placeholder="Any" value="{{ filters.min_tvl }}" autocomplete="off">
+    </div>
+    <div class="y-actions">
+      <button type="submit" class="y-apply" data-testid="yield-apply">Apply</button>
+      <a class="y-clear" href="/yield{% if research_mode %}?include_reference=1{% endif %}" data-testid="yield-clear">Clear filters</a>
+    </div>
+  </div>
+  <details class="y-more" {% if filters.protocol or filters.category or filters.min_history_days or filters.max_reward_dependency or filters.evidence %}open{% endif %}>
+    <summary data-testid="yield-more-filters">More filters</summary>
+    <div class="y-more-grid">
+      <div class="y-field">
+        <label for="f-protocol">Protocol</label>
+        <input id="f-protocol" name="protocol" placeholder="e.g. morpho" value="{{ filters.protocol }}" autocomplete="off">
+      </div>
+      <div class="y-field">
+        <label for="f-category">Asset category</label>
+        <select id="f-category" name="category">
+          <option value="">All assets</option>
+          <option value="stablecoin" {% if filters.category == "stablecoin" %}selected{% endif %}>Stablecoin</option>
+          <option value="major" {% if filters.category == "major" %}selected{% endif %}>Major</option>
+        </select>
+      </div>
+      <div class="y-field">
+        <label for="f-history">Min history (days)</label>
+        <input id="f-history" name="min_history_days" inputmode="numeric" placeholder="Any" value="{{ filters.min_history_days }}" autocomplete="off">
+      </div>
+      <div class="y-field">
+        <label for="f-reward-dep">Max reward dependency</label>
+        <input id="f-reward-dep" name="max_reward_dependency" inputmode="decimal" placeholder="Any" value="{{ filters.max_reward_dependency }}" autocomplete="off">
+      </div>
+      <div class="y-field">
+        <label for="f-evidence">Evidence</label>
+        <select id="f-evidence" name="evidence">
+          <option value="">All evidence</option>
+          {% for choice in evidence_choices %}
+          <option value="{{ choice }}" {% if filters.evidence == choice %}selected{% endif %}>{{ choice }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </details>
+</form>
+
+{% set active_chips = [] %}
+{% if filters.chain_id %}{% set _ = active_chips.append(("Chain", filters.chain_id)) %}{% endif %}
+{% if filters.asset %}{% set _ = active_chips.append(("Asset", filters.asset)) %}{% endif %}
+{% if filters.min_tvl %}{% set _ = active_chips.append(("Min TVL", "$" + filters.min_tvl)) %}{% endif %}
+{% if filters.protocol %}{% set _ = active_chips.append(("Protocol", filters.protocol)) %}{% endif %}
+{% if filters.category %}{% set _ = active_chips.append(("Category", filters.category)) %}{% endif %}
+{% if filters.min_history_days %}{% set _ = active_chips.append(("History ≥", filters.min_history_days ~ "d")) %}{% endif %}
+{% if filters.max_reward_dependency %}{% set _ = active_chips.append(("Max reward dep.", filters.max_reward_dependency)) %}{% endif %}
+{% if filters.evidence %}{% set _ = active_chips.append(("Evidence", filters.evidence)) %}{% endif %}
+{% if active_chips %}
+<div class="y-chips" data-testid="yield-active-filters">
+  {% for label, value in active_chips %}
+  <span class="y-chip">{{ label }}: <span class="mono">{{ value }}</span></span>
+  {% endfor %}
+  <a class="y-chip-clear y-chip" href="/yield">Clear all ✕</a>
+</div>
+{% endif %}
+
+<div class="y-result-meta">
+  <span><strong data-testid="yield-result-count">{{ result_count }}</strong> opportunit{{ "y" if result_count == 1 else "ies" }}</span>
+  {% if filters.max_reward_dependency %}
+  <span class="y-note">Rows with an unavailable reward dependency do not match a max-reward-dependency filter.</span>
+  {% endif %}
+</div>
+
+{% if market_summary %}
+<section class="card" style="margin-bottom:16px" data-testid="yield-market-summary">
+  <p class="k" style="margin:0 0 8px">Market summary</p>
+  <div class="y-summary">
+    <div class="card"><span class="v" data-testid="summary-observed">{{ market_summary.pools_observed }}</span><span class="m">pools with yield observations</span></div>
+    <div class="card"><span class="v" data-testid="summary-above-floor">{{ market_summary.pools_above_floor }}</span><span class="m">above movers TVL floor ({{ market_summary.tvl_floor }})</span></div>
+    <div class="card"><span class="v">{{ market_summary.median_apy }}</span><span class="m">median APY (above floor)</span></div>
+    <div class="card">
+      {% if market_summary.best_apy %}<span class="v">{{ market_summary.best_apy.apy }}</span><span class="m">best APY · {{ market_summary.best_apy.name }}</span>
+      {% else %}<span class="v">—</span><span class="m">best APY</span>{% endif %}
+    </div>
+    <div class="card">
+      <span class="v" data-testid="summary-treasury">{{ market_summary.treasury_yield }}</span>
+      <span class="m">3M Treasury ({{ market_summary.treasury_source or "unavailable" }}{% if market_summary.treasury_period %} · {{ market_summary.treasury_period }}{% endif %}) · {{ market_summary.treasury_state }}</span>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if movers_24h or movers_7d %}
+<section class="card" style="margin-bottom:16px" data-testid="yield-movers">
+  <p class="k" style="margin:0 0 8px">Top movers · ranked by absolute APY change · TVL floor {{ market_summary.tvl_floor if market_summary else "—" }}</p>
+  <div class="grid">
+    <div>
+      <p class="k">24h</p>
+      <table style="min-width:0">
+        <tbody>
+        {% for m in movers_24h %}
+        <tr data-testid="mover-24h-{{ m.rank }}">
+          <td><a class="y-opp-name" href="/yield/{{ m.uid }}">{{ m.name }}</a></td>
+          <td class="y-num">{{ m.apy }}</td>
+          <td class="y-num {% if m.direction == 'UP' %}up{% elif m.direction == 'DOWN' %}down{% else %}flat{% endif %}">
+            {{ m.delta_bps }}</td>
+          <td class="y-num">{{ m.tvl }}</td>
+        </tr>
+        {% else %}<tr><td class="y-subtext">No qualified 24h movers (needs a canonical baseline and TVL ≥ floor).</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <p class="k">7d</p>
+      <table style="min-width:0">
+        <tbody>
+        {% for m in movers_7d %}
+        <tr data-testid="mover-7d-{{ m.rank }}">
+          <td><a class="y-opp-name" href="/yield/{{ m.uid }}">{{ m.name }}</a></td>
+          <td class="y-num">{{ m.apy }}</td>
+          <td class="y-num {% if m.direction == 'UP' %}up{% elif m.direction == 'DOWN' %}down{% else %}flat{% endif %}">
+            {{ m.delta_bps }}</td>
+          <td class="y-num">{{ m.tvl }}</td>
+        </tr>
+        {% else %}<tr><td class="y-subtext">No qualified 7d movers (needs a canonical baseline and TVL ≥ floor).</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="y-subtext" style="margin:8px 0 0">Changes compare the latest observation with the most recent canonical observation at or before the horizon cutoff. Missing baselines stay unavailable — never zero.</p>
+</section>
+{% endif %}
+
+<div class="y-table-wrap scroll" data-testid="yield-opportunities-scroll">
+  <table class="y-table">
+    <thead><tr>
+      <th>Opportunity</th><th>TVL</th><th>Total APY</th><th>Trend</th><th>24h Δ</th><th>7d Δ</th><th>30d Avg</th><th>Sigma 30d</th><th>Treasury Spread</th><th>Freshness</th><th>Source</th><th>Watchlist</th>
+    </tr></thead>
+    <tbody>
+    {% for row in rows %}
+      <tr data-opportunity-uid="{{ row.uid }}">
+        <td>
+          <a class="y-opp-name" href="/yield/{{ row.uid }}">{{ row.name }}</a>
+          <span class="y-subtext">{{ row.underlying_symbol }} · {{ row.chain }} · {{ row.protocol }}</span>
+        </td>
+        <td class="y-num">{{ row.tvl }}</td>
+        <td class="y-num">
+          {{ row.total_apy }}
+          <span class="y-subtext" data-testid="apy-components-{{ row.uid }}">Base {{ row.base_apy }} · Rewards {{ row.rewards_apy }}</span>
+        </td>
+        <td data-field="trend">
+          {% if row.sparkline_points %}
+          <div data-chart-type="sparkline" aria-label="Recent APY trend, canonical observations only"
+               data-points="{{ row.sparkline_points|e }}"
+               style="width:110px;height:26px;min-width:110px"></div>
+          <span class="src-label">recent canonical points</span>
+          {% else %}<span class="y-subtext">—</span>{% endif %}
+        </td>
+        <td class="y-num {% if row.delta_24h_direction == 'UP' %}up{% elif row.delta_24h_direction == 'DOWN' %}down{% endif %}"
+            data-testid="delta-24h-{{ row.uid }}">{{ row.delta_24h_bps }}</td>
+        <td class="y-num {% if row.delta_7d_direction == 'UP' %}up{% elif row.delta_7d_direction == 'DOWN' %}down{% endif %}"
+            data-testid="delta-7d-{{ row.uid }}">{{ row.delta_7d_bps }}</td>
+        <td class="y-num">
+          {{ row.apy_30d_avg }}
+          {% if row.apy_30d_avg_source %}<span class="src-label">{{ row.apy_30d_avg_source }}</span>{% endif %}
+        </td>
+        <td class="y-num">
+          {{ row.sigma_30d }}
+          {% if row.sigma_source %}<span class="src-label">{{ row.sigma_source }}</span>{% endif %}
+        </td>
+        <td class="y-num">
+          {{ row.spread_bps }}
+          {% if row.spread_source %}<span class="src-label">{{ row.spread_source }}</span>{% endif %}
+        </td>
+        <td>
+          <span class="y-badge {% if row.freshness == 'CURRENT' %}y-badge-current{% elif row.freshness == 'STALE' %}y-badge-stale{% elif row.freshness in ('INVALID', 'UNAVAILABLE', 'FUTURE_TIMESTAMP') %}y-badge-invalid{% else %}y-badge-unknown{% endif %}"
+                data-testid="freshness-{{ row.uid }}">{{ row.freshness }}</span>
+          <span class="y-subtext" data-testid="last-observed-{{ row.uid }}">{{ row.last_observed }}</span>
+        </td>
+        <td>
+          <span class="y-badge {% if row.is_live %}y-badge-live{% else %}y-badge-reference{% endif %}"
+                data-testid="origin-{{ row.uid }}" data-origin-class="{{ row.origin_class }}">{{ row.origin_class }}</span>
+          <span class="y-subtext">{{ row.origin }} · {{ row.evidence }}{% if row.provider != "—" %} · {{ row.provider }}{% endif %}<br>{{ row.support_state }} · exit {{ row.exit }}</span>
+        </td>
+        <td data-testid="watchlist-cell-{{ row.uid }}">
+          {% if row.uid in saved_uids %}
+          <span class="y-badge y-badge-saved" data-testid="watchlist-saved">Saved</span>
+          {% elif user %}
+          <form method="post" action="/yield/watchlist/{{ row.uid }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="y-btn-ghost" data-testid="watchlist-save" title="Save to watchlist (canonical opportunity identity)">Save</button>
+          </form>
+          {% else %}
+          <a href="/login" data-testid="watchlist-signin" class="y-btn-ghost" title="Sign in to save opportunities to your watchlist">Sign in to save</a>
+          {% endif %}
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="12">
+        <p class="y-empty" data-testid="yield-empty">{% if not research_mode and hidden_reference_count and not filters.chain_id and not filters.protocol and not filters.asset %}No live source-observed opportunities are available right now. FINCO shows only observed data here and does not substitute reference samples.{% else %}No exact matches for the current filters. <a href="/yield">Clear filters</a> to see all opportunities.{% endif %}</p>
+      </td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<p class="y-note">Save adds the opportunity to your watchlist by its canonical identity — never by ticker or name matching. A LIVE badge means the row comes from a source observation; it can still be STALE. REFERENCE means fixture data, never live. “—” means unavailable.</p>
+
+<p class="bound">Read-only by default. Execution planning is separately gated. FINCO never custodies assets, holds private keys, auto-invests or rebalances.</p>
+{% endblock %}

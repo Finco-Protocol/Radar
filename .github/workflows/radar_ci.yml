@@ -28,23 +28,59 @@ jobs:
           python -m build --wheel --outdir dist .
           sha256sum dist/*.whl > dist/WHEEL_SHA256SUMS.txt
           cat dist/WHEEL_SHA256SUMS.txt
-      - name: Install wheels into clean isolated venv and verify zero Model leakage
+      - name: Install wheels into clean isolated venv and verify installed origins from /tmp (-I)
         run: |
           python -m venv /tmp/radar-ci-venv
-          /tmp/radar-ci-venv/bin/pip install --find-links dist dist/finco_evidence_envelope-0.1.0-py3-none-any.whl dist/finco_radar-0.1.0-py3-none-any.whl pytest==9.0.3
+          /tmp/radar-ci-venv/bin/pip install --find-links dist \
+            dist/finco_evidence_envelope-0.1.0-py3-none-any.whl \
+            "dist/finco_radar-0.2.0-py3-none-any.whl[test,server]"
           /tmp/radar-ci-venv/bin/pip check
           /tmp/radar-ci-venv/bin/pip list --format=freeze > dist/pip-freeze.txt
-      - name: Stage isolated test directory (no finco_radar/*.py in CWD)
+          (
+            cd /tmp
+            env -u PYTHONPATH /tmp/radar-ci-venv/bin/python -I - <<'PY'
+          import os, sys
+          from pathlib import Path
+          import finco_radar, finco_yield, radar_service, finco_protocol.verification.envelope as env_mod
+          ws = os.environ.get("GITHUB_WORKSPACE", "")
+          for entry in sys.path:
+              assert not (ws and ws in entry), f"Checkout workspace leaked into sys.path: {entry}"
+          for mod in (finco_radar, finco_yield, radar_service, env_mod):
+              p = Path(mod.__file__).resolve()
+              assert "site-packages" in p.parts, f"Not imported from site-packages: {p}"
+              print("VERIFIED_INSTALLED_ORIGIN:", mod.__name__, "->", p)
+          feeds = Path(radar_service.__file__).resolve().parent / "rwa" / "data" / "stock_token_oracle_feeds.json"
+          assert feeds.is_file(), f"Missing packaged oracle feeds JSON: {feeds}"
+          PY
+          )
+      - name: Stage isolated test directory (zero executable source packages in CWD)
         run: |
           mkdir -p /tmp/radar-isolated-tests/finco_radar/terminal/static
-          cp -R tests docs deploy PROVENANCE_FROM_FINCOPROTOCOL.json pyproject.toml /tmp/radar-isolated-tests/
+          cp -R tests docs deploy PROVENANCE_FROM_FINCOPROTOCOL.json PROVENANCE_ADAPTATIONS_V2.json PROVENANCE_CORRECTION_A_V3.json PROVENANCE_CORRECTION_B_V4.json PROVENANCE_CORRECTION_C_V5.json pyproject.toml /tmp/radar-isolated-tests/
           cp finco_radar/terminal/static/radar_terminal.js /tmp/radar-isolated-tests/finco_radar/terminal/static/radar_terminal.js
-      - name: Run full isolated Radar R0-R12, service, auth-boundary and exact-source suite
+      - name: Run full isolated Radar/Yield/Crypto/Service/Collector/Governance suite
         run: |
           cd /tmp/radar-isolated-tests
           env -u PYTHONPATH /tmp/radar-ci-venv/bin/python -m pytest -v \
             --junitxml="${GITHUB_WORKSPACE}/dist/radar-ci-junit.xml" \
             tests/
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          junit_path = Path(os.environ["GITHUB_WORKSPACE"]) / "dist" / "radar-ci-junit.xml"
+          assert junit_path.is_file(), f"Missing JUnit XML: {junit_path}"
+          root = ET.parse(junit_path).getroot()
+          suites = [root] if root.tag == "testsuite" else list(root.findall(".//testsuite"))
+          assert suites, "No <testsuite> elements found in JUnit XML"
+          tests = sum(int(s.attrib.get("tests", "0")) for s in suites)
+          failures = sum(int(s.attrib.get("failures", "0")) for s in suites)
+          errors = sum(int(s.attrib.get("errors", "0")) for s in suites)
+          skipped = sum(int(s.attrib.get("skipped", "0")) for s in suites)
+          print(f"AGGREGATE_GATE: suites={len(suites)} tests={tests} failures={failures} errors={errors} skipped={skipped}")
+          assert tests >= 1150, f"Too few tests executed: {tests}"
+          assert failures == 0 and errors == 0 and skipped == 0
+          PY
       - name: Upload CI evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

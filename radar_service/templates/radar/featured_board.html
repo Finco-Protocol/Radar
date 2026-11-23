@@ -1,0 +1,61 @@
+{% if featured_board is defined and featured_board %}
+{# Fundamentals are persisted snapshots; the market cells update through one read-only board request. #}
+<section id="featured-board" class="panel panel-featured-board" data-panel="featured-board" style="margin-bottom:14px;">
+
+  <div class="radar-board-header">
+    <h2 class="radar-board-title" style="margin:0;">Featured Equities</h2>
+    <span class="radar-board-meta">{{ featured_board | length }} assets · market references refresh while visible</span>
+  </div>
+
+  <div class="featured-board-scroll">
+    <table class="board-table board-table--featured">
+      <colgroup>
+        <col class="board-col-symbol"><col class="board-col-company"><col class="board-col-market">
+        <col class="board-col-revenue"><col class="board-col-growth"><col class="board-col-margin"><col class="board-col-margin"><col class="board-col-terminal">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th style="text-align:left;">Company</th>
+          <th>Market reference</th>
+          <th>Revenue TTM</th>
+          <th>Rev Growth</th>
+          <th>Gross Margin</th>
+          <th>EBIT Margin</th>
+          <th style="text-align:right;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in featured_board %}
+        <tr data-featured-row data-market-uid="{{ row.asset_uid }}" data-market-symbol="{{ row.symbol }}">
+          <td style="font-weight:600;white-space:nowrap;">{{ row.symbol }}</td>
+          <td class="board-company" title="{{ row.company_name }}"><strong>{{ row.company_name }}</strong><small class="radar-market-meta">{{ row.symbol }}</small></td>
+          <td class="num board-market-reference">
+            <strong data-market-price title="Waiting for the official Robinhood reference">—</strong>
+            <small class="radar-market-meta" data-market-state>UNAVAILABLE</small>
+            <small class="radar-market-meta radar-market-observed-detail" data-market-observed></small>
+          </td>
+
+          {% if row.state in ("AVAILABLE", "PARTIAL") %}
+          <td class="num">{{ row.revenues | default("—") }}</td>
+          <td class="num">{{ row.revenue_growth | default("—") }}</td>
+          <td class="num">{{ row.gross_margin | default("—") }}</td>
+          <td class="num">{{ row.ebit_margin | default("—") }}</td>
+          {% else %}
+          <td colspan="4" style="color:var(--radar-muted);">
+            Fundamentals not available
+          </td>
+          {% endif %}
+          <td class="board-terminal">
+            <a href="{{ row.details_url }}"
+               class="board-details-cta"
+               data-symbol="{{ row.symbol }}"><span class="radar-legacy-hook">Details → </span>Open Company Terminal →</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="muted small" style="margin-top:8px;"><span data-market-board-state>Waiting for official market references.</span></p>
+</section>
+{% endif %}
