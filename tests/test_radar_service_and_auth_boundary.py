@@ -111,12 +111,22 @@ def test_default_mode_does_not_masquerade_offline_fixture_as_terminal_ok(monkeyp
     body = r_snap.json()
     assert body["status"] == "TERMINAL_INPUT_INVALID"
 
-    # Explicit offline fixture mode is clearly labeled
+    # Explicit offline fixture mode is clearly labeled in dev/test
     monkeypatch.setenv("FINCO_RADAR_OFFLINE_FIXTURE", "1")
+    monkeypatch.delenv("FINCO_ENV", raising=False)
     app_fix = create_radar_service_app()
     client_fix = TestClient(app_fix)
+    assert client_fix.get("/health").json()["mode"] == "offline_fixture"
     assert client_fix.get("/ready").json()["snapshot_mode"] == "OFFLINE_FIXTURE"
     assert client_fix.get("/radar/api/snapshot").json()["status"] == "TERMINAL_OK"
+
+    # Offline fixture mode MUST be disabled in staging and production
+    for env_name in ("staging", "production", "prod"):
+        monkeypatch.setenv("FINCO_ENV", env_name)
+        assert client_fix.get("/health").json()["mode"] == "live_store"
+        assert client_fix.get("/ready").json()["snapshot_mode"] == "LIVE_STORE_UNPOPULATED"
+        assert client_fix.get("/radar/api/snapshot").json()["status"] == "TERMINAL_INPUT_INVALID"
+    monkeypatch.delenv("FINCO_ENV", raising=False)
 
 
 def test_full_product_routes_mounted_and_functional(monkeypatch) -> None:
@@ -445,3 +455,56 @@ def test_correction_a_security_oracle_and_collector_execution(monkeypatch, tmp_p
         finally:
             holder.terminate()
             holder.wait(timeout=5)
+
+
+def test_authenticated_yield_routes_csrf_and_fail_closed_503(monkeypatch, tmp_path) -> None:
+    monkeypatch.setenv("FINCO_YIELD_ENABLED", "1")
+    monkeypatch.setenv("FINCO_DB_PATH", str(tmp_path / "yield_watchlist.db"))
+
+    def _stub(session_cookie, demo_cookie):
+        if session_cookie == "valid-yield-user":
+            return IntrospectedSession(
+                authenticated=True,
+                session_kind="user",
+                user_id="u-yield-1",
+                tenant_id="u-yield-1",
+                entitlements=("yield.history",),
+                entitlement_decisions={
+                    "yield.basic": {"decision": "PUBLIC", "reason": "PUBLIC_RESOURCE"},
+                    "yield.history": {"decision": "ALLOW", "reason": "HOLDER_ENTITLED"},
+                    "yield.alerts": {"decision": "INACTIVE", "reason": "TOKEN_ENTITLEMENT_FEATURE_INACTIVE"},
+                    "yield.advanced_compare": {"decision": "INACTIVE", "reason": "TOKEN_ENTITLEMENT_FEATURE_INACTIVE"},
+                    "yield.execution_preflight": {"decision": "INACTIVE", "reason": "TOKEN_ENTITLEMENT_FEATURE_INACTIVE"},
+                    "crypto.api": {"decision": "INACTIVE", "reason": "TOKEN_ENTITLEMENT_FEATURE_INACTIVE"},
+                    "tokenized.basic": {"decision": "PUBLIC", "reason": "PUBLIC_RESOURCE"},
+                    "tokenized.dislocation": {"decision": "INACTIVE", "reason": "TOKEN_ENTITLEMENT_FEATURE_INACTIVE"},
+                    "tokenized.history": {"decision": "INACTIVE", "reason": "TOKEN_ENTITLEMENT_FEATURE_INACTIVE"},
+                },
+                wallet_verified=True,
+                wallet_address="0x000000000000000000000000000000000000dead",
+            )
+        if session_cookie == "authority-down":
+            raise IntrospectionUnavailableError("model unreachable")
+        return IntrospectedSession(authenticated=False)
+
+    app = create_radar_service_app(introspector=_stub)
+    client = TestClient(app)
+
+    client.cookies.set(COOKIE_NAME, "valid-yield-user")
+    assert client.get("/yield").status_code == 200
+    r_acc = client.get("/yield/access.json")
+    assert r_acc.status_code == 200
+    assert r_acc.json()["resources"]["yield.history"]["decision"] == "ALLOW"
+    assert client.get("/yield/monitor").status_code == 200
+
+    # Watchlist mutation requires valid user-bound CSRF token
+    r_list = client.get("/api/v1/crypto/yield")
+    uid = r_list.json()["items"][0]["opportunity_uid"]
+    assert client.post(f"/yield/watchlist/{uid}").status_code == 403
+    tok = generate_csrf_token("u-yield-1")
+    assert client.post(f"/yield/watchlist/{uid}", headers={"X-CSRF-Token": tok}).status_code == 201
+    assert client.get("/yield/watchlist.json").status_code == 200
+
+    # Authority outage fails closed with HTTP 503 on authenticated Yield routes
+    client.cookies.set(COOKIE_NAME, "authority-down")
+    assert client.get("/yield/access.json").status_code == 503

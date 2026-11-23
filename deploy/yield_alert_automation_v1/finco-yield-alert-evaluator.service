@@ -25,7 +25,7 @@ StandardError=journal
 SyslogIdentifier=finco-yield-alert-evaluator
 NoNewPrivileges=true
 ProtectSystem=strict
-ReadWritePaths=/var/lib/finco
+ReadWritePaths=/var/lib/finco/radar /var/lib/finco/yield
 ProtectHome=true
 PrivateTmp=true
 

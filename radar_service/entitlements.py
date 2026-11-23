@@ -122,7 +122,19 @@ def validate_csrf_token(session_id: str, token: Optional[str]) -> bool:
     return hmac.compare_digest(expected_mac, provided_mac)
 
 
-def resolve_request_session(request: Request) -> Optional[dict[str, Any]]:
+class SessionMapping(dict):
+    """Dict-compatible authenticated session with attribute access for .user_id / .tenant_id."""
+
+    @property
+    def user_id(self) -> Optional[str]:
+        return self.get("user_id")
+
+    @property
+    def tenant_id(self) -> Optional[str]:
+        return self.get("tenant_id")
+
+
+def resolve_request_session(request: Request) -> Optional[SessionMapping]:
     """Resolve authenticated session via Model host internal introspection.
 
     Returns None when unauthenticated (no cookie or invalid cookie).
@@ -137,7 +149,7 @@ def resolve_request_session(request: Request) -> Optional[dict[str, Any]]:
     verdict: IntrospectedSession = introspector(session_cookie, demo_cookie)
     if not verdict.authenticated:
         return None
-    return {
+    return SessionMapping({
         "session_kind": verdict.session_kind,
         "user_id": verdict.user_id,
         "subject_id": verdict.user_id,
@@ -146,7 +158,7 @@ def resolve_request_session(request: Request) -> Optional[dict[str, Any]]:
         "entitlement_decisions": dict(verdict.entitlement_decisions or {}),
         "wallet_verified": verdict.wallet_verified,
         "wallet_address": verdict.wallet_address,
-    }
+    })
 
 
 def wallet_context_for_session(session: Optional[Mapping[str, Any]]) -> WalletContext:

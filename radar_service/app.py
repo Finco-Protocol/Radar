@@ -57,7 +57,13 @@ from radar_service.routers.rwa_basis_public_router import router as rwa_basis_pu
 TEMPLATES_ROOT = Path(__file__).resolve().parent / "templates"
 
 
+def _is_staging_or_prod() -> bool:
+    return os.getenv("FINCO_ENV", "").strip().lower() in ("prod", "production", "staging")
+
+
 def _is_offline_fixture_mode() -> bool:
+    if _is_staging_or_prod():
+        return False
     return os.getenv("FINCO_RADAR_OFFLINE_FIXTURE", "0").strip().lower() in ("1", "true", "yes", "on")
 
 
